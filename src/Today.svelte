@@ -1,0 +1,51 @@
+<script lang="ts">
+  import { displayCom } from "./lib/commitment";
+  import type { OxDate } from "./lib/date";
+  import type { Week } from "./lib/db";
+
+  export let today: OxDate;
+  export let weekProm: Promise<Week | undefined>;
+</script>
+
+<section class="group">
+  <h2>Today</h2>
+  {#await weekProm}
+    <div
+      class="flex flex-col border-2 border-slate-500 rounded-lg overflow-auto"
+    >
+      <div class="commitment">
+        <div class="time w-[6rem]">00:00</div>
+        <div class="description">
+          <p class="font-bold">Loading...</p>
+        </div>
+      </div>
+    </div>
+  {:then week}
+    {#if week?.commitments !== undefined && week.commitments.length > 0}
+      <div
+        class="flex flex-col border-2 border-slate-500 rounded-lg overflow-auto"
+      >
+        {#each week.commitments
+          .sort((v, n) => v.time - n.time)
+          .map(displayCom) as com}
+          {#if today.day === com.day}
+            <div class="commitment">
+              <div class="time w-[6rem] py-2">
+                <span class="text-lg">{com.time}</span>
+                {#if com.endTime !== null}
+                  <span class="text-slate-400 text-sm">{com.endTime}</span>
+                {/if}
+              </div>
+              <div class="description">
+                <p class="font-bold">{com.title}</p>
+                {#if "description" in com && com.description.length}
+                  <p>{com.description}</p>
+                {/if}
+              </div>
+            </div>
+          {/if}
+        {/each}
+      </div>
+    {/if}
+  {/await}
+</section>

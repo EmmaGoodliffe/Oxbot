@@ -1,0 +1,21 @@
+{
+  "name": "functions",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch --preserveWatchOutput",
+    "deploy": "firebase deploy"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "^11.8.0",
+    "firebase-functions": "^4.3.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.0",
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
