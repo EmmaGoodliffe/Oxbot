@@ -1,12 +1,12 @@
 <script lang="ts">
   import { writable } from "svelte/store";
-  import { comTypes, requiredComDetails } from "./lib/commitment";
+  import { comTypes, requiredComDetails } from "../functions/src/commitment";
   import Date from "./lib/Date.svelte";
   import ProgressButton from "./lib/ProgressButton.svelte";
   import Time from "./lib/Time.svelte";
   import { addCommitment, keyValuesToObj } from "./lib/db";
   import ComDetails from "./ComDetails.svelte";
-  import type { OxDate } from "./lib/date";
+  import type { OxDate } from "../functions/src/date";
   import type { Firestore } from "firebase/firestore";
 
   export let db: Firestore;

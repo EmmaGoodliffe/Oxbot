@@ -1,7 +1,10 @@
 <script lang="ts">
-  import { type Commitment, displayCom } from "./lib/commitment";
-  import { days, type OxDate } from "./lib/date";
-  import type { Week } from "./lib/db";
+  import {
+    type Commitment,
+    displayCom,
+    type Week,
+  } from "../functions/src/commitment";
+  import { days, type OxDate } from "../functions/src/date";
 
   export let today: OxDate;
   export let weekProm: Promise<Week | undefined>;

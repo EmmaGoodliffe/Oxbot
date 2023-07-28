@@ -1,4 +1,4 @@
-import { type days, intToTimeInput } from "./date";
+import { intToTimeInput, days } from "./date";
 
 export const requiredComDetails = {
   tute: ["tutor", "subject"],
@@ -19,6 +19,10 @@ interface Com<T extends ComType> {
 // TODO: make this clearer; possible avenues shown in https://github.com/Microsoft/TypeScript/issues/1213#issuecomment-1215039765
 type DistributeComOverUnion<T> = T extends ComType ? Com<T> : never;
 export type Commitment = DistributeComOverUnion<ComType>;
+
+export interface Week {
+  commitments: Commitment[];
+}
 
 export const displayCom = (com: Commitment) => {
   const result = {

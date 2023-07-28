@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { comTypes, requiredComDetails } from "./lib/commitment";
+  import { comTypes, requiredComDetails } from "../functions/src/commitment";
   import type { Writable } from "svelte/store";
 
   export let comType: (typeof comTypes)[number];

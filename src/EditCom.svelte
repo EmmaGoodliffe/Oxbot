@@ -4,12 +4,12 @@
     type Commitment,
     displayCom,
     requiredComDetails,
-  } from "./lib/commitment";
+  } from "../functions/src/commitment";
   import ProgressButton from "./lib/ProgressButton.svelte";
   import Time from "./lib/Time.svelte";
   import { editCommitment, keyValuesToObj } from "./lib/db";
   import ComDetails from "./ComDetails.svelte";
-  import type { OxDate } from "./lib/date";
+  import type { OxDate } from "../functions/src/date";
   import type { Firestore } from "firebase/firestore";
 
   export let db: Firestore;

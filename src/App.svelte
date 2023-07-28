@@ -15,14 +15,14 @@
     getFunctions,
     httpsCallable,
   } from "firebase/functions";
-  import { gregToOxDate, jsToGregDate, type OxDate } from "./lib/date";
+  import { gregToOxDate, jsToGregDate, type OxDate } from "../functions/src/date";
   import { delay, getWeek, updateToken } from "./lib/db";
   import AddCom from "./AddCom.svelte";
   import EditCom from "./EditCom.svelte";
   import NotesNav from "./NotesNav.svelte";
   import ThisWeek from "./ThisWeek.svelte";
   import Today from "./Today.svelte";
-  import type { Commitment } from "./lib/commitment";
+  import type { Commitment } from "../functions/src/commitment";
   import Toasts from "./Toasts.svelte";
 
   const firebaseConfig = {

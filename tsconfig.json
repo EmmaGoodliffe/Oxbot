@@ -16,6 +16,12 @@
     "isolatedModules": true,
     "lib": ["DOM"] // for `src/main.ts`
   },
-  "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
+  "include": [
+    "src/**/*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.svelte",
+    "functions/src/commitment.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

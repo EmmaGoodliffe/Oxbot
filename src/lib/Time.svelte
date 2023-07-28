@@ -5,7 +5,7 @@
     getDurationAsTimeInput,
     intToTimeInput,
     timeInputToInt,
-  } from "./date";
+  } from "../../functions/src/date";
   import type { Writable } from "svelte/store";
 
   export let idPrefix: string;
