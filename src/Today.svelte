@@ -37,7 +37,7 @@
               </div>
               <div class="description">
                 <p class="font-bold">{com.title}</p>
-                {#if "description" in com && com.description.length}
+                {#if com.description !== undefined}
                   <p>{com.description}</p>
                 {/if}
               </div>

@@ -2,10 +2,19 @@
 // import * as logger from "firebase-functions/logger";
 import * as admin from "firebase-admin";
 import { onRequest } from "firebase-functions/v2/https";
-import { getWeekId, gregToOxDate, jsToGregDate } from "./date";
-import { Week } from "./commitment";
+import {
+  dateToTimeInput,
+  displayDuration,
+  getDuration,
+  getWeekId,
+  gregToOxDate,
+  jsToGregDate,
+  timeInputToInt,
+} from "./date";
+import { Week, displayCom } from "./commitment";
+import { onSchedule } from "firebase-functions/v2/scheduler";
 
-// const CRON = "0-58/2 * * * *"; // every two minutes
+const CRON = "0-50/10 * * * *"; // every 10 minutes
 const { TG_BOT_KEY, TG_CHAT_ID } = process.env;
 
 admin.initializeApp({
@@ -53,47 +62,68 @@ const sendTg = async (text: string) => {
   return await result.json();
 };
 
-export const tg = onRequest({ region: "europe-west1" }, async (req, res) => {
-  const text = req.params[0] ?? "No content";
-  try {
-    const result = await sendTg(text);
-    res.json({ status: "TG sent", result });
-  } catch (err) {
-    res.status(500).json({ status: "TG not sent", error: err });
+// export const tg = onRequest({ region: "europe-west1" }, async (req, res) => {
+//   const text = req.params[0] ?? "No content";
+//   try {
+//     const result = await sendTg(text);
+//     res.json({ status: "TG sent", result });
+//   } catch (err) {
+//     res.status(500).json({ status: "TG not sent", error: err });
+//   }
+// });
+
+const sendTgSummary = async () => {
+  const js = new Date();
+  const greg = jsToGregDate(js);
+  const today = gregToOxDate(greg);
+  if (today === undefined) {
+    return;
   }
-});
+  const now = timeInputToInt(dateToTimeInput(js));
+  const id = getWeekId(today);
+  const doc = await db.collection("weeks").doc(id).get();
+  const data = doc.data() as Week | undefined;
+  const coms = data?.commitments ?? [];
+  const upcomingComs = coms
+    .filter(com => com.day === today.day)
+    .filter(com => {
+      const dur = getDuration(now, com.time);
+      return dur?.hours === 0 && dur.mins <= 30;
+    })
+    .map(com => {
+      return `**${displayCom(com).title}** ${
+        displayCom(com).description
+      } in ${displayDuration(now, com.time)}`;
+    });
+  if (upcomingComs.length) {
+    const result = await sendTg(upcomingComs.join(" | "));
+    console.log("Sent summary");
+    return result;
+  } else {
+    console.log("No summary to send");
+  }
+};
 
 export const summarise = onRequest(
   { region: "europe-west1" },
   async (req, res) => {
-    const js = new Date();
-    const greg = jsToGregDate(js);
-    const today = gregToOxDate(greg);
-    if (today === undefined) {
-      res.status(500).json({ status: "Bad date" });
-    } else {
-      try {
-        const id = getWeekId(today);
-        const doc = await db.collection("weeks").doc(id).get();
-        const data = doc.data() as Week | undefined;
-        const coms = data?.commitments ?? [];
-        const todayComs = coms.filter((com) => com.day === today.day);
-        const text = todayComs.length
-          ? todayComs.map((com) => `${com.type} at ${com.time}`).join(" | ")
-          : "No commitments";
-        const result = await sendTg(text);
-        res.json({ status: "Summary sent", result });
-      } catch (err) {
-        res.status(500).json({ status: "Summary not sent", error: err });
-      }
+    try {
+      const result = await sendTgSummary();
+      res.json({ status: "Summary succeeded", result });
+    } catch (err) {
+      res.status(500).json({ status: "Summary failed", error: err });
     }
   }
 );
 
-// export const sched = onSchedule(
-//   { region: "europe-west1", schedule: CRON },
-//   async e => {
-//     console.log("SCHED SCHED SCHED");
-//     logger.log("SCHED SCHED SCHED succeeded at", e.scheduleTime);
-//   }
-// );
+export const sched = onSchedule(
+  { region: "europe-west1", schedule: CRON },
+  async () => {
+    try {
+      console.log("Preparing scheduled summary...");
+      await sendTgSummary();
+    } catch (err) {
+      console.log("Scheduled summary failed:", err);
+    }
+  }
+);

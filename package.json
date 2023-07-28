@@ -9,7 +9,7 @@
     "build": "npm run build:ts && npm run build:svelte",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "deploy": "npm run build && firebase deploy",
-    "dev:fb": "kill-port 8080 && firebase emulators:start --import=cache --export-on-exit",
+    "dev:fb": "kill-port 8080 8085 && firebase emulators:start --import=cache --export-on-exit",
     "dev:svelte": "vite --host",
     "dev:ts": "npm run --prefix functions dev",
     "dev": "concurrently -c yellow,red,blue \"npm:dev:*\"",

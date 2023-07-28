@@ -24,7 +24,15 @@ export interface Week {
   commitments: Commitment[];
 }
 
-export const displayCom = (com: Commitment) => {
+export const displayCom = (
+  com: Commitment
+): {
+  day: Commitment["day"];
+  time: string;
+  endTime: string | null;
+  title: string;
+  description?: string;
+} => {
   const result = {
     day: com.day,
     time: intToTimeInput(com.time),

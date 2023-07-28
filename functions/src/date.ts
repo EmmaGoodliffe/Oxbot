@@ -52,7 +52,7 @@ export const gregToOxDate = (date: string) => {
   // Within term time
   for (let i = 0; i < termDates.length; i++) {
     const term = termDates[i];
-    const [start, end] = term.dates.map((d) => d + " " + term.year);
+    const [start, end] = term.dates.map(d => d + " " + term.year);
     if (getWeekDiff(start, date) >= 0 && getWeekDiff(date, end) >= 0) {
       return oxDate(term.year, term.term, getWeekDiff(start, date) + 1, day);
     }
@@ -60,9 +60,9 @@ export const gregToOxDate = (date: string) => {
   // Between term times
   for (let i = 0; i < termDates.length - 1; i++) {
     const term = termDates[i];
-    const [, end] = term.dates.map((d) => d + " " + term.year);
+    const [, end] = term.dates.map(d => d + " " + term.year);
     const nextTerm = termDates[i + 1];
-    const [nextStart] = nextTerm.dates.map((d) => d + " " + term.year);
+    const [nextStart] = nextTerm.dates.map(d => d + " " + term.year);
     const weeksAfterCurrent = getWeekDiff(end, date);
     const weeksBeforeNext = getWeekDiff(date, nextStart);
     if (weeksAfterCurrent >= 0 && weeksBeforeNext >= 0) {
@@ -87,7 +87,7 @@ export const jsToGregDate = (date: Date) =>
 export const oxToGregDate = (oxDate: OxDate) => {
   const daysIntoTerm = 7 * (oxDate.week - 1) + days.indexOf(oxDate.day);
   const matchingDate = termDates.find(
-    (term) => oxDate.year === term.year && oxDate.term === term.term
+    term => oxDate.year === term.year && oxDate.term === term.term
   );
   if (matchingDate === undefined) {
     throw new Error("Couldn't convert Ox date to Gregorian");
@@ -124,7 +124,7 @@ export const intToTimeInput = (t: number) => {
   return padded.slice(0, 2) + ":" + padded.slice(2, 4);
 };
 
-const dateToTimeInput = (d: Date) => d.toLocaleTimeString("en-GB").slice(0, 5);
+export const dateToTimeInput = (d: Date) => d.toLocaleTimeString("en-GB").slice(0, 5);
 
 export const addTimes = (a: number, b: string) => {
   const aDate = new Date();
@@ -140,7 +140,7 @@ export const addTimes = (a: number, b: string) => {
   return timeInputToInt(time);
 };
 
-const getDuration = (a?: number, b?: number | null) => {
+export const getDuration = (a?: number, b?: number | null) => {
   if (typeof a !== "number" || typeof b !== "number") {
     return null;
   }
