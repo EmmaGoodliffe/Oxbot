@@ -1,8 +1,8 @@
-import { onRequest } from "firebase-functions/v2/https";
 // import { onSchedule } from "firebase-functions/v2/scheduler";
 // import * as logger from "firebase-functions/logger";
 import * as admin from "firebase-admin";
 import { Notification } from "firebase-admin/messaging";
+import { onRequest } from "firebase-functions/v2/https";
 
 // const EVERY_TWO_MINUTES = "0-58/2 * * * *";
 
@@ -28,7 +28,7 @@ const sendToDefaultTokens = async (notification: Notification) => {
   });
 };
 
-export const testableReq = onRequest(
+export const testable = onRequest(
   { region: "europe-west1" },
   async (request, response) => {
     try {

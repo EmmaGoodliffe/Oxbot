@@ -2,8 +2,7 @@
   "name": "functions",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch --preserveWatchOutput",
-    "deploy": "firebase deploy"
+    "dev": "tsc --watch --preserveWatchOutput"
   },
   "engines": {
     "node": "18"

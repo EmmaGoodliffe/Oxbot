@@ -1,10 +1,7 @@
 <script lang="ts">
   // import { getAnalytics } from "firebase/analytics";
   import { initializeApp } from "firebase/app";
-  import {
-     connectFirestoreEmulator,
-    getFirestore,
-  } from "firebase/firestore";
+  import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
   import {
     getMessaging,
     getToken,
@@ -13,7 +10,11 @@
   } from "firebase/messaging";
   import type { NotificationPayload } from "firebase/messaging";
   import { writable } from "svelte/store";
-  import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
+  import {
+    connectFunctionsEmulator,
+    getFunctions,
+    httpsCallable,
+  } from "firebase/functions";
   import { gregToOxDate, jsToGregDate, type OxDate } from "./lib/date";
   import { delay, getWeek, updateToken } from "./lib/db";
   import AddCom from "./AddCom.svelte";
@@ -23,8 +24,6 @@
   import Today from "./Today.svelte";
   import type { Commitment } from "./lib/commitment";
   import Toasts from "./Toasts.svelte";
-
-
 
   const firebaseConfig = {
     apiKey: "AIzaSyC7Aq56CIoRfwsfhxQgr8UY1v16nXs45Mw",
@@ -66,40 +65,49 @@
     return weekProm;
   };
 
-  const toast = (not: NotificationPayload) => toasts.update(t => [...t, not]);
+  const toast = (not: NotificationPayload) => toasts.update((t) => [...t, not]);
 
-  const toastJson = (title: string, obj: Record<string, unknown>) =>
-    toast({ title, body: JSON.stringify(obj) });
+  const toastJson = (title: string, obj: unknown) =>
+    toast({
+      title,
+      body: JSON.stringify({ simple: `${obj}`, json: obj }),
+    });
 
-  const notify = async () => {
-    await delay(4);
-    toastJson("secure", { isSecureContext });
-    const permission = await Notification.requestPermission();
-    toastJson("permission", { permission });
-    const canMessage = await isSupported();
-    toastJson("canMessage", { canMessage });
-    if (canMessage) {
-      const messaging = getMessaging(app);
-      onMessage(messaging, payload => {
-        console.log("foreground message", payload);
-        toast(payload.notification ?? { title: "Payload is empty" });
+  const prepDevice = async () => {
+    try {
+      const permission =
+        "Notification" in window && (await Notification.requestPermission());
+      const canMessage = await isSupported();
+      toast({ title: "v3" });
+      toastJson("context", {
+        isSecureContext,
+        permission,
+        canMessage,
       });
-      const token = await getToken(messaging, {
-        vapidKey:
-          "BIqB5oWedkOFrejyLqEQw-8lFwmHXFl7ZeehuAR9iklFxH1wQPOtZP4bgRfAZqw744h_pcLaDO29Iq6NmfVkJuE",
-      });
-      if (token) {
-        await updateToken(db, token);
-        const rs = await fetch(
-          "http://127.0.0.1:5001/oxbottle/europe-west1/testableReq"
-        );
-        const json = await rs.json();
-        console.log({ json });
+      if (canMessage) {
+        const messaging = getMessaging(app);
+        toast({ title: "initialised" });
+        onMessage(messaging, (payload) => {
+          console.log("foreground message", payload);
+          toast(payload.notification ?? { title: "Payload is empty" });
+        });
+        toast({ title: "handled" });
+        const token = await getToken(messaging, {
+          vapidKey:
+            "BIqB5oWedkOFrejyLqEQw-8lFwmHXFl7ZeehuAR9iklFxH1wQPOtZP4bgRfAZqw744h_pcLaDO29Iq6NmfVkJuE",
+        });
+        toast({ title: "got token" });
+        if (token) {
+          await updateToken(db, token);
+          toast({ title: "updated DB" });
+        } else {
+          toast({ title: "No token" });
+        }
       } else {
-        toast({ title: "No token" });
+        toast({ title: "No messaging" });
       }
-    } else {
-      toast({ title: "No messaging" });
+    } catch (err) {
+      toastJson("Error preparing", err);
     }
   };
 
@@ -114,6 +122,8 @@
 
 <Toasts {toasts} />
 <div class="w-11/12 mx-auto pb-6">
+  <button class="button" on:click={prepDevice}>Prep device</button>
+
   <h1>Notes</h1>
   <NotesNav />
 
@@ -128,7 +138,6 @@
       selectedCom.set(com);
     }}
   />
-  <button class="button" on:click={notify}>Notify</button>
 
   <h1>Commitments</h1>
   <EditCom

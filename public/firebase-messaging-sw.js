@@ -22,8 +22,6 @@ firebase.initializeApp({
 // messages.
 const messaging = firebase.messaging();
 
-console.log("fb sw 4");
-
 // If the `notification` property is specified in the message, you don't need all this
 // TODO: clean
 
