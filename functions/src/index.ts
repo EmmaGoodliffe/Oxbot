@@ -1,7 +1,6 @@
 // import { onSchedule } from "firebase-functions/v2/scheduler";
 // import * as logger from "firebase-functions/logger";
 import * as admin from "firebase-admin";
-import { Notification } from "firebase-admin/messaging";
 import { onRequest } from "firebase-functions/v2/https";
 
 // const EVERY_TWO_MINUTES = "0-58/2 * * * *";
@@ -12,7 +11,10 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-const sendToDefaultTokens = async (notification: Notification) => {
+const sendToDefaultTokens = async (notification: {
+  title: string;
+  body?: string;
+}) => {
   const doc = await db.collection("tokens").doc("default").get();
   const data = doc.data() as { tokens: string[] } | undefined;
   const tokens = data?.tokens;
@@ -33,8 +35,7 @@ export const testable = onRequest(
   async (request, response) => {
     try {
       const result = await sendToDefaultTokens({
-        title: "epic title",
-        body: "more content",
+        title: "vibrations",
       });
       response.json({ status: "Message sent 2", result });
     } catch (err) {

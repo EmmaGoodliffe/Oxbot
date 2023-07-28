@@ -78,7 +78,7 @@
       const permission =
         "Notification" in window && (await Notification.requestPermission());
       const canMessage = await isSupported();
-      toast({ title: "v3" });
+      toast({ title: "v4" });
       toastJson("context", {
         isSecureContext,
         permission,
