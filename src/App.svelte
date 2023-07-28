@@ -111,7 +111,7 @@
     }
   };
 
-  // TODO: PWA
+  // TODO: telegram
   // TODO: alarms
   // TODO: commitments via JSON
   // TODO: delete commitments

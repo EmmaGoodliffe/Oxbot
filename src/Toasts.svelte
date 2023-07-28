@@ -14,6 +14,7 @@
   <!-- TODO: sound -->
   <!-- TODO: handle `toast.icon and `toast.image` -->
   <!-- TODO: fix transition for dismissing the first of multiple -->
+  <!-- TODO: use less hacky CSS -->
     <div
       class="mb-4 px-4 py-2 bg-slate-800 rounded"
       transition:fly={{ y: 20, easing: quartInOut }}
