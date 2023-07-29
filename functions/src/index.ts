@@ -3,12 +3,11 @@
 import * as admin from "firebase-admin";
 import { onRequest } from "firebase-functions/v2/https";
 import {
-  dateToTimeInput,
-  displayDuration,
+    displayDuration,
   getDuration,
   getWeekId,
   gregToOxDate,
-  jsToGregDate,
+  getNow,
   timeInputToInt,
 } from "./date";
 import { Week, displayCom } from "./commitment";
@@ -74,13 +73,11 @@ const sendTg = async (text: string) => {
 // });
 
 const sendTgSummary = async () => {
-  const js = new Date();
-  const greg = jsToGregDate(js);
-  const today = gregToOxDate(greg);
+  const today = gregToOxDate(getNow().date);
   if (today === undefined) {
     return { status: "No date to summarise" };
   }
-  const now = timeInputToInt(dateToTimeInput(js));
+  const now = timeInputToInt(getNow().time);
   const id = getWeekId(today);
   const doc = await db.collection("weeks").doc(id).get();
   const data = doc.data() as Week | undefined;
@@ -89,6 +86,7 @@ const sendTgSummary = async () => {
     .filter(com => com.day === today.day)
     .filter(com => {
       const dur = getDuration(now, com.time);
+      console.log(JSON.stringify({ now, com, dur }));
       return dur?.hours === 0 && dur.mins <= 30;
     })
     .map(
@@ -121,11 +119,12 @@ export const summarise = onRequest(
 export const schedule = onSchedule(
   { region: "europe-west1", schedule: CRON },
   async () => {
+    console.log("Starting scheduled jobs...");
     try {
-      console.log("Preparing scheduled summary...");
-      await sendTgSummary();
+      const result = await sendTgSummary();
+      console.log("Scheduled jobs succeeded:", result.status);
     } catch (err) {
-      console.log("Scheduled summary failed:", err);
+      console.log("Scheduled jobs failed:", err);
     }
   }
 );

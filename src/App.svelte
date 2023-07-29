@@ -15,7 +15,7 @@
     getFunctions,
     httpsCallable,
   } from "firebase/functions";
-  import { gregToOxDate, jsToGregDate, type OxDate } from "../functions/src/date";
+  import { gregToOxDate, getNow,type OxDate } from "../functions/src/date";
   import { delay, getWeek, updateToken } from "./lib/db";
   import AddCom from "./AddCom.svelte";
   import EditCom from "./EditCom.svelte";
@@ -46,8 +46,7 @@
     console.warn("Emulator failed");
   }
 
-  const todayGreg = jsToGregDate(new Date());
-  const today = gregToOxDate(todayGreg);
+  const today = gregToOxDate(getNow().date);
   if (today === undefined) {
     throw new Error("Today is not an Ox date");
   }

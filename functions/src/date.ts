@@ -94,8 +94,13 @@ const gregDate = (year: number, month: number, date: number) =>
     .toString()
     .padStart(2, "0")}`;
 
-export const jsToGregDate = (date: Date) =>
-  gregDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
+const jsToGregDate = (date: Date) =>
+  gregDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
+
+export const getNow = () => {
+  const d = new Date();
+  return { date: jsToGregDate(d), time: jsToLocalTimeInput(d) };
+};
 
 export const oxToGregDate = (oxDate: OxDate) => {
   const daysIntoTerm = 7 * (oxDate.week - 1) + days.indexOf(oxDate.day);
@@ -137,8 +142,7 @@ export const intToTimeInput = (t: number) => {
   return padded.slice(0, 2) + ":" + padded.slice(2, 4);
 };
 
-export const dateToTimeInput = (d: Date) =>
-  d.toLocaleTimeString("en-GB").slice(0, 5);
+const jsToLocalTimeInput = (d: Date) => d.toLocaleTimeString("en-GB").slice(0, 5);
 
 export const addTimes = (a: number, b: string) => {
   const aDate = new Date();
@@ -150,7 +154,7 @@ export const addTimes = (a: number, b: string) => {
   if (aDate.toLocaleDateString("en-GB") !== date.toLocaleDateString("en-GB")) {
     return null;
   }
-  const time = dateToTimeInput(date);
+  const time = jsToLocalTimeInput(date);
   return timeInputToInt(time);
 };
 
