@@ -42,7 +42,7 @@
     console.warn("Emulator failed");
   }
 
-  const today = gregToOxDate(getNow().date);
+  const today = gregToOxDate(getNow().localDate);
   if (today === undefined) {
     throw new Error("Today is not an Ox date");
   }

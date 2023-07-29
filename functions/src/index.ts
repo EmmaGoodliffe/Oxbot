@@ -72,7 +72,7 @@ const sendTg = async (text: string) => {
 // });
 
 const sendTgSummary = async () => {
-  const today = gregToOxDate(getNow().date);
+  const today = gregToOxDate(getNow().utcDate);
   if (today === undefined) {
     return { status: "No date to summarise" };
   }

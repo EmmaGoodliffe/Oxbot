@@ -97,10 +97,14 @@ const gregDate = (year: number, month: number, date: number) =>
 const jsToGregDate = (date: Date) =>
   gregDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 
+const jsToUtcGregDate = (date: Date) =>
+  gregDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
+
 export const getNow = () => {
   const d = new Date();
   return {
-    date: jsToGregDate(d),
+    localDate: jsToGregDate(d),
+    utcDate: jsToUtcGregDate(d),
     localTime: jsToLocalTime(d),
     utcTime: jsToUtcTime(d),
   };
@@ -169,7 +173,11 @@ export const localToUtcTime = (local: string) => {
   const [hours, mins] = local.split(":").map(toInt);
   d.setHours(hours);
   d.setMinutes(mins);
-  return d.getUTCHours() + ":" + d.getUTCMinutes();
+  return (
+    d.getUTCHours().toString().padStart(2, "0") +
+    ":" +
+    d.getUTCMinutes().toString().padStart(2, "0")
+  );
 };
 
 export const getDuration = (a?: string, b?: string | null) => {
