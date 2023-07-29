@@ -45,8 +45,13 @@ const termDates = [
 ] as const;
 
 export const gregToOxDate = (date: string) => {
-  const getWeekDiff = (since: string, now: string) =>
-    Math.floor((Date.parse(now) - Date.parse(since)) / (7 * 24 * 3600 * 1000));
+  const getWeekDiff = (since: string, now: string) => {
+    const sinceDate = new Date(new Date(since).toDateString());
+    const nowDate = new Date(new Date(now).toDateString());
+    return Math.floor(
+      (nowDate.valueOf() - sinceDate.valueOf()) / (7 * 24 * 3600 * 1000)
+    );
+  };
 
   const getNextDay = (date: string) => {
     const result = new Date(date);
@@ -65,7 +70,7 @@ export const gregToOxDate = (date: string) => {
       return oxDate(term.year, term.term, week, day);
     }
   }
-  console.log("It was not within term time");
+  console.log("-|-");
   // Between term times
   for (let i = 0; i < termDates.length - 1; i++) {
     const term = termDates[i];
@@ -107,7 +112,7 @@ export const oxToGregDate = (oxDate: OxDate) => {
 };
 
 // ["Sun 23 Apr", "Sat 17 Jun"]
-const js = new Date("Sat 17 Jun 2023");
+const js = new Date("Sat 22 Apr 2023");
 const greg = jsToGregDate(js);
 const ox = gregToOxDate(greg);
 const composite = ox === undefined ? undefined : oxToGregDate(ox);
