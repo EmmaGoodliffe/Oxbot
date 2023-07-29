@@ -14,6 +14,7 @@
     "allowJs": true,
     "checkJs": true,
     "isolatedModules": true,
+    "strict": true,
     "lib": ["DOM"] // for `src/main.ts`
   },
   "include": [

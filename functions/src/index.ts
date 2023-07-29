@@ -76,7 +76,7 @@ const sendTgSummary = async () => {
   if (today === undefined) {
     return { status: "No date to summarise" };
   }
-  const now = getNow().time;
+  const now = getNow().utcTime;
   const id = getWeekId(today);
   const doc = await db.collection("weeks").doc(id).get();
   const data = doc.data() as Week | undefined;

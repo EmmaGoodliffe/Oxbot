@@ -99,7 +99,11 @@ const jsToGregDate = (date: Date) =>
 
 export const getNow = () => {
   const d = new Date();
-  return { date: jsToGregDate(d), time: jsToLocalTimeInput(d) };
+  return {
+    date: jsToGregDate(d),
+    localTime: jsToLocalTime(d),
+    utcTime: jsToUtcTimeInput(d),
+  };
 };
 
 export const oxToGregDate = (oxDate: OxDate) => {
@@ -142,8 +146,11 @@ if (greg !== composite) {
 //   return padded.slice(0, 2) + ":" + padded.slice(2, 4);
 // };
 
-const jsToLocalTimeInput = (d: Date) =>
-  d.toLocaleTimeString("en-GB").slice(0, 5);
+const jsToLocalTime = (d: Date) =>
+  d.toLocaleTimeString().slice(0, 5);
+
+const jsToUtcTimeInput = (d: Date) =>
+  d.toUTCString().split(" ").slice(-2)[0].slice(0, 5);
 
 export const addTimes = (a: string, b: string) => {
   const aDate = new Date();
@@ -155,7 +162,7 @@ export const addTimes = (a: string, b: string) => {
   if (aDate.toLocaleDateString("en-GB") !== date.toLocaleDateString("en-GB")) {
     return null;
   }
-  return jsToLocalTimeInput(date);
+  return jsToLocalTime(date);
 };
 
 export const getDuration = (a?: string, b?: string | null) => {
