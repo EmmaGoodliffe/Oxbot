@@ -101,8 +101,8 @@ const greg = jsToGregDate(js);
 const ox = gregToOxDate(greg);
 const composite = ox === undefined ? undefined : oxToGregDate(ox);
 if (greg !== composite) {
-  console.error({ js: js.toString(), greg, ox, composite });
-  throw new Error("Date is broken");
+  console.error("Dates are broken", { js: js.toString(), greg, ox, composite });
+  throw new Error("Dates are broken");
 }
 
 export const timeInputToInt = (t: string) => {
@@ -124,7 +124,8 @@ export const intToTimeInput = (t: number) => {
   return padded.slice(0, 2) + ":" + padded.slice(2, 4);
 };
 
-export const dateToTimeInput = (d: Date) => d.toLocaleTimeString("en-GB").slice(0, 5);
+export const dateToTimeInput = (d: Date) =>
+  d.toLocaleTimeString("en-GB").slice(0, 5);
 
 export const addTimes = (a: number, b: string) => {
   const aDate = new Date();

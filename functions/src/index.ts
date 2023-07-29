@@ -14,7 +14,8 @@ import {
 import { Week, displayCom } from "./commitment";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 
-const CRON = "0-50/10 * * * *"; // every 10 minutes
+/** every 10 minutes */
+const CRON = "0-50/10 * * * *";
 const { TG_BOT_KEY, TG_CHAT_ID } = process.env;
 
 admin.initializeApp({
@@ -57,7 +58,7 @@ export const notify = onRequest(
 );
 
 const sendTg = async (text: string) => {
-  const url = `https://api.telegram.org/bot${TG_BOT_KEY}/sendMessage?chat_id=${TG_CHAT_ID}&text=${text}`;
+  const url = `https://api.telegram.org/bot${TG_BOT_KEY}/sendMessage?chat_id=${TG_CHAT_ID}&text=${text}&parse_mode=Markdown`;
   const result = await fetch(url);
   return await result.json();
 };
@@ -91,12 +92,15 @@ const sendTgSummary = async () => {
       return dur?.hours === 0 && dur.mins <= 30;
     })
     .map(com => {
-      return `**${displayCom(com).title}** ${
-        displayCom(com).description
-      } in ${displayDuration(now, com.time)}`;
+      return (
+        `*${displayCom(com).title}* ${displayCom(com).description} in ` +
+        "`" +
+        displayDuration(now, com.time) +
+        "`"
+      );
     });
   if (upcomingComs.length) {
-    const result = await sendTg(upcomingComs.join(" | "));
+    const result = await sendTg(upcomingComs.join("\n"));
     console.log("Sent summary");
     return result;
   } else {
@@ -116,7 +120,8 @@ export const summarise = onRequest(
   }
 );
 
-export const sched = onSchedule(
+// FB functions emulator does not support pub/sub
+export const schedule = onSchedule(
   { region: "europe-west1", schedule: CRON },
   async () => {
     try {
