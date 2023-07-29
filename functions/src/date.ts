@@ -59,7 +59,6 @@ export const gregToOxDate = (date: string) => {
     return jsToGregDate(result);
   };
 
-  console.log("Converting greg", date, "to ox");
   const day = days[new Date(date).getDay()];
   // Within term time
   for (let i = 0; i < termDates.length; i++) {
@@ -70,7 +69,6 @@ export const gregToOxDate = (date: string) => {
       return oxDate(term.year, term.term, week, day);
     }
   }
-  console.log("-|-");
   // Between term times
   for (let i = 0; i < termDates.length - 1; i++) {
     const term = termDates[i];
@@ -84,7 +82,7 @@ export const gregToOxDate = (date: string) => {
       if (weeksAfterNinth <= weeksBeforeNext) {
         return oxDate(term.year, term.term, weeksAfterNinth + 9, day);
       } else {
-        return oxDate(nextTerm.year, nextTerm.term, -weeksBeforeNext - 1, day);
+        return oxDate(nextTerm.year, nextTerm.term, -weeksBeforeNext, day);
       }
     }
   }
@@ -111,8 +109,7 @@ export const oxToGregDate = (oxDate: OxDate) => {
   return jsToGregDate(new Date(startNum + daysIntoTerm * (24 * 3600 * 1000)));
 };
 
-// ["Sun 23 Apr", "Sat 17 Jun"]
-const js = new Date("Sat 22 Apr 2023");
+const js = new Date("Sat 17 Jun 2023");
 const greg = jsToGregDate(js);
 const ox = gregToOxDate(greg);
 const composite = ox === undefined ? undefined : oxToGregDate(ox);
