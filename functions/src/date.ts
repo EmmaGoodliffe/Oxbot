@@ -44,30 +44,40 @@ const termDates = [
   { year: 2024, term: "TT", dates: ["Sun 21 Apr", "Sat 15 Jun"] },
 ] as const;
 
-const getWeekDiff = (since: string, now: string) =>
-  Math.floor((Date.parse(now) - Date.parse(since)) / (7 * 24 * 3600 * 1000));
-
 export const gregToOxDate = (date: string) => {
+  const getWeekDiff = (since: string, now: string) =>
+    Math.floor((Date.parse(now) - Date.parse(since)) / (7 * 24 * 3600 * 1000));
+
+  const getNextDay = (date: string) => {
+    const result = new Date(date);
+    result.setDate(result.getDate() + 1);
+    return jsToGregDate(result);
+  };
+
+  console.log("Converting greg", date, "to ox");
   const day = days[new Date(date).getDay()];
   // Within term time
   for (let i = 0; i < termDates.length; i++) {
     const term = termDates[i];
     const [start, end] = term.dates.map(d => d + " " + term.year);
     if (getWeekDiff(start, date) >= 0 && getWeekDiff(date, end) >= 0) {
-      return oxDate(term.year, term.term, getWeekDiff(start, date) + 1, day);
+      const week = getWeekDiff(start, date) + 1;
+      return oxDate(term.year, term.term, week, day);
     }
   }
+  console.log("It was not within term time");
   // Between term times
   for (let i = 0; i < termDates.length - 1; i++) {
     const term = termDates[i];
     const [, end] = term.dates.map(d => d + " " + term.year);
+    const ninth = getNextDay(end);
     const nextTerm = termDates[i + 1];
     const [nextStart] = nextTerm.dates.map(d => d + " " + term.year);
-    const weeksAfterCurrent = getWeekDiff(end, date);
+    const weeksAfterNinth = getWeekDiff(ninth, date);
     const weeksBeforeNext = getWeekDiff(date, nextStart);
-    if (weeksAfterCurrent >= 0 && weeksBeforeNext >= 0) {
-      if (weeksAfterCurrent <= weeksBeforeNext) {
-        return oxDate(term.year, term.term, weeksAfterCurrent + 1 + 8, day);
+    if (weeksAfterNinth >= 0 && weeksBeforeNext >= 0) {
+      if (weeksAfterNinth <= weeksBeforeNext) {
+        return oxDate(term.year, term.term, weeksAfterNinth + 9, day);
       } else {
         return oxDate(nextTerm.year, nextTerm.term, -weeksBeforeNext - 1, day);
       }
@@ -96,12 +106,13 @@ export const oxToGregDate = (oxDate: OxDate) => {
   return jsToGregDate(new Date(startNum + daysIntoTerm * (24 * 3600 * 1000)));
 };
 
-const js = new Date();
+// ["Sun 23 Apr", "Sat 17 Jun"]
+const js = new Date("Sat 17 Jun 2023");
 const greg = jsToGregDate(js);
 const ox = gregToOxDate(greg);
 const composite = ox === undefined ? undefined : oxToGregDate(ox);
+console.log({ js: js.toString(), greg, ox, composite });
 if (greg !== composite) {
-  console.error("Dates are broken", { js: js.toString(), greg, ox, composite });
   throw new Error("Dates are broken");
 }
 
