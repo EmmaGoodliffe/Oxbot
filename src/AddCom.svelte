@@ -15,8 +15,8 @@
 
   let isAdding = false;
   let date = writable<OxDate>(today);
-  let time = writable<number | undefined>(undefined);
-  let endTime = writable<number | null>(null);
+  let time = writable<string | undefined>(undefined);
+  let endTime = writable<string | null>(null);
   let comType = comTypes[0];
   let details = writable<string[]>([]);
   let progressA = writable(0);

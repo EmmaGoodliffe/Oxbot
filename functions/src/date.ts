@@ -123,30 +123,31 @@ if (greg !== composite) {
   throw new Error("Dates are broken");
 }
 
-export const timeInputToInt = (t: string) => {
-  if (t.length !== 5) {
-    throw new Error("Wrong length");
-  }
-  const result = toInt(t.replace(":", ""));
-  if (isNaN(result)) {
-    throw new Error("NaN");
-  }
-  return result;
-};
+// export const timeInputToInt = (t: string) => {
+//   if (t.length !== 5) {
+//     throw new Error("Wrong length");
+//   }
+//   const result = toInt(t.replace(":", ""));
+//   if (isNaN(result)) {
+//     throw new Error("NaN");
+//   }
+//   return result;
+// };
 
-export const intToTimeInput = (t: number) => {
-  if (isNaN(t)) {
-    throw new Error("NaN");
-  }
-  const padded = t.toString().padStart(4, "0");
-  return padded.slice(0, 2) + ":" + padded.slice(2, 4);
-};
+// export const intToTimeInput = (t: number) => {
+//   if (isNaN(t)) {
+//     throw new Error("NaN");
+//   }
+//   const padded = t.toString().padStart(4, "0");
+//   return padded.slice(0, 2) + ":" + padded.slice(2, 4);
+// };
 
-const jsToLocalTimeInput = (d: Date) => d.toLocaleTimeString("en-GB").slice(0, 5);
+const jsToLocalTimeInput = (d: Date) =>
+  d.toLocaleTimeString("en-GB").slice(0, 5);
 
-export const addTimes = (a: number, b: string) => {
+export const addTimes = (a: string, b: string) => {
   const aDate = new Date();
-  const [aHours, aMins] = intToTimeInput(a).split(":").map(toInt);
+  const [aHours, aMins] = a.split(":").map(toInt);
   aDate.setHours(aHours);
   aDate.setMinutes(aMins);
   const [bHours, bMins] = b.split(":").map(toInt);
@@ -154,16 +155,15 @@ export const addTimes = (a: number, b: string) => {
   if (aDate.toLocaleDateString("en-GB") !== date.toLocaleDateString("en-GB")) {
     return null;
   }
-  const time = jsToLocalTimeInput(date);
-  return timeInputToInt(time);
+  return jsToLocalTimeInput(date);
 };
 
-export const getDuration = (a?: number, b?: number | null) => {
-  if (typeof a !== "number" || typeof b !== "number") {
+export const getDuration = (a?: string, b?: string | null) => {
+  if (typeof a !== "string" || typeof b !== "string") {
     return null;
   }
-  const [aHours, aMins] = intToTimeInput(a).split(":").map(toInt);
-  const [bHours, bMins] = intToTimeInput(b).split(":").map(toInt);
+  const [aHours, aMins] = a.split(":").map(toInt);
+  const [bHours, bMins] = b.split(":").map(toInt);
   let hours = bHours - aHours;
   let mins = bMins - aMins;
   if (hours < 0) {
@@ -175,7 +175,7 @@ export const getDuration = (a?: number, b?: number | null) => {
   return { hours, mins };
 };
 
-export const getDurationAsTimeInput = (a?: number, b?: number | null) => {
+export const getDurationAsTimeInput = (a?: string, b?: string | null) => {
   const duration = getDuration(a, b);
   if (duration === null) {
     throw new Error("Bad duration");
@@ -186,7 +186,7 @@ export const getDurationAsTimeInput = (a?: number, b?: number | null) => {
   );
 };
 
-export const displayDuration = (a?: number, b?: number | null) => {
+export const displayDuration = (a?: string, b?: string | null) => {
   const duration = getDuration(a, b);
   if (duration === null) {
     return ".";

@@ -3,12 +3,11 @@
 import * as admin from "firebase-admin";
 import { onRequest } from "firebase-functions/v2/https";
 import {
-    displayDuration,
+  displayDuration,
   getDuration,
   getWeekId,
   gregToOxDate,
   getNow,
-  timeInputToInt,
 } from "./date";
 import { Week, displayCom } from "./commitment";
 import { onSchedule } from "firebase-functions/v2/scheduler";
@@ -77,7 +76,7 @@ const sendTgSummary = async () => {
   if (today === undefined) {
     return { status: "No date to summarise" };
   }
-  const now = timeInputToInt(getNow().time);
+  const now = getNow().time;
   const id = getWeekId(today);
   const doc = await db.collection("weeks").doc(id).get();
   const data = doc.data() as Week | undefined;

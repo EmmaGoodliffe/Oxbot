@@ -25,7 +25,7 @@
         class="flex flex-col border-2 border-slate-500 rounded-lg overflow-auto"
       >
         {#each week.commitments
-          .sort((v, n) => v.time - n.time)
+          // .sort((v, n) => v.time - n.time) // TODO: sort
           .map(displayCom) as com}
           {#if today.day === com.day}
             <div class="commitment">

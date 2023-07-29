@@ -3,24 +3,22 @@
     addTimes,
     displayDuration,
     getDurationAsTimeInput,
-    intToTimeInput,
-    timeInputToInt,
   } from "../../functions/src/date";
   import type { Writable } from "svelte/store";
 
   export let idPrefix: string;
-  export let time: Writable<number | undefined>;
-  export let endTime: Writable<number | null>;
+  export let time: Writable<string | undefined>;
+  export let endTime: Writable<string | null>;
 
   const endTypes = ["time", "duration", "indefinite"] as const;
   let endType: (typeof endTypes)[number] = "time";
-  let endValue = $endTime === null ? "" : intToTimeInput($endTime);
+  let endValue = $endTime === null ? "" : $endTime;
   let validTime = true;
 
   $: {
     validTime = false;
     if (endType === "time" && endValue.length === 5) {
-      endTime.set(timeInputToInt(endValue));
+      endTime.set(endValue);
       try {
         getDurationAsTimeInput($time, $endTime);
         validTime = true;
@@ -50,8 +48,8 @@
       <input
         type="time"
         id="{idPrefix}-start-time"
-        value={$time === undefined ? undefined : intToTimeInput($time)}
-        on:input={e => time.set(timeInputToInt(e.currentTarget.value))}
+        value={$time}
+        on:input={e => time.set(e.currentTarget.value)}
       />
     </div>
     <div class="w-max">
@@ -75,7 +73,7 @@
               validTime = false;
             }
           } else if (oldType === "duration" && newType === "time") {
-            endValue = $endTime === null ? "" : intToTimeInput($endTime);
+            endValue = $endTime;
           }
         }}
       >
@@ -94,11 +92,9 @@
   <div class="flex-1 px-6 flex flex-col justify-center items-center">
     <span>
       <span class:invisible={$time === undefined}
-        >{$time === undefined ? "00:00" : intToTimeInput($time)}</span
+        >{$time === undefined ? "00:00" : $time}</span
       >-<span class:invisible={$endTime === null}
-        >{typeof $endTime === "number"
-          ? intToTimeInput($endTime)
-          : "00:00"}</span
+        >{typeof $endTime === "string" ? $endTime : "00:00"}</span
       >
     </span>
     <span

@@ -21,11 +21,11 @@
   let isEditing = false;
   $: title =
     com === undefined ? "No commitment selected" : displayCom(com).title;
-  let time = writable<number | undefined>();
-  let endTime = writable<number | null>();
+  let time = writable<string | undefined>();
+  let endTime = writable<string | null>();
   let details = writable<string[]>([]);
   $: {
-    time.set(com?.time ?? 0);
+    time.set(com?.time ?? '00:00');
     endTime.set(com === undefined ? null : com.endTime);
     details.set(Object.values(com?.details ?? []));
   }

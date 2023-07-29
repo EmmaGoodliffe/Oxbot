@@ -1,4 +1,4 @@
-import { intToTimeInput, days } from "./date";
+import { days } from "./date";
 
 export const requiredComDetails = {
   tute: ["tutor", "subject"],
@@ -11,8 +11,8 @@ export const comTypes = Object.keys(requiredComDetails) as ComType[];
 
 interface Com<T extends ComType> {
   day: (typeof days)[number];
-  time: number;
-  endTime: number | null;
+  time: string;
+  endTime: string | null;
   type: T;
   details: Record<(typeof requiredComDetails)[T][number], string>;
 }
@@ -35,8 +35,8 @@ export const displayCom = (
 } => {
   const result = {
     day: com.day,
-    time: intToTimeInput(com.time),
-    endTime: com.endTime === null ? null : intToTimeInput(com.endTime),
+    time: com.time,
+    endTime: com.endTime,
   };
   if (com.type === "tute") {
     return {
