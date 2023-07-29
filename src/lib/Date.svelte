@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { days, gregToOxDate, oxDate, oxToGregDate, terms, type OxDate } from "../../functions/src/date";
+  import { days, gregToOxDate, type OxDate, oxDate, oxToGregDate, terms } from "../../functions/src/date";
   import type { Writable } from "svelte/store";
 
   export let idPrefix: string;

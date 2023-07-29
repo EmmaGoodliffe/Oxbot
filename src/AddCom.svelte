@@ -1,12 +1,12 @@
 <script lang="ts">
   import { writable } from "svelte/store";
   import { comTypes, requiredComDetails } from "../functions/src/commitment";
+  import { localToUtcTime, type OxDate } from "../functions/src/date";
+  import ComDetails from "./ComDetails.svelte";
   import Date from "./lib/Date.svelte";
+  import { addCommitment, keyValuesToObj } from "./lib/db";
   import ProgressButton from "./lib/ProgressButton.svelte";
   import Time from "./lib/Time.svelte";
-  import { addCommitment, keyValuesToObj } from "./lib/db";
-  import ComDetails from "./ComDetails.svelte";
-  import type { OxDate } from "../functions/src/date";
   import type { Firestore } from "firebase/firestore";
 
   export let db: Firestore;
@@ -60,8 +60,8 @@
           $date,
           {
             day: $date.day,
-            time: $time,
-            endTime: $endTime === undefined ? null : $endTime,
+            time: localToUtcTime($time),
+            endTime: $endTime === null ? null : localToUtcTime($endTime),
             type: comType,
             details: keyValuesToObj(requiredComDetails[comType], $details),
           },

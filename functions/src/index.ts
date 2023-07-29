@@ -2,15 +2,15 @@
 // import * as logger from "firebase-functions/logger";
 import * as admin from "firebase-admin";
 import { onRequest } from "firebase-functions/v2/https";
+import { onSchedule } from "firebase-functions/v2/scheduler";
+import { displayCom, Week } from "./commitment";
 import {
   displayDuration,
   getDuration,
+  getNow,
   getWeekId,
   gregToOxDate,
-  getNow,
 } from "./date";
-import { Week, displayCom } from "./commitment";
-import { onSchedule } from "firebase-functions/v2/scheduler";
 
 /** every 10 minutes */
 const CRON = "0-50/10 * * * *";

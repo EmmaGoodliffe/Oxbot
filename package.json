@@ -13,6 +13,7 @@
     "dev:svelte": "vite --host",
     "dev:ts": "npm run --prefix functions dev",
     "dev": "concurrently -c yellow,red,blue \"npm:dev:*\"",
+    "lint": "eslint . --fix",
     "preview": "vite preview"
   },
   "devDependencies": {

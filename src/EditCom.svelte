@@ -5,11 +5,11 @@
     displayCom,
     requiredComDetails,
   } from "../functions/src/commitment";
+  import { localToUtcTime, type OxDate } from "../functions/src/date";
+  import ComDetails from "./ComDetails.svelte";
+  import { editCommitment, keyValuesToObj } from "./lib/db";
   import ProgressButton from "./lib/ProgressButton.svelte";
   import Time from "./lib/Time.svelte";
-  import { editCommitment, keyValuesToObj } from "./lib/db";
-  import ComDetails from "./ComDetails.svelte";
-  import type { OxDate } from "../functions/src/date";
   import type { Firestore } from "firebase/firestore";
 
   export let db: Firestore;
@@ -25,7 +25,7 @@
   let endTime = writable<string | null>();
   let details = writable<string[]>([]);
   $: {
-    time.set(com?.time ?? '00:00');
+    time.set(com?.time ?? "00:00");
     endTime.set(com === undefined ? null : com.endTime);
     details.set(Object.values(com?.details ?? []));
   }
@@ -69,8 +69,8 @@
           index,
           {
             day: date.day,
-            time: $time,
-            endTime: $endTime,
+            time: localToUtcTime($time),
+            endTime: $endTime === null ? null : localToUtcTime($endTime),
             type: com.type,
             details: keyValuesToObj(requiredComDetails[com.type], $details),
           },

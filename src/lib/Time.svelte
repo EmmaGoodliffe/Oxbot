@@ -2,7 +2,7 @@
   import {
     addTimes,
     displayDuration,
-    getDurationAsTimeInput,
+    getDurationAsTime,
   } from "../../functions/src/date";
   import type { Writable } from "svelte/store";
 
@@ -20,7 +20,7 @@
     if (endType === "time" && endValue.length === 5) {
       endTime.set(endValue);
       try {
-        getDurationAsTimeInput($time, $endTime);
+        getDurationAsTime($time, $endTime);
         validTime = true;
       } catch (err) {
         console.log("Duration failed");
@@ -68,12 +68,12 @@
             endValue = "";
           } else if (oldType === "time" && newType === "duration") {
             try {
-              endValue = getDurationAsTimeInput($time, $endTime);
+              endValue = getDurationAsTime($time, $endTime);
             } catch (err) {
               validTime = false;
             }
           } else if (oldType === "duration" && newType === "time") {
-            endValue = $endTime;
+            endValue = $endTime ?? "";
           }
         }}
       >

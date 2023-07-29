@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { fly } from "svelte/transition";
   import { quartInOut } from "svelte/easing";
-  import type { Writable } from "svelte/store";
+  import { fly } from "svelte/transition";
   import type { NotificationPayload } from "firebase/messaging";
+  import type { Writable } from "svelte/store";
 
   export let toasts: Writable<NotificationPayload[]>;
 </script>

@@ -7,7 +7,7 @@
 import { initializeApp } from "firebase/app";
 import { getMessaging } from "firebase/messaging/sw";
 
-const sw = self as unknown as ServiceWorkerGlobalScope;
+// const sw = self as unknown as ServiceWorkerGlobalScope;
 console.log("sw 3");
 
 const firebaseApp = initializeApp({

@@ -1,11 +1,11 @@
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { getWeekId, type OxDate } from "../../functions/src/date";
 import type { Commitment, Week } from "../../functions/src/commitment";
-import  { getWeekId, type OxDate } from "../../functions/src/date";
 import type { Firestore } from "firebase/firestore";
 import type { Writable } from "svelte/store";
 
 export const delay = (sec: number) =>
-  new Promise<void>((res) => setTimeout(() => res(), sec * 1000));
+  new Promise<void>(res => setTimeout(() => res(), sec * 1000));
 
 export const keyValuesToObj = <T>(keys: readonly string[], values: T[]) => {
   const obj: Record<string, T> = {};
@@ -18,7 +18,6 @@ export const keyValuesToObj = <T>(keys: readonly string[], values: T[]) => {
 };
 
 const unique = <T>(arr: T[]) => Array.from(new Set(arr));
-
 
 export const getWeek = async (db: Firestore, date: OxDate) => {
   return (await getDoc(doc(db, "weeks", getWeekId(date)))).data() as

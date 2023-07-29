@@ -95,14 +95,14 @@ const gregDate = (year: number, month: number, date: number) =>
     .padStart(2, "0")}`;
 
 const jsToGregDate = (date: Date) =>
-  gregDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
+  gregDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 
 export const getNow = () => {
   const d = new Date();
   return {
     date: jsToGregDate(d),
     localTime: jsToLocalTime(d),
-    utcTime: jsToUtcTimeInput(d),
+    utcTime: jsToUtcTime(d),
   };
 };
 
@@ -127,7 +127,7 @@ if (greg !== composite) {
   throw new Error("Dates are broken");
 }
 
-// export const timeInputToInt = (t: string) => {
+// export const timeToInt = (t: string) => {
 //   if (t.length !== 5) {
 //     throw new Error("Wrong length");
 //   }
@@ -138,7 +138,7 @@ if (greg !== composite) {
 //   return result;
 // };
 
-// export const intToTimeInput = (t: number) => {
+// export const intToTime = (t: number) => {
 //   if (isNaN(t)) {
 //     throw new Error("NaN");
 //   }
@@ -146,10 +146,9 @@ if (greg !== composite) {
 //   return padded.slice(0, 2) + ":" + padded.slice(2, 4);
 // };
 
-const jsToLocalTime = (d: Date) =>
-  d.toLocaleTimeString().slice(0, 5);
+const jsToLocalTime = (d: Date) => d.toLocaleTimeString().slice(0, 5);
 
-const jsToUtcTimeInput = (d: Date) =>
+const jsToUtcTime = (d: Date) =>
   d.toUTCString().split(" ").slice(-2)[0].slice(0, 5);
 
 export const addTimes = (a: string, b: string) => {
@@ -163,6 +162,14 @@ export const addTimes = (a: string, b: string) => {
     return null;
   }
   return jsToLocalTime(date);
+};
+
+export const localToUtcTime = (local: string) => {
+  const d = new Date();
+  const [hours, mins] = local.split(":").map(toInt);
+  d.setHours(hours);
+  d.setMinutes(mins);
+  return d.getUTCHours() + ":" + d.getUTCMinutes();
 };
 
 export const getDuration = (a?: string, b?: string | null) => {
@@ -182,7 +189,7 @@ export const getDuration = (a?: string, b?: string | null) => {
   return { hours, mins };
 };
 
-export const getDurationAsTimeInput = (a?: string, b?: string | null) => {
+export const getDurationAsTime = (a?: string, b?: string | null) => {
   const duration = getDuration(a, b);
   if (duration === null) {
     throw new Error("Bad duration");

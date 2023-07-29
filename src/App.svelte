@@ -2,28 +2,24 @@
   // import { getAnalytics } from "firebase/analytics";
   import { initializeApp } from "firebase/app";
   import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+  import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
   import {
     getMessaging,
     getToken,
     isSupported,
     onMessage,
   } from "firebase/messaging";
-  import type { NotificationPayload } from "firebase/messaging";
   import { writable } from "svelte/store";
-  import {
-    connectFunctionsEmulator,
-    getFunctions,
-    httpsCallable,
-  } from "firebase/functions";
-  import { gregToOxDate, getNow,type OxDate } from "../functions/src/date";
-  import { delay, getWeek, updateToken } from "./lib/db";
+  import { getNow, gregToOxDate, type OxDate } from "../functions/src/date";
   import AddCom from "./AddCom.svelte";
   import EditCom from "./EditCom.svelte";
+  import { getWeek, updateToken } from "./lib/db";
   import NotesNav from "./NotesNav.svelte";
   import ThisWeek from "./ThisWeek.svelte";
+  import Toasts from "./Toasts.svelte";
   import Today from "./Today.svelte";
   import type { Commitment } from "../functions/src/commitment";
-  import Toasts from "./Toasts.svelte";
+  import type { NotificationPayload } from "firebase/messaging";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC7Aq56CIoRfwsfhxQgr8UY1v16nXs45Mw",
@@ -64,7 +60,7 @@
     return weekProm;
   };
 
-  const toast = (not: NotificationPayload) => toasts.update((t) => [...t, not]);
+  const toast = (not: NotificationPayload) => toasts.update(t => [...t, not]);
 
   const toastJson = (title: string, obj: unknown) =>
     toast({
@@ -86,7 +82,7 @@
       if (canMessage) {
         const messaging = getMessaging(app);
         toast({ title: "initialised" });
-        onMessage(messaging, (payload) => {
+        onMessage(messaging, payload => {
           console.log("foreground message", payload);
           toast(payload.notification ?? { title: "Payload is empty" });
         });
