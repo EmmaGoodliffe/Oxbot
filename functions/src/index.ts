@@ -60,7 +60,7 @@ export const notify = onRequest(
 const sendTg = async (text: string) => {
   const url = `https://api.telegram.org/bot${TG_BOT_KEY}/sendMessage?chat_id=${TG_CHAT_ID}&text=${text}&parse_mode=Markdown`;
   const result = await fetch(url);
-  return await result.json();
+  return (await result.json()) as Record<string, unknown>;
 };
 
 // export const tg = onRequest({ region: "europe-west1" }, async (req, res) => {
@@ -78,7 +78,7 @@ const sendTgSummary = async () => {
   const greg = jsToGregDate(js);
   const today = gregToOxDate(greg);
   if (today === undefined) {
-    return;
+    return { status: "No date to summarise" };
   }
   const now = timeInputToInt(dateToTimeInput(js));
   const id = getWeekId(today);
@@ -91,20 +91,18 @@ const sendTgSummary = async () => {
       const dur = getDuration(now, com.time);
       return dur?.hours === 0 && dur.mins <= 30;
     })
-    .map(com => {
-      return (
-        `*${displayCom(com).title}* ${displayCom(com).description} in ` +
+    .map(
+      com =>
+        `*${displayCom(com).title}* ${displayCom(com).description ?? ""} in ` +
         "`" +
         displayDuration(now, com.time) +
         "`"
-      );
-    });
+    );
   if (upcomingComs.length) {
     const result = await sendTg(upcomingComs.join("\n"));
-    console.log("Sent summary");
-    return result;
+    return { status: "Sent summary", result };
   } else {
-    console.log("No summary to send");
+    return { status: "No summary to send" };
   }
 };
 
@@ -113,14 +111,13 @@ export const summarise = onRequest(
   async (req, res) => {
     try {
       const result = await sendTgSummary();
-      res.json({ status: "Summary succeeded", result });
+      res.json(result);
     } catch (err) {
       res.status(500).json({ status: "Summary failed", error: err });
     }
   }
 );
 
-// FB functions emulator does not support pub/sub
 export const schedule = onSchedule(
   { region: "europe-west1", schedule: CRON },
   async () => {
