@@ -109,12 +109,12 @@ export const oxToGregDate = (oxDate: OxDate) => {
   return jsToGregDate(new Date(startNum + daysIntoTerm * (24 * 3600 * 1000)));
 };
 
-const js = new Date("Sat 17 Jun 2023");
+const js = new Date();
 const greg = jsToGregDate(js);
 const ox = gregToOxDate(greg);
 const composite = ox === undefined ? undefined : oxToGregDate(ox);
-console.log({ js: js.toString(), greg, ox, composite });
 if (greg !== composite) {
+  console.error({ js: js.toString(), greg, ox, composite });
   throw new Error("Dates are broken");
 }
 
