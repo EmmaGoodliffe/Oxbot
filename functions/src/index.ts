@@ -30,6 +30,13 @@ type ApiRes = Response<
   )
 >;
 
+const post = (url: string, data: Record<string, unknown>) =>
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
 const notifyDefaultTokens = async (notification: {
   title: string;
   body?: string;
@@ -75,9 +82,13 @@ type TgResult =
   | { ok: false; description: string; error_code: number };
 
 const sendTg = async (text: string) => {
-  // TODO: encode URL so line breaks work
-  const url = `https://api.telegram.org/bot${TG_BOT_KEY}/sendMessage?chat_id=${TG_CHAT_ID}&text=${text}&parse_mode=Markdown`;
-  const response = await fetch(url);
+  // const url = `https://api.telegram.org/bot${TG_BOT_KEY}/sendMessage?chat_id=${TG_CHAT_ID}&text=${text}&parse_mode=Markdown`;
+  const url = `https://api.telegram.org/bot${TG_BOT_KEY}/sendMessage`;
+  const response = await post(url, {
+    chat_id: TG_CHAT_ID,
+    text,
+    parse_mode: "Markdown",
+  });
   const result = (await response.json()) as TgResult;
   if (result.ok) {
     return {
@@ -97,7 +108,7 @@ const sendTg = async (text: string) => {
 export const tg = onRequest(
   { region: "europe-west1" },
   async (req, res: ApiRes) => {
-    const text = req.params[0] ?? "No content";
+    const text = req.params[0].split("/").join("\n") ?? "No content";
     const result = await sendTg(text);
     res.status(result.status).json(result);
   }
