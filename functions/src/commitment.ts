@@ -1,4 +1,5 @@
 import { days } from "./date";
+import { getDuration } from "./time";
 
 export const requiredComDetails = {
   tute: ["tutor", "subject"],
@@ -50,3 +51,12 @@ export const displayCom = (
   }
   throw new Error("Unknown commitment type");
 };
+
+export const sortCommitmentsByTime = (coms: Commitment[]) =>
+  [...coms].sort((a, b) => {
+    const dur = getDuration(a.time, b.time);
+    if (dur === null) {
+      return 1;
+    }
+    return dur.hours < 0 || dur.mins < 0 ? 1 : -1;
+  });

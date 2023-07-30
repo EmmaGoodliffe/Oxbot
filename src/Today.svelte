@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { displayCom, type Week } from "../functions/src/commitment";
+  import {
+    displayCom,
+    sortCommitmentsByTime,
+    type Week,
+  } from "../functions/src/commitment";
   import type { OxDate } from "../functions/src/date";
 
   export let today: OxDate;
@@ -24,9 +28,7 @@
       <div
         class="flex flex-col border-2 border-slate-500 rounded-lg overflow-auto"
       >
-        {#each week.commitments
-          // .sort((v, n) => v.time - n.time) // TODO: sort
-          .map(displayCom) as com}
+        {#each sortCommitmentsByTime(week.commitments).map(displayCom) as com}
           {#if today.day === com.day}
             <div class="commitment">
               <div class="time w-[6rem] py-2">

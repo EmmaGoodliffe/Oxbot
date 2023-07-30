@@ -1,3 +1,5 @@
+import { getNow, jsToGregDate } from "./time";
+
 export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
 export const terms = ["MT", "HT", "TT"] as const;
@@ -9,7 +11,7 @@ export interface OxDate {
   day: (typeof days)[number];
 }
 
-const toInt = (x: number | string) =>
+export const toInt = (x: number | string) =>
   typeof x === "number" ? Math.floor(x) : parseInt(x);
 
 export const oxDate = (
@@ -81,27 +83,6 @@ export const gregToOxDate = (date: string) => {
   throw new Error("Bad Gregorian date");
 };
 
-const gregDate = (year: number, month: number, date: number) =>
-  `${year}-${month.toString().padStart(2, "0")}-${date
-    .toString()
-    .padStart(2, "0")}`;
-
-const jsToGregDate = (date: Date) =>
-  gregDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
-
-const jsToUtcGregDate = (date: Date) =>
-  gregDate(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
-
-export const getNow = () => {
-  const d = new Date();
-  return {
-    localDate: jsToGregDate(d),
-    utcDate: jsToUtcGregDate(d),
-    localTime: jsToLocalTime(d),
-    utcTime: jsToUtcTime(d),
-  };
-};
-
 export const oxToGregDate = (oxDate: OxDate) => {
   const daysIntoTerm = 7 * (oxDate.week - 1) + days.indexOf(oxDate.day);
   const matchingDate = termDates.find(
@@ -114,101 +95,10 @@ export const oxToGregDate = (oxDate: OxDate) => {
   return jsToGregDate(new Date(startNum + daysIntoTerm * (24 * 3600 * 1000)));
 };
 
-const js = new Date();
-const greg = jsToGregDate(js);
+const greg = getNow().localDate;
 const ox = gregToOxDate(greg);
 const composite = ox === undefined ? undefined : oxToGregDate(ox);
 if (greg !== composite) {
-  console.error({ js: js.toString(), greg, ox, composite });
+  console.error({ greg, ox, composite });
   throw new Error("Dates are broken");
 }
-
-// export const timeToInt = (t: string) => {
-//   if (t.length !== 5) {
-//     throw new Error("Wrong length");
-//   }
-//   const result = toInt(t.replace(":", ""));
-//   if (isNaN(result)) {
-//     throw new Error("NaN");
-//   }
-//   return result;
-// };
-
-// export const intToTime = (t: number) => {
-//   if (isNaN(t)) {
-//     throw new Error("NaN");
-//   }
-//   const padded = t.toString().padStart(4, "0");
-//   return padded.slice(0, 2) + ":" + padded.slice(2, 4);
-// };
-
-const jsToLocalTime = (d: Date) => d.toLocaleTimeString().slice(0, 5);
-
-const jsToUtcTime = (d: Date) =>
-  d.toUTCString().split(" ").slice(-2)[0].slice(0, 5);
-
-export const addTimes = (a: string, b: string) => {
-  const aDate = new Date();
-  const [aHours, aMins] = a.split(":").map(toInt);
-  aDate.setHours(aHours);
-  aDate.setMinutes(aMins);
-  const [bHours, bMins] = b.split(":").map(toInt);
-  const date = new Date(aDate.valueOf() + (bHours * 60 + bMins) * 60 * 1000);
-  if (aDate.toLocaleDateString("en-GB") !== date.toLocaleDateString("en-GB")) {
-    return null;
-  }
-  return jsToLocalTime(date);
-};
-
-export const localToUtcTime = (local: string) => {
-  const d = new Date();
-  const [hours, mins] = local.split(":").map(toInt);
-  d.setHours(hours);
-  d.setMinutes(mins);
-  return (
-    d.getUTCHours().toString().padStart(2, "0") +
-    ":" +
-    d.getUTCMinutes().toString().padStart(2, "0")
-  );
-};
-
-export const getDuration = (a?: string, b?: string | null) => {
-  if (typeof a !== "string" || typeof b !== "string") {
-    return null;
-  }
-  const [aHours, aMins] = a.split(":").map(toInt);
-  const [bHours, bMins] = b.split(":").map(toInt);
-  let hours = bHours - aHours;
-  let mins = bMins - aMins;
-  if (hours < 0) {
-    return null;
-  } else if (mins < 0) {
-    hours--;
-    mins += 60;
-  }
-  return { hours, mins };
-};
-
-export const getDurationAsTime = (a?: string, b?: string | null) => {
-  const duration = getDuration(a, b);
-  if (duration === null) {
-    throw new Error("Bad duration");
-  }
-  const { hours, mins } = duration;
-  return (
-    hours.toString().padStart(2, "0") + ":" + mins.toString().padStart(2, "0")
-  );
-};
-
-export const displayDuration = (a?: string, b?: string | null) => {
-  const duration = getDuration(a, b);
-  if (duration === null) {
-    return ".";
-  }
-  const { hours, mins } = duration;
-  if (hours === 0) {
-    return `${mins} mins`;
-  } else {
-    return `${hours} hrs ${mins} mins`;
-  }
-};
