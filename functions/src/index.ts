@@ -11,6 +11,7 @@ import {
   getWeekId,
   gregToOxDate,
 } from "./date";
+import { Response } from "express";
 
 /** every 10 minutes */
 const CRON = "0-50/10 * * * *";
@@ -21,6 +22,13 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
+
+type ApiRes = Response<
+  { status: number; info: string } & (
+    | { result: Record<string, unknown> }
+    | { error: unknown }
+  )
+>;
 
 const notifyDefaultTokens = async (notification: {
   title: string;
@@ -43,40 +51,62 @@ const notifyDefaultTokens = async (notification: {
 
 export const notify = onRequest(
   { region: "europe-west1" },
-  async (req, res) => {
+  async (req, res: ApiRes) => {
     try {
-      const result = await notifyDefaultTokens({
+      const message_id = await notifyDefaultTokens({
         title: "vibrations",
       });
-      res.json({ info: "Notification sent", result });
+      // TODO: find status code for sent/created
+      res.status(200).json({
+        status: 200,
+        info: "Notification sent",
+        result: { message_id },
+      });
     } catch (err) {
-      res.status(500).json({ info: "Notification not sent", error: err });
+      res
+        .status(500)
+        .json({ status: 500, info: "Error sending notification", error: err });
     }
   }
 );
 
+type TgResult =
+  | { ok: true; description?: string; result: Record<string, unknown> }
+  | { ok: false; description: string; error_code: number };
+
 const sendTg = async (text: string) => {
   // TODO: encode URL so line breaks work
   const url = `https://api.telegram.org/bot${TG_BOT_KEY}/sendMessage?chat_id=${TG_CHAT_ID}&text=${text}&parse_mode=Markdown`;
-  const result = await fetch(url);
-  return (await result.json()) as Record<string, unknown>;
+  const response = await fetch(url);
+  const result = (await response.json()) as TgResult;
+  if (result.ok) {
+    return {
+      status: 200,
+      info: result.description ?? "TG sent",
+      result: result.result,
+    };
+  } else {
+    return {
+      status: result.error_code,
+      info: "Error from TG",
+      error: result.description,
+    };
+  }
 };
 
-// export const tg = onRequest({ region: "europe-west1" }, async (req, res) => {
-//   const text = req.params[0] ?? "No content";
-//   try {
-//     const result = await sendTg(text);
-//     res.json({ info: "TG sent", result });
-//   } catch (err) {
-//     res.status(500).json({ info: "TG not sent", error: err });
-//   }
-// });
+export const tg = onRequest(
+  { region: "europe-west1" },
+  async (req, res: ApiRes) => {
+    const text = req.params[0] ?? "No content";
+    const result = await sendTg(text);
+    res.status(result.status).json(result);
+  }
+);
 
 const sendTgSummary = async () => {
   const today = gregToOxDate(getNow().utcDate);
   if (today === undefined) {
-    // TODO: find status code for bad date request
-    return { status: 200, info: "No date to summarise" };
+    throw new Error("Bad date");
   }
   const now = getNow().utcTime;
   const id = getWeekId(today);
@@ -99,22 +129,21 @@ const sendTgSummary = async () => {
     );
   if (upcomingComs.length) {
     const result = await sendTg(upcomingComs.join("\n"));
-    // TODO: find status code for sent/created
-    return { status: 200, info: "Sent summary", result };
+    return result;
   } else {
     // TODO: find status code for did nothing
-    return { status: 200, info: "No summary to send" };
+    return { status: 200, info: "No summary to send", result: {} };
   }
 };
 
 export const summarise = onRequest(
   { region: "europe-west1" },
-  async (req, res) => {
+  async (req, res: ApiRes) => {
     try {
       const result = await sendTgSummary();
       res.status(result.status).json(result);
     } catch (err) {
-      res.status(500).json({ info: "Summary failed", error: err });
+      res.status(500).json({ status: 500, info: "Summary failed", error: err });
     }
   }
 );
