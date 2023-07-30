@@ -23,7 +23,6 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 // If the `notification` property is specified in the message, you don't need all this
-// TODO: clean
 
 // If you would like to customize notifications that are received in the
 // background (Web app is closed or not in browser focus) then you should
