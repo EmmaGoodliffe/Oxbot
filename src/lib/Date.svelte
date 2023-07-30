@@ -1,5 +1,12 @@
 <script lang="ts">
-  import { days, gregToOxDate, type OxDate, oxDate, oxToGregDate, terms } from "../../functions/src/date";
+  import {
+    days,
+    gregToOxDate,
+    type OxDate,
+    oxDate,
+    oxToGregDate,
+    terms,
+  } from "../../functions/src/date";
   import type { Writable } from "svelte/store";
 
   export let idPrefix: string;
@@ -35,45 +42,56 @@
     on:focus={() => (useOxDate = false)}
   />
   <div class="px-6 py-4 italic">or</div>
-  <div class="flex items-center either-date" class:selected={useOxDate}>
-    <label for="{idPrefix}-year" class="pr-4">year</label>
-    <input
-      type="text"
-      class="w-16"
-      id="{idPrefix}-year"
-      bind:value={year}
-      on:focus={() => (useOxDate = true)}
-    />
-    <label for="{idPrefix}-term" class="px-4">term</label>
-    <select
-      class="my-2 px-2 py-2 bg-light-bg rounded"
-      id="{idPrefix}-term"
-      bind:value={term}
-      on:focus={() => (useOxDate = true)}
-    >
-      {#each terms as term}
-        <option value={term}>{term}</option>
-      {/each}
-    </select>
-    <label for="{idPrefix}-week" class="px-4">week</label>
-    <input
-      type="text"
-      class="w-10"
-      id="{idPrefix}-week"
-      bind:value={week}
-      on:focus={() => (useOxDate = true)}
-    />
-    <label for="{idPrefix}-day" class="px-4">day</label>
-    <select
-      class="my-2 px-2 py-2 bg-light-bg rounded"
-      id="{idPrefix}-day"
-      bind:value={day}
-      on:focus={() => (useOxDate = true)}
-    >
-      {#each days as day}
-        <option value={day}>{day}</option>
-      {/each}
-    </select>
+  <div
+    class="flex flex-col sm:flex-row sm:items-center either-date"
+    class:selected={useOxDate}
+  >
+    <div class="ox-date-input">
+      <label for="{idPrefix}-year" class="px-4">year</label>
+      <input
+        type="text"
+        class="w-16"
+        id="{idPrefix}-year"
+        bind:value={year}
+        on:focus={() => (useOxDate = true)}
+      />
+    </div>
+    <div class="ox-date-input">
+      <label for="{idPrefix}-term" class="px-4">term</label>
+      <select
+        class="my-2 px-2 py-2 bg-light-bg rounded"
+        id="{idPrefix}-term"
+        bind:value={term}
+        on:focus={() => (useOxDate = true)}
+      >
+        {#each terms as term}
+          <option value={term}>{term}</option>
+        {/each}
+      </select>
+    </div>
+    <div class="ox-date-input">
+      <label for="{idPrefix}-week" class="px-4">week</label>
+      <input
+        type="text"
+        class="w-10"
+        id="{idPrefix}-week"
+        bind:value={week}
+        on:focus={() => (useOxDate = true)}
+      />
+    </div>
+    <div class="ox-date-input">
+      <label for="{idPrefix}-day" class="px-4">day</label>
+      <select
+        class="my-2 px-2 py-2 bg-light-bg rounded"
+        id="{idPrefix}-day"
+        bind:value={day}
+        on:focus={() => (useOxDate = true)}
+      >
+        {#each days as day}
+          <option value={day}>{day}</option>
+        {/each}
+      </select>
+    </div>
   </div>
 </div>
 
@@ -87,10 +105,14 @@
   }
 
   .either-date {
-    @apply h-14 px-4 border-2 border-dark-border rounded;
+    @apply min-h-[3.5rem] pr-4 border-2 border-dark-border rounded;
   }
 
   .either-date.selected {
     @apply border-light-border;
+  }
+
+  .ox-date-input {
+    @apply my-2 flex justify-between items-center;
   }
 </style>

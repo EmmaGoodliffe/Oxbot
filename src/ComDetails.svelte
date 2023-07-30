@@ -6,21 +6,22 @@
   export let details: Writable<string[]>;
 </script>
 
-<!-- TODO: fix overflow -->
 <div
-  class="w-fit h-14 mt-4 pr-4 flex items-center border-2 border-light-border rounded"
+  class="w-fit min-h-[3.5rem] mt-4 pr-4 flex flex-col sm:flex-row items-end border-2 border-light-border rounded"
 >
   {#each requiredComDetails[comType] as detail, i}
-    <label for={detail} class="px-4">{detail}</label>
-    <input
-      type="text"
-      id={detail}
-      value={$details[i] ?? ""}
-      on:input={e =>
-        details.update(ds => {
-          ds[i] = e.currentTarget.value;
-          return ds;
-        })}
-    />
+    <div class="my-2 flex items-center">
+      <label for={detail} class="px-4">{detail}</label>
+      <input
+        type="text"
+        id={detail}
+        value={$details[i] ?? ""}
+        on:input={e =>
+          details.update(ds => {
+            ds[i] = e.currentTarget.value;
+            return ds;
+          })}
+      />
+    </div>
   {/each}
 </div>
