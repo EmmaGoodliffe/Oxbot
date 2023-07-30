@@ -33,7 +33,7 @@
   }
 </script>
 
-<div class="flex flex-col md:flex-row items-center">
+<div class=" flex flex-col md:flex-row sm:items-center max-w-[12rem] sm:max-w-none">
   <input
     type="date"
     class="min-w-[10rem] bg-bg either-date"
@@ -41,7 +41,7 @@
     bind:value={gregDate}
     on:focus={() => (useOxDate = false)}
   />
-  <div class="px-6 py-4 italic">or</div>
+  <div class="px-6 py-4 text-center italic">or</div>
   <div
     class="flex flex-col sm:flex-row sm:items-center either-date"
     class:selected={useOxDate}

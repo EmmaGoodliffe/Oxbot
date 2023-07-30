@@ -49,7 +49,7 @@
 
 <style lang="postcss">
   .submit {
-    @apply flex justify-between items-center;
+    @apply w-full flex justify-between items-center;
   }
 
   .loader {

@@ -24,7 +24,7 @@
   let progressB = writable(0);
 </script>
 
-<section class="group">
+<section class="group flex flex-col items-center sm:items-start">
   <h2>Add commitment</h2>
   {#if !isAdding}
     <button
@@ -35,7 +35,7 @@
   {:else}
     <Date idPrefix="add-com" {date} initialDate={today} />
     <Time idPrefix="add-com" {time} {endTime} />
-    <select bind:value={comType} on:change={() => details.set([])}>
+    <select class="" bind:value={comType} on:change={() => details.set([])}>
       {#each comTypes as ct}
         <option value={ct}>{ct}</option>
       {/each}

@@ -41,8 +41,8 @@
   $: displayedDuration = displayDuration($time, $endTime);
 </script>
 
-<div class="w-fit mt-8 flex border-2 border-light-border rounded">
-  <div class="flex-1 px-4 py-4 border-r-2 border-light-border">
+<div class="w-fit mt-8 flex flex-col sm:flex-row border-2 border-light-border rounded">
+  <div class="flex-1 px-4 py-4 border-b-2 sm:border-b-0 sm:border-r-2 border-light-border">
     <div>
       <label for="{idPrefix}-start-time">start</label>
       <input
@@ -89,7 +89,7 @@
       />
     </div>
   </div>
-  <div class="flex-1 px-6 flex flex-col justify-center items-center">
+  <div class="flex-1 px-6 py-4 flex flex-col justify-center items-center">
     <span>
       <span class:invisible={$time === undefined}
         >{$time === undefined ? "00:00" : $time}</span
