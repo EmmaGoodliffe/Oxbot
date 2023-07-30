@@ -25,7 +25,7 @@
 </script>
 
 <section class="group flex flex-col items-center sm:items-start">
-  <h2>Add commitment</h2>
+  <h2 class="w-full">Add commitment</h2>
   {#if !isAdding}
     <button
       class="button"
