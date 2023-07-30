@@ -63,7 +63,6 @@ export const notify = onRequest(
       const message_id = await notifyDefaultTokens({
         title: "vibrations",
       });
-      // TODO: find status code for sent/created
       res.status(200).json({
         status: 200,
         info: "Notification sent",
@@ -92,7 +91,7 @@ const sendTg = async (text: string) => {
   const result = (await response.json()) as TgResult;
   if (result.ok) {
     return {
-      status: 200,
+      status: response.status, // 200
       info: result.description ?? "TG sent",
       result: result.result,
     };
@@ -142,7 +141,6 @@ const sendTgSummary = async () => {
     const result = await sendTg(upcomingComs.join("\n"));
     return result;
   } else {
-    // TODO: find status code for did nothing
     return { status: 200, info: "No summary to send", result: {} };
   }
 };
