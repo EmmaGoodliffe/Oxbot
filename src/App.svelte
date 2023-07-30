@@ -106,8 +106,6 @@
     }
   };
 
-  // TODO: telegram
-  // TODO: alarms
   // TODO: commitments via JSON
   // TODO: delete commitments
   // TODO: notes
