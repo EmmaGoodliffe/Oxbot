@@ -48,14 +48,15 @@ export const notify = onRequest(
       const result = await notifyDefaultTokens({
         title: "vibrations",
       });
-      res.json({ status: "Notification sent", result });
+      res.json({ info: "Notification sent", result });
     } catch (err) {
-      res.status(500).json({ status: "Notification not sent", error: err });
+      res.status(500).json({ info: "Notification not sent", error: err });
     }
   }
 );
 
 const sendTg = async (text: string) => {
+  // TODO: encode URL so line breaks work
   const url = `https://api.telegram.org/bot${TG_BOT_KEY}/sendMessage?chat_id=${TG_CHAT_ID}&text=${text}&parse_mode=Markdown`;
   const result = await fetch(url);
   return (await result.json()) as Record<string, unknown>;
@@ -65,16 +66,17 @@ const sendTg = async (text: string) => {
 //   const text = req.params[0] ?? "No content";
 //   try {
 //     const result = await sendTg(text);
-//     res.json({ status: "TG sent", result });
+//     res.json({ info: "TG sent", result });
 //   } catch (err) {
-//     res.status(500).json({ status: "TG not sent", error: err });
+//     res.status(500).json({ info: "TG not sent", error: err });
 //   }
 // });
 
 const sendTgSummary = async () => {
   const today = gregToOxDate(getNow().utcDate);
   if (today === undefined) {
-    return { status: "No date to summarise" };
+    // TODO: find status code for bad date request
+    return { status: 200, info: "No date to summarise" };
   }
   const now = getNow().utcTime;
   const id = getWeekId(today);
@@ -97,9 +99,11 @@ const sendTgSummary = async () => {
     );
   if (upcomingComs.length) {
     const result = await sendTg(upcomingComs.join("\n"));
-    return { status: "Sent summary", result };
+    // TODO: find status code for sent/created
+    return { status: 200, info: "Sent summary", result };
   } else {
-    return { status: "No summary to send" };
+    // TODO: find status code for did nothing
+    return { status: 200, info: "No summary to send" };
   }
 };
 
@@ -108,9 +112,9 @@ export const summarise = onRequest(
   async (req, res) => {
     try {
       const result = await sendTgSummary();
-      res.json(result);
+      res.status(result.status).json(result);
     } catch (err) {
-      res.status(500).json({ status: "Summary failed", error: err });
+      res.status(500).json({ info: "Summary failed", error: err });
     }
   }
 );
@@ -121,7 +125,7 @@ export const schedule = onSchedule(
     console.log("Starting scheduled jobs...");
     try {
       const result = await sendTgSummary();
-      console.log("Scheduled jobs succeeded:", result.status);
+      console.log("Scheduled jobs finished:", result.info);
     } catch (err) {
       console.log("Scheduled jobs failed:", err);
     }
