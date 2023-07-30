@@ -16,20 +16,12 @@ export const oxDate = (
   year: number | string,
   term: OxDate["term"],
   week: number | string,
-  day: string // TODO: specify type
+  day: OxDate["day"]
 ): OxDate | undefined => {
-  // 2023 TT 11 Sat
   const y = toInt(year);
   if (y < 2022 || y > 2026) return undefined;
   const w = toInt(week);
-  // if (w < -1 || w > 10) return undefined;
-  if (!days.includes(day as OxDate["day"])) return undefined;
-  return {
-    year: y,
-    term,
-    week: w,
-    day: day as OxDate["day"],
-  };
+  return { year: y, term, week: w, day };
 };
 
 export const getWeekId = (date: OxDate | Omit<OxDate, "day">) =>
