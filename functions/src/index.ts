@@ -1,16 +1,9 @@
-// import { onSchedule } from "firebase-functions/v2/scheduler";
-// import * as logger from "firebase-functions/logger";
 import * as admin from "firebase-admin";
 import { onRequest } from "firebase-functions/v2/https";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { displayCom, Week } from "./commitment";
-import {
-  displayDuration,
-  getDuration,
-  getNow,
-  getWeekId,
-  gregToOxDate,
-} from "./date";
+import { getWeekId, gregToOxDate } from "./date";
+import { displayDuration, getDuration, getNow } from "./time";
 import { Response } from "express";
 
 /** every 10 minutes */

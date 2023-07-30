@@ -53,10 +53,10 @@
   }
 
   .loader {
-    @apply h-2 flex-1 bg-slate-500 rounded-sm;
+    @apply h-2 flex-1 bg-light-bg rounded-sm;
   }
 
   .progress {
-    @apply h-full bg-slate-400 transition-all duration-300;
+    @apply h-full bg-hov transition-all duration-300;
   }
 </style>

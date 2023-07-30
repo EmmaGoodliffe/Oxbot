@@ -3,7 +3,7 @@
     addTimes,
     displayDuration,
     getDurationAsTime,
-  } from "../../functions/src/date";
+  } from "../../functions/src/time";
   import type { Writable } from "svelte/store";
 
   export let idPrefix: string;
@@ -41,8 +41,8 @@
   $: displayedDuration = displayDuration($time, $endTime);
 </script>
 
-<div class="w-fit mt-8 flex border-2 border-slate-400 rounded">
-  <div class="flex-1 px-4 py-4 border-r-2 border-slate-400">
+<div class="w-fit mt-8 flex border-2 border-light-border rounded">
+  <div class="flex-1 px-4 py-4 border-r-2 border-light-border">
     <div>
       <label for="{idPrefix}-start-time">start</label>
       <input
@@ -99,7 +99,7 @@
     </span>
     <span
       class="italic"
-      class:text-red-500={!validTime}
+      class:text-invalid={!validTime}
       class:invisible={validTime && displayedDuration.length === 1}
       >{validTime ? displayedDuration : "Invalid time"}</span
     >

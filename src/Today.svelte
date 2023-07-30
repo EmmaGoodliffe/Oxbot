@@ -14,7 +14,7 @@
   <h2>Today</h2>
   {#await weekProm}
     <div
-      class="flex flex-col border-2 border-slate-500 rounded-lg overflow-auto"
+      class="flex flex-col border-2 border-border rounded-lg overflow-auto"
     >
       <div class="commitment">
         <div class="time w-[6rem]">00:00</div>
@@ -26,7 +26,7 @@
   {:then week}
     {#if week?.commitments !== undefined && week.commitments.length > 0}
       <div
-        class="flex flex-col border-2 border-slate-500 rounded-lg overflow-auto"
+        class="flex flex-col border-2 border-border rounded-lg overflow-auto"
       >
         {#each sortCommitmentsByTime(week.commitments).map(displayCom) as com}
           {#if today.day === com.day}
@@ -34,7 +34,7 @@
               <div class="time w-[6rem] py-2">
                 <span class="text-lg">{com.time}</span>
                 {#if com.endTime !== null}
-                  <span class="text-slate-400 text-sm">{com.endTime}</span>
+                  <span class="text-dark-text text-sm">{com.endTime}</span>
                 {/if}
               </div>
               <div class="description">

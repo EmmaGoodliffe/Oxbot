@@ -8,7 +8,7 @@
 
 <!-- TODO: fix overflow -->
 <div
-  class="w-fit h-14 mt-4 pr-4 flex items-center border-2 border-slate-400 rounded"
+  class="w-fit h-14 mt-4 pr-4 flex items-center border-2 border-light-border rounded"
 >
   {#each requiredComDetails[comType] as detail, i}
     <label for={detail} class="px-4">{detail}</label>

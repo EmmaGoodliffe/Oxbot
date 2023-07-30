@@ -8,7 +8,7 @@ body {
   font-family: Lato, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  @apply bg-slate-700 text-slate-200;
+  @apply bg-bg text-text;
   /* background-color: #002147; */
 }
 
@@ -27,7 +27,7 @@ h2 {
 
 h2::after {
   content: "";
-  @apply flex-1 h-1 ml-3 bg-slate-500 group-hover:bg-slate-400 transition;
+  @apply flex-1 h-1 ml-3 bg-light-bg group-hover:bg-hov transition;
 }
 
 section {
@@ -40,8 +40,8 @@ section {
 }
 
 .card {
-  @apply border-2 border-slate-600 rounded-md shadow-slate-800 transition;
-  @apply hover:border-slate-400 hover:shadow-md hover:text-slate-100;
+  @apply border-2 border-dark-border rounded-md transition;
+  @apply hover:border-hov hover:shadow-md hover:text-light-text;
   @apply flex flex-1 flex-col;
   @apply overflow-auto;
 }
@@ -52,16 +52,16 @@ a.card span {
 
 .card::after {
   content: "";
-  @apply flex-auto w-full h-1 bg-slate-500 hover:bg-slate-400;
+  @apply flex-auto w-full h-1 bg-light-bg hover:bg-hov;
 }
 
 .commitment {
-  @apply min-h-[3rem] inline-flex items-stretch border-y border-slate-600;
+  @apply min-h-[3rem] inline-flex items-stretch border-y border-dark-border;
   @apply focus:z-0;
 }
 
 .commitment .time {
-  @apply px-2 pt-3 bg-slate-800 text-right border-r-2 border-slate-600 tracking-wide;
+  @apply px-2 pt-3 bg-dark-bg text-right border-r-2 border-dark-border tracking-wide;
 }
 
 .commitment .description {
@@ -69,11 +69,11 @@ a.card span {
 }
 
 .button {
-  @apply px-4 py-1.5 bg-slate-500 disabled:text-slate-400 rounded transition;
+  @apply px-4 py-1.5 bg-ui disabled:text-dark-text rounded transition;
 }
 
 input {
-  @apply px-2 py-1 text-lg bg-slate-500 rounded disabled:opacity-50;
+  @apply px-2 py-1 text-lg bg-ui rounded disabled:opacity-50;
 }
 
 input[type="date"],
@@ -82,7 +82,7 @@ input[type="time"] {
 }
 
 select {
-  @apply mt-8 px-2 py-2 bg-slate-500 rounded;
+  @apply mt-8 px-2 py-2 bg-ui rounded;
   border-right: 0.5rem solid transparent;
 }
 

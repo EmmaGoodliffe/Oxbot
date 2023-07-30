@@ -5,12 +5,13 @@
     displayCom,
     requiredComDetails,
   } from "../functions/src/commitment";
-  import { localToUtcTime, type OxDate } from "../functions/src/date";
+  import type {  OxDate } from "../functions/src/date";
   import ComDetails from "./ComDetails.svelte";
   import { editCommitment, keyValuesToObj } from "./lib/db";
   import ProgressButton from "./lib/ProgressButton.svelte";
   import Time from "./lib/Time.svelte";
   import type { Firestore } from "firebase/firestore";
+    import { localToUtcTime } from "../functions/src/time";
 
   export let db: Firestore;
   export let com: Commitment | undefined;

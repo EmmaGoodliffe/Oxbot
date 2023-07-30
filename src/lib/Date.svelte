@@ -29,7 +29,7 @@
 <div class="flex flex-col md:flex-row items-center">
   <input
     type="date"
-    class="min-w-[10rem] bg-slate-700 either-date"
+    class="min-w-[10rem] bg-bg either-date"
     class:selected={!useOxDate}
     bind:value={gregDate}
     on:focus={() => (useOxDate = false)}
@@ -46,7 +46,7 @@
     />
     <label for="{idPrefix}-term" class="px-4">term</label>
     <select
-      class="my-2 px-2 py-2 bg-slate-500 rounded"
+      class="my-2 px-2 py-2 bg-light-bg rounded"
       id="{idPrefix}-term"
       bind:value={term}
       on:focus={() => (useOxDate = true)}
@@ -65,7 +65,7 @@
     />
     <label for="{idPrefix}-day" class="px-4">day</label>
     <select
-      class="my-2 px-2 py-2 bg-slate-500 rounded"
+      class="my-2 px-2 py-2 bg-light-bg rounded"
       id="{idPrefix}-day"
       bind:value={day}
       on:focus={() => (useOxDate = true)}
@@ -87,10 +87,10 @@
   }
 
   .either-date {
-    @apply h-14 px-4 border-2 border-slate-600 rounded;
+    @apply h-14 px-4 border-2 border-dark-border rounded;
   }
 
   .either-date.selected {
-    @apply border-slate-400;
+    @apply border-light-border;
   }
 </style>

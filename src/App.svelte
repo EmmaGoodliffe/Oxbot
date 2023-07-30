@@ -10,7 +10,7 @@
     onMessage,
   } from "firebase/messaging";
   import { writable } from "svelte/store";
-  import { getNow, gregToOxDate, type OxDate } from "../functions/src/date";
+  import {  gregToOxDate, type OxDate } from "../functions/src/date";
   import AddCom from "./AddCom.svelte";
   import EditCom from "./EditCom.svelte";
   import { getWeek, updateToken } from "./lib/db";
@@ -20,6 +20,7 @@
   import Today from "./Today.svelte";
   import type { Commitment } from "../functions/src/commitment";
   import type { NotificationPayload } from "firebase/messaging";
+    import { getNow } from "../functions/src/time";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC7Aq56CIoRfwsfhxQgr8UY1v16nXs45Mw",
@@ -39,7 +40,7 @@
   try {
     DEV && connectFirestoreEmulator(db, "127.0.0.1", 8080);
   } catch (err) {
-    console.warn("Emulator failed");
+    console.warn("Emulators failed");
   }
 
   const today = gregToOxDate(getNow().localDate);
