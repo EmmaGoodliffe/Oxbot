@@ -51,7 +51,12 @@
   const selectedComDate = writable<OxDate | undefined>();
   const selectedComIndex = writable<number | undefined>();
   const selectedCom = writable<Commitment | undefined>();
-  const toasts = writable<NotificationPayload[]>([]);
+  const toasts = writable<NotificationPayload[]>([
+    {title: 't', body: 'b'},
+    {title: 't', body: 'b'},
+    {title: 't', body: 'b'},
+    {title: 't', body: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quisquam maxime saepe quas voluptatem enim, nobis quis, esse aspernatur quasi, assumenda eos? Sapiente dicta quod commodi numquam explicabo voluptas animi iusto!'},
+  ]);
 
   const refresh = () => {
     weekProm = getWeek(db, today);

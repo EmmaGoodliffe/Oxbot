@@ -3,23 +3,44 @@
   import { fly } from "svelte/transition";
   import type { NotificationPayload } from "firebase/messaging";
   import type { Writable } from "svelte/store";
+  import { onMount } from "svelte";
+  import type { P } from "./types";
 
   export let toasts: Writable<NotificationPayload[]>;
+
+  let el: null | (P & HTMLElement) = null;
+
+  onMount(() => {
+    el = document.querySelector("#toasts") as P & HTMLElement;
+    el.popover = "manual";
+  });
+
+  $: {
+    if (el !== null) {
+      if ($toasts.length) {
+        el.showPopover();
+      } else {
+        el.hidePopover();
+      }
+    }
+  }
 </script>
 
 <div
-  class="h-0 sticky top-4 right-4 ml-auto max-w-[75%] md:max-w-md flex flex-col items-end"
+  class="max-w-sm h-screen bg-invalid"
+  id="toasts"
+  style="inset: unset; top: 0; right: 0;"
 >
+  <!-- class="h-0 sticky top-4 right-4 ml-auto max-w-[75%] md:max-w-md flex flex-col items-end" -->
   {#each $toasts as toast, i}
-  <!-- TODO: sound -->
-  <!-- TODO: handle `toast.icon and `toast.image` -->
-  <!-- TODO: fix transition for dismissing the first of multiple -->
-  <!-- TODO: use less hacky CSS -->
+    <!-- TODO: sound -->
+    <!-- TODO: handle `toast.icon and `toast.image` -->
+    <!-- TODO: fix transition for dismissing the first of multiple -->
     <div
-      class="mb-4 px-4 py-2 bg-dark-bg rounded"
+      class="mb-4 px-4 py-3 bg-dark-bg text-text rounded"
       transition:fly={{ y: 20, easing: quartInOut }}
     >
-      <div class="py-0.5 flex justify-between">
+      <div class="flex justify-between items-center">
         <header class=" font-bold">{toast.title ?? ""}</header>
         <button
           class="pl-4 text-lg"
