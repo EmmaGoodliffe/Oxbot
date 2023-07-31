@@ -26,11 +26,7 @@
   }
 </script>
 
-<div
-  class="max-w-sm h-screen bg-invalid"
-  id="toasts"
-  style="inset: unset; top: 0; right: 0;"
->
+<div class="max-w-sm h-screen mx-1 px-1 bg-transparent" id="toasts">
   <!-- class="h-0 sticky top-4 right-4 ml-auto max-w-[75%] md:max-w-md flex flex-col items-end" -->
   {#each $toasts as toast, i}
     <!-- TODO: sound -->
@@ -58,3 +54,11 @@
     </div>
   {/each}
 </div>
+
+<style lang="postcss">
+  #toasts {
+    inset: unset;
+    top: 0;
+    right: 0;
+  }
+</style>

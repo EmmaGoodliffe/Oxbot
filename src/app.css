@@ -25,7 +25,7 @@ h2 {
 
 h2::after {
   content: "";
-  @apply flex-1 h-1 ml-3 bg-light-bg group-hover:bg-hov transition;
+  @apply flex-1 h-1 ml-3 bg-light-bg group-hover:bg-light-ui transition;
 }
 
 section {
@@ -39,7 +39,7 @@ section {
 
 .card {
   @apply border-2 border-dark-border rounded-md transition;
-  @apply hover:border-hov hover:shadow-md hover:text-light-text;
+  @apply hover:border-light-ui hover:shadow-md hover:text-light-text;
   @apply flex flex-1 flex-col;
   @apply overflow-auto;
 }
@@ -50,7 +50,7 @@ a.card span {
 
 .card::after {
   content: "";
-  @apply flex-auto w-full h-1 bg-light-bg hover:bg-hov;
+  @apply flex-auto w-full h-1 bg-light-bg hover:bg-light-ui;
 }
 
 .commitment {
@@ -82,6 +82,19 @@ input[type="time"] {
 select {
   @apply mt-8 px-2 py-2 bg-ui rounded;
   border-right: 0.5rem solid transparent;
+}
+
+::-webkit-scrollbar {
+  @apply w-3 bg-transparent;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark-bg;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-light-ui hover:bg-ui;
+  border-radius: 0.25rem;
 }
 
 @font-face {

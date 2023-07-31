@@ -16,7 +16,7 @@ export default {
         border: colors.slate[500],
         'light-border': colors.slate[400],
         ui: colors.slate[500],
-        hov: colors.slate[400],
+        'light-ui': colors.slate[400],
         invalid: colors.red[500]
       },
     },
