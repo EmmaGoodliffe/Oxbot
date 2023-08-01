@@ -20,6 +20,7 @@ export const keyValuesToObj = <T>(keys: readonly string[], values: T[]) => {
 const unique = <T>(arr: T[]) => Array.from(new Set(arr));
 
 export const getWeek = async (db: Firestore, date: OxDate) => {
+  await delay(6);
   return (await getDoc(doc(db, "weeks", getWeekId(date)))).data() as
     | Week
     | undefined;

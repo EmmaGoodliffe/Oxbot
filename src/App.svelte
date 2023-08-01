@@ -70,12 +70,6 @@
       body: JSON.stringify({ simple: `${obj}`, json: obj }),
     });
 
-  toast({ title: "t", body: "b" });
-  toast({
-    title: "t",
-    body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum accusamus nisi ullam nesciunt ipsum nulla",
-  });
-
   const prepDevice = async () => {
     try {
       const permission =

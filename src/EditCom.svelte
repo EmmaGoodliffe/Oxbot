@@ -37,7 +37,7 @@
 <section class="group flex flex-col items-center sm:items-start">
   <h2 class="w-full">Edit commitment</h2>
   <div class="flex items-baseline">
-    <p class="font-bold" class:italic={com === undefined}>{title}</p>
+    <p class="font-bold" class:italic={com !== undefined}>{title}</p>
     <button
       class="ml-6 button"
       class:invisible={com === undefined || isEditing}
