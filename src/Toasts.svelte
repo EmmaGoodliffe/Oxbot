@@ -1,11 +1,10 @@
 <script lang="ts">
   import { quartInOut } from "svelte/easing";
-  import { fly, fade } from "svelte/transition";
-  import type { Unsubscriber, Writable } from "svelte/store";
-  import { afterUpdate, beforeUpdate, onDestroy, onMount, tick } from "svelte";
+  import { fly } from "svelte/transition";
+  import type { Writable } from "svelte/store";
+  import { onDestroy, onMount, tick } from "svelte";
   import type { P } from "./types";
   import type { Toast } from "./lib/toast";
-  import { delay } from "./lib/db";
 
   export let toasts: Writable<Toast[]>;
 
@@ -38,20 +37,18 @@
   }
 
   const updateHeights = (ts: Toast[]) => {
-    if (counter < 100) {
-      heightStyles = ts.map((t, i) => {
-        const h = document.querySelector(`#toast-${i}`)?.clientHeight;
-        return h ? `${h}px` : "auto";
-      });
-      console.log(heightStyles);
-      counter++;
-    } else {
-      console.log("emergency brakes");
-    }
+    heightStyles = ts.map((t, i) => {
+      const h = document.querySelector(`#toast-${i}`)?.clientHeight;
+      return h ? `${h}px` : "auto";
+    });
+    console.count("Updated toast styles");
   };
 </script>
 
-<div class="max-w-sm h-screen mx-1 px-1 bg-transparent" id="toasts">
+<div
+  class="left-auto right-0 top-0 max-w-sm h-screen mx-1 px-1 bg-transparent"
+  id="toasts"
+>
   {#each $toasts as toast, i (i)}
     <!-- TODO: sound -->
     <!-- TODO: handle `toast.icon and `toast.image` -->
@@ -89,9 +86,9 @@
 </div>
 
 <style lang="postcss">
-  #toasts {
+  /* #toasts {
     inset: unset;
     top: 0;
     right: 0;
-  }
+  } */
 </style>

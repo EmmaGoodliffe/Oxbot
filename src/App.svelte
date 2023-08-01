@@ -66,14 +66,7 @@
     toasts.update(t => [...t, { not, visible: true }]);
 
   toast({title: 't', body: 'b'})
-  toast({title: 't', body: 'b'})
   toast({title: 't', body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum accusamus nisi ullam nesciunt ipsum nulla'})
-  toast({title: 't', body: 'b'})
-  toast({title: 't', body: 'b'})
-  toast({title: 't', body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum accusamus nisi ullam nesciunt ipsum nulla'})
-  toast({title: 't', body: 'b'})
-  toast({title: 't', body: 'b'})
-  toast({title: 't', body: 'b'})
 
   const toastJson = (title: string, obj: unknown) =>
     toast({
