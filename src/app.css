@@ -25,7 +25,7 @@ h2 {
 
 h2::after {
   content: "";
-  @apply flex-1 h-1 ml-3 bg-light-bg group-hover:bg-light-ui transition;
+  @apply flex-1 h-1 ml-3 bg-light-bg group-hover/section:bg-light-ui transition;
 }
 
 section {
@@ -63,7 +63,7 @@ a.card span {
 }
 
 .commitment .description {
-  @apply px-2 pt-3 pb-1;
+  @apply pt-3 pb-1 text-left;
 }
 
 .button {

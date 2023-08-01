@@ -10,7 +10,7 @@
   export let weekProm: Promise<Week | undefined>;
 </script>
 
-<section class="group">
+<section class="group/section">
   <h2>Today</h2>
   {#await weekProm}
     <div class="flex flex-col border-2 border-border rounded-lg overflow-auto">
@@ -34,7 +34,7 @@
                 <span class="text-dark-text text-sm">{com.endTime}</span>
               {/if}
             </div>
-            <div class="description">
+            <div class="description px-2">
               <p class="font-bold">{com.title}</p>
               {#if com.description !== undefined}
                 <p>{com.description}</p>

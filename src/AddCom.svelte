@@ -24,7 +24,7 @@
   let progressB = writable(0);
 </script>
 
-<section class="group flex flex-col items-center sm:items-start">
+<section class="group/section flex flex-col items-center sm:items-start">
   <h2 class="w-full">Add commitment</h2>
   {#if !isAdding}
     <button

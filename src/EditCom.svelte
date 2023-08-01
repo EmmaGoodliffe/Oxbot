@@ -34,7 +34,7 @@
   let progressB = writable(0);
 </script>
 
-<section class="group flex flex-col items-center sm:items-start">
+<section class="group/section flex flex-col items-center sm:items-start">
   <h2 class="w-full">Edit commitment</h2>
   <div class="flex items-baseline">
     <p class="font-bold" class:italic={com !== undefined}>{title}</p>
