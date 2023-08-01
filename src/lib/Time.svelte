@@ -9,9 +9,10 @@
   export let idPrefix: string;
   export let time: Writable<string | undefined>;
   export let endTime: Writable<string | null>;
+  export let initialEndType: (typeof endTypes)[number] = "time";
 
   const endTypes = ["time", "duration", "indefinite"] as const;
-  let endType: (typeof endTypes)[number] = "time";
+  let endType: typeof initialEndType = initialEndType;
   let endValue = $endTime === null ? "" : $endTime;
   let validTime = true;
 
@@ -48,7 +49,9 @@
     class="flex-1 px-4 py-4 border-b-2 sm:border-b-0 sm:border-r-2 border-light-border"
   >
     <div>
-      <label class="w-12 inline-block text-right" for="{idPrefix}-start-time">start</label>
+      <label class="w-12 inline-block text-right" for="{idPrefix}-start-time"
+        >start</label
+      >
       <input
         type="time"
         id="{idPrefix}-start-time"
@@ -57,7 +60,9 @@
       />
     </div>
     <div class="w-max">
-      <label class="w-12 inline-block text-right" for="{idPrefix}-end-time">end</label>
+      <label class="w-12 inline-block text-right" for="{idPrefix}-end-time"
+        >end</label
+      >
       <div class="inline-flex flex-col sm:flex-row sm:items-baseline">
         <select
           class="m-4 ml-0"

@@ -42,7 +42,12 @@
     {#if date !== undefined}
       <p class="text-center">{oxToGregDate(date)}</p>
     {/if}
-    <Time idPrefix="edit-com" {time} {endTime} />
+    <Time
+      idPrefix="edit-com"
+      {time}
+      {endTime}
+      initialEndType={com.endTime === null ? "indefinite" : undefined}
+    />
     <ComDetails comType={com.type} {details} />
     <ProgressButton
       text="Edit"
