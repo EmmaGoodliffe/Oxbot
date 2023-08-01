@@ -66,7 +66,7 @@
           <div class="flex justify-between items-center">
             <header class=" font-bold">{toast.not.title ?? ""}</header>
             <button
-              class="pl-4 text-lg"
+              class="ml-4 text-lg"
               on:click={() => {
                 toasts.update(t => {
                   t[i].visible = false;

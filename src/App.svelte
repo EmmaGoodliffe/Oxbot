@@ -22,6 +22,7 @@
   import type { NotificationPayload } from "firebase/messaging";
   import { getNow } from "../functions/src/time";
   import { appendToast, type Toast } from "./lib/toast";
+  import Dialog from "./Dialog.svelte";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC7Aq56CIoRfwsfhxQgr8UY1v16nXs45Mw",
@@ -52,9 +53,12 @@
   const selectedComDate = writable<OxDate | undefined>();
   const selectedComIndex = writable<number | undefined>();
   const selectedCom = writable<Commitment | undefined>();
+  const newComDate = writable<OxDate>(today);
   const toasts = writable<Toast[]>([]);
+  let dialogMode: "add" | "edit" | null = null;
 
   const refresh = () => {
+    dialogMode = null;
     weekProm = getWeek(db, today);
     selectedComDate.set(undefined);
     selectedComIndex.set(undefined);
@@ -69,6 +73,21 @@
       title,
       body: JSON.stringify({ simple: `${obj}`, json: obj }),
     });
+
+  const addCom = (date: OxDate) => {
+    selectedComDate.set(undefined);
+    selectedComIndex.set(undefined);
+    selectedCom.set(undefined);
+    newComDate.set(date);
+    dialogMode = "add";
+  };
+
+  const selectCom = (date: OxDate, index: number, com: Commitment) => {
+    selectedComDate.set(date);
+    selectedComIndex.set(index);
+    selectedCom.set(com);
+    dialogMode = "edit";
+  };
 
   const prepDevice = async () => {
     try {
@@ -124,23 +143,25 @@
 
   <h1>Schedule</h1>
   <Today {today} {weekProm} />
-  <ThisWeek
-    {today}
-    {weekProm}
-    selectCom={(date, index, com) => {
-      selectedComDate.set(date);
-      selectedComIndex.set(index);
-      selectedCom.set(com);
-    }}
-  />
+  <ThisWeek {today} {weekProm} {addCom} {selectCom} />
 
-  <h1>Commitments</h1>
-  <EditCom
-    {db}
-    date={$selectedComDate}
-    index={$selectedComIndex}
-    com={$selectedCom}
-    {refresh}
-  />
-  <AddCom {db} {today} {refresh} />
+  <Dialog
+    title={dialogMode === null
+      ? ""
+      : { add: "Add commitment", edit: "Edit commitment" }[dialogMode]}
+    show={dialogMode !== null}
+    close={() => (dialogMode = null)}
+  >
+    {#if dialogMode === "add"}
+      <AddCom {db} date={newComDate} {refresh} />
+    {:else if dialogMode === "edit"}
+      <EditCom
+        {db}
+        date={$selectedComDate}
+        index={$selectedComIndex}
+        com={$selectedCom}
+        {refresh}
+      />
+    {/if}
+  </Dialog>
 </div>

@@ -7,7 +7,7 @@
 </script>
 
 <div
-  class="w-fit min-h-[3.5rem] mt-4 pr-4 flex flex-col sm:flex-row items-end border-2 border-light-border rounded"
+  class="w-fit min-h-[3.5rem] mt-4 pr-4 flex flex-col items-end border-2 border-light-border rounded"
 >
   {#each requiredComDetails[comType] as detail, i}
     <div class="my-2 flex items-center">

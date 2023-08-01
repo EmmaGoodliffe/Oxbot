@@ -16,7 +16,7 @@
     <div class="flex flex-col border-2 border-border rounded-lg overflow-auto">
       <div class="commitment">
         <div class="time w-[6rem]">00:00</div>
-        <div class="description">
+        <div class="description px-2">
           <p class="font-bold">Loading...</p>
         </div>
       </div>

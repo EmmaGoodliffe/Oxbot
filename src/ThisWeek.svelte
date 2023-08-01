@@ -8,6 +8,7 @@
 
   export let today: OxDate;
   export let weekProm: Promise<Week | undefined>;
+  export let addCom: (date: OxDate) => void;
   export let selectCom: (date: OxDate, index: number, com: Commitment) => void;
 </script>
 
@@ -16,8 +17,18 @@
 
   <div class="cards">
     {#each days as day}
-      <div class="card min-h-[4rem]">
-        <header class="px-2 py-1 font-bold italic">{day}</header>
+      <div class="card min-h-[4rem] group/day">
+        <header class="px-2 py-1 flex justify-between font-bold italic">
+          <span>
+            {day}
+          </span>
+          <button
+            class="mx-1 hidden group-hover/day:block"
+            on:click={() => {
+              addCom({ ...today, day });
+            }}>+</button
+          >
+        </header>
         {#await weekProm}
           <div class="commitment">
             <div class="time w-20 pl-4 pr-2">00:00</div>

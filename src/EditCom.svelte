@@ -5,13 +5,14 @@
     displayCom,
     requiredComDetails,
   } from "../functions/src/commitment";
-  import type {  OxDate } from "../functions/src/date";
+  import { oxToGregDate, type OxDate } from "../functions/src/date";
   import ComDetails from "./ComDetails.svelte";
   import { editCommitment, keyValuesToObj } from "./lib/db";
   import ProgressButton from "./lib/ProgressButton.svelte";
   import Time from "./lib/Time.svelte";
   import type { Firestore } from "firebase/firestore";
-    import { localToUtcTime } from "../functions/src/time";
+  import { localToUtcTime } from "../functions/src/time";
+  import Dialog from "./Dialog.svelte";
 
   export let db: Firestore;
   export let com: Commitment | undefined;
@@ -19,7 +20,6 @@
   export let date: OxDate | undefined;
   export let refresh: () => Promise<unknown>;
 
-  let isEditing = false;
   $: title =
     com === undefined ? "No commitment selected" : displayCom(com).title;
   let time = writable<string | undefined>();
@@ -34,17 +34,14 @@
   let progressB = writable(0);
 </script>
 
-<section class="group/section flex flex-col items-center sm:items-start">
-  <h2 class="w-full">Edit commitment</h2>
-  <div class="flex items-baseline">
-    <p class="font-bold" class:italic={com !== undefined}>{title}</p>
-    <button
-      class="ml-6 button"
-      class:invisible={com === undefined || isEditing}
-      on:click={() => (isEditing = true)}>Edit</button
-    >
-  </div>
-  {#if com !== undefined && isEditing}
+<div class="flex flex-col">
+  {#if com === undefined}
+    <p class="font-bold text-center">No commitment</p>
+  {:else}
+    <p class="font-bold italic text-center">{title}</p>
+    {#if date !== undefined}
+      <p class="text-center">{oxToGregDate(date)}</p>
+    {/if}
     <Time idPrefix="edit-com" {time} {endTime} />
     <ComDetails comType={com.type} {details} />
     <ProgressButton
@@ -81,4 +78,4 @@
       }}
     />
   {/if}
-</section>
+</div>
