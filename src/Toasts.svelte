@@ -1,18 +1,30 @@
 <script lang="ts">
   import { quartInOut } from "svelte/easing";
-  import { fly } from "svelte/transition";
-  import type { NotificationPayload } from "firebase/messaging";
-  import type { Writable } from "svelte/store";
-  import { onMount } from "svelte";
+  import { fly, fade } from "svelte/transition";
+  import type { Unsubscriber, Writable } from "svelte/store";
+  import { afterUpdate, beforeUpdate, onDestroy, onMount, tick } from "svelte";
   import type { P } from "./types";
+  import type { Toast } from "./lib/toast";
+  import { delay } from "./lib/db";
 
-  export let toasts: Writable<NotificationPayload[]>;
+  export let toasts: Writable<Toast[]>;
 
   let el: null | (P & HTMLElement) = null;
+  let unsubscribe: ReturnType<Writable<unknown>["subscribe"]>;
+  let heightStyles: string[] = [];
+  let counter = 0;
 
   onMount(() => {
     el = document.querySelector("#toasts") as P & HTMLElement;
     el.popover = "manual";
+    unsubscribe = toasts.subscribe(async ts => {
+      await tick();
+      updateHeights(ts);
+    });
+  });
+
+  onDestroy(() => {
+    unsubscribe();
   });
 
   $: {
@@ -24,32 +36,53 @@
       }
     }
   }
+
+  const updateHeights = (ts: Toast[]) => {
+    if (counter < 100) {
+      heightStyles = ts.map((t, i) => {
+        const h = document.querySelector(`#toast-${i}`)?.clientHeight;
+        return h ? `${h}px` : "auto";
+      });
+      console.log(heightStyles);
+      counter++;
+    } else {
+      console.log("emergency brakes");
+    }
+  };
 </script>
 
 <div class="max-w-sm h-screen mx-1 px-1 bg-transparent" id="toasts">
-  <!-- class="h-0 sticky top-4 right-4 ml-auto max-w-[75%] md:max-w-md flex flex-col items-end" -->
-  {#each $toasts as toast, i}
+  {#each $toasts as toast, i (i)}
     <!-- TODO: sound -->
     <!-- TODO: handle `toast.icon and `toast.image` -->
-    <!-- TODO: fix transition for dismissing the first of multiple -->
     <div
-      class="mb-4 px-4 py-3 bg-dark-bg text-text rounded"
-      transition:fly={{ y: 20, easing: quartInOut }}
+      class="transition-all duration-1000"
+      style="height: {toast.visible
+        ? heightStyles[i]
+        : '0px'}; margin-bottom: {toast.visible ? '1rem' : '0rem'}"
     >
-      <div class="flex justify-between items-center">
-        <header class=" font-bold">{toast.title ?? ""}</header>
-        <button
-          class="pl-4 text-lg"
-          on:click={() => {
-            toasts.update(t => {
-              t.splice(i, 1);
-              return t;
-            });
-          }}>&times;</button
+      {#if toast.visible}
+        <div
+          class="px-4 py-3 bg-dark-bg text-text rounded"
+          id="toast-{i}"
+          transition:fly={{ x: 20, easing: quartInOut, duration: 400 }}
         >
-      </div>
-      {#if toast.body}
-        <p class="mt-1">{toast.body}</p>
+          <div class="flex justify-between items-center">
+            <header class=" font-bold">{toast.not.title ?? ""}</header>
+            <button
+              class="pl-4 text-lg"
+              on:click={() => {
+                toasts.update(t => {
+                  t[i].visible = false;
+                  return t;
+                });
+              }}>&times;</button
+            >
+          </div>
+          {#if toast.not.body}
+            <p class="mt-1">{toast.not.body}</p>
+          {/if}
+        </div>
       {/if}
     </div>
   {/each}

@@ -10,7 +10,7 @@
     onMessage,
   } from "firebase/messaging";
   import { writable } from "svelte/store";
-  import {  gregToOxDate, type OxDate } from "../functions/src/date";
+  import { gregToOxDate, type OxDate } from "../functions/src/date";
   import AddCom from "./AddCom.svelte";
   import EditCom from "./EditCom.svelte";
   import { getWeek, updateToken } from "./lib/db";
@@ -20,7 +20,8 @@
   import Today from "./Today.svelte";
   import type { Commitment } from "../functions/src/commitment";
   import type { NotificationPayload } from "firebase/messaging";
-    import { getNow } from "../functions/src/time";
+  import { getNow } from "../functions/src/time";
+  import type { Toast } from "./lib/toast";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC7Aq56CIoRfwsfhxQgr8UY1v16nXs45Mw",
@@ -51,12 +52,7 @@
   const selectedComDate = writable<OxDate | undefined>();
   const selectedComIndex = writable<number | undefined>();
   const selectedCom = writable<Commitment | undefined>();
-  const toasts = writable<NotificationPayload[]>([
-    {title: 't', body: 'b'},
-    {title: 't', body: 'b'},
-    {title: 't', body: 'b'},
-    {title: 't', body: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quisquam maxime saepe quas voluptatem enim, nobis quis, esse aspernatur quasi, assumenda eos? Sapiente dicta quod commodi numquam explicabo voluptas animi iusto!'},
-  ]);
+  const toasts = writable<Toast[]>([]);
 
   const refresh = () => {
     weekProm = getWeek(db, today);
@@ -66,7 +62,18 @@
     return weekProm;
   };
 
-  const toast = (not: NotificationPayload) => toasts.update(t => [...t, not]);
+  const toast = (not: NotificationPayload) =>
+    toasts.update(t => [...t, { not, visible: true }]);
+
+  toast({title: 't', body: 'b'})
+  toast({title: 't', body: 'b'})
+  toast({title: 't', body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum accusamus nisi ullam nesciunt ipsum nulla'})
+  toast({title: 't', body: 'b'})
+  toast({title: 't', body: 'b'})
+  toast({title: 't', body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum accusamus nisi ullam nesciunt ipsum nulla'})
+  toast({title: 't', body: 'b'})
+  toast({title: 't', body: 'b'})
+  toast({title: 't', body: 'b'})
 
   const toastJson = (title: string, obj: unknown) =>
     toast({
