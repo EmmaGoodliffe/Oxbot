@@ -51,7 +51,9 @@
         $details.every(d => d.length)}
       a={progressA}
       b={progressB}
-      {refresh}
+      refresh={async () => {
+        await refresh();
+      }}
       write={async () => {
         if (
           com === undefined ||

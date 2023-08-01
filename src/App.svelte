@@ -90,7 +90,9 @@
   };
 
   $: {
-    if (dialogMode !== null) {
+    if (dialogMode === null) {
+      document.querySelector("dialog")?.close();
+    } else {
       document.querySelector("dialog")?.showModal();
     }
   }
