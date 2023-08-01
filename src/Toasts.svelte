@@ -11,7 +11,6 @@
   let el: null | (P & HTMLElement) = null;
   let unsubscribe: ReturnType<Writable<unknown>["subscribe"]>;
   let heightStyles: string[] = [];
-  let counter = 0;
 
   onMount(() => {
     el = document.querySelector("#toasts") as P & HTMLElement;
@@ -46,7 +45,7 @@
 </script>
 
 <div
-  class="left-auto right-0 top-0 max-w-sm h-screen mx-1 px-1 bg-transparent"
+  class="left-auto right-0 top-0 max-w-sm h-screen mx-1 px-1 bg-transparent overflow-x-hidden"
   id="toasts"
 >
   {#each $toasts as toast, i (i)}
@@ -62,7 +61,7 @@
         <div
           class="px-4 py-3 bg-dark-bg text-text rounded"
           id="toast-{i}"
-          transition:fly={{ x: 20, easing: quartInOut, duration: 400 }}
+          transition:fly={{ x: 20, easing: quartInOut }}
         >
           <div class="flex justify-between items-center">
             <header class=" font-bold">{toast.not.title ?? ""}</header>

@@ -9,7 +9,7 @@
     isSupported,
     onMessage,
   } from "firebase/messaging";
-  import { writable } from "svelte/store";
+  import { writable, type Writable } from "svelte/store";
   import { gregToOxDate, type OxDate } from "../functions/src/date";
   import AddCom from "./AddCom.svelte";
   import EditCom from "./EditCom.svelte";
@@ -21,7 +21,7 @@
   import type { Commitment } from "../functions/src/commitment";
   import type { NotificationPayload } from "firebase/messaging";
   import { getNow } from "../functions/src/time";
-  import type { Toast } from "./lib/toast";
+  import { appendToast, type Toast } from "./lib/toast";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC7Aq56CIoRfwsfhxQgr8UY1v16nXs45Mw",
@@ -62,17 +62,19 @@
     return weekProm;
   };
 
-  const toast = (not: NotificationPayload) =>
-    toasts.update(t => [...t, { not, visible: true }]);
-
-  toast({title: 't', body: 'b'})
-  toast({title: 't', body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum accusamus nisi ullam nesciunt ipsum nulla'})
+  const toast = (not: NotificationPayload) => appendToast(toasts, not);
 
   const toastJson = (title: string, obj: unknown) =>
     toast({
       title,
       body: JSON.stringify({ simple: `${obj}`, json: obj }),
     });
+
+  toast({ title: "t", body: "b" });
+  toast({
+    title: "t",
+    body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum accusamus nisi ullam nesciunt ipsum nulla",
+  });
 
   const prepDevice = async () => {
     try {
