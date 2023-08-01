@@ -89,6 +89,12 @@
     dialogMode = "edit";
   };
 
+  $: {
+    if (dialogMode !== null) {
+      document.querySelector("dialog")?.showModal();
+    }
+  }
+
   const prepDevice = async () => {
     try {
       const permission =
@@ -149,8 +155,7 @@
     title={dialogMode === null
       ? ""
       : { add: "Add commitment", edit: "Edit commitment" }[dialogMode]}
-    show={dialogMode !== null}
-    close={() => (dialogMode = null)}
+    onClose={() => (dialogMode = null)}
   >
     {#if dialogMode === "add"}
       <AddCom {db} date={newComDate} {refresh} />
