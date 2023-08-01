@@ -34,7 +34,7 @@
                 <span class="text-dark-text text-sm">{com.endTime}</span>
               {/if}
             </div>
-            <div class="description px-2">
+            <div class="px-2 pt-3 pb-1">
               <p class="font-bold">{com.title}</p>
               {#if com.description !== undefined}
                 <p>{com.description}</p>

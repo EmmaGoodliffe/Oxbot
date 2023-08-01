@@ -62,10 +62,6 @@ a.card span {
   @apply px-2 pt-3 bg-dark-bg text-right border-r-2 border-dark-border tracking-wide;
 }
 
-.commitment .description {
-  @apply pt-3 pb-1 text-left;
-}
-
 .button {
   @apply px-4 py-1.5 bg-ui disabled:text-dark-text rounded transition;
 }
