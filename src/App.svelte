@@ -137,6 +137,7 @@
     }
   };
 
+  // TODO: alarms
   // TODO: commitments via JSON
   // TODO: notes
   // TODO: lectures: commitment, notes, slides, recording
