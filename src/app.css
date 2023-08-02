@@ -80,7 +80,6 @@ select {
   border-right: 0.5rem solid transparent;
 }
 
-
 ::-webkit-scrollbar {
   @apply w-3 bg-transparent;
 }

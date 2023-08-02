@@ -40,7 +40,9 @@
               <!-- TODO: hover for details -->
               <div class="commitment group/com">
                 <div class="time w-20 pl-4 pr-2">{displayCom(com).time}</div>
-                <div class="description w-full px-2 flex justify-between items-center">
+                <div
+                  class="description w-full px-2 flex justify-between items-center"
+                >
                   <span>
                     {displayCom(com).title}
                   </span>

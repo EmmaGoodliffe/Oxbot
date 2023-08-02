@@ -1,0 +1,4 @@
+dist
+cache
+functions/lib
+package-lock.json

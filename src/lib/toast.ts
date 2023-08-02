@@ -6,5 +6,7 @@ export interface Toast {
   visible: boolean;
 }
 
-export const appendToast = (toastStore: Writable<Toast[]>, not: NotificationPayload) =>
-  toastStore.update(t => [...t, { not, visible: true }]);
+export const appendToast = (
+  toastStore: Writable<Toast[]>,
+  not: NotificationPayload
+) => toastStore.update(t => [...t, { not, visible: true }]);
