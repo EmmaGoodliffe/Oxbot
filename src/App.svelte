@@ -138,7 +138,6 @@
   };
 
   // TODO: commitments via JSON
-  // TODO: delete commitments
   // TODO: notes
   // TODO: lectures: commitment, notes, slides, recording
   // TODO: budget reports
