@@ -79,6 +79,7 @@
     selectedComIndex.set(undefined);
     selectedCom.set(undefined);
     newComDate.set(date);
+    dialogMode = null;
     dialogMode = "add";
   };
 
@@ -86,6 +87,7 @@
     selectedComDate.set(date);
     selectedComIndex.set(index);
     selectedCom.set(com);
+    dialogMode = null;
     dialogMode = "edit";
   };
 
