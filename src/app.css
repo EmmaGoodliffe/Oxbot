@@ -76,7 +76,7 @@ input[type="time"] {
 }
 
 select {
-  @apply mt-8 px-2 py-2 bg-ui rounded;
+  @apply px-2 py-2 bg-ui rounded;
   border-right: 0.5rem solid transparent;
 }
 

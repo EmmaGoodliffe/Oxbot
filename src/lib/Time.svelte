@@ -5,6 +5,7 @@
     getDurationAsTime,
   } from "../../functions/src/time";
   import type { Writable } from "svelte/store";
+  import FormGroup from "./FormGroup.svelte";
 
   export let idPrefix: string;
   export let time: Writable<string | undefined>;
@@ -42,66 +43,63 @@
   $: displayedDuration = displayDuration($time, $endTime);
 </script>
 
-<div
-  class="w-fit mt-8 flex flex-col sm:flex-row border-2 border-light-border rounded"
->
-  <div
-    class="flex-1 px-4 py-4 border-b-2 sm:border-b-0 sm:border-r-2 border-light-border"
-  >
-    <div>
-      <label class="w-12 inline-block text-right" for="{idPrefix}-start-time"
-        >start</label
+<FormGroup withRight={true}>
+  <div class="my-2">
+    <label class="w-12 inline-block text-right" for="{idPrefix}-start-time"
+      >start</label
+    >
+    <input
+      type="time"
+      id="{idPrefix}-start-time"
+      value={$time}
+      on:input={e => time.set(e.currentTarget.value)}
+    />
+  </div>
+  <div class="w-max my-2">
+    <label class="w-12 inline-block text-right" for="{idPrefix}-end-time"
+      >end</label
+    >
+    <div class="inline-flex flex-col sm:flex-row sm:items-baseline">
+      <select
+        class="mr-2"
+        bind:value={endType}
+        on:input={e => {
+          const oldType = endType;
+          const newType = e.currentTarget.value;
+          if (
+            endValue.length !== 5 ||
+            oldType === "indefinite" ||
+            newType === "indefinite"
+          ) {
+            endValue = "";
+          } else if (oldType === "time" && newType === "duration") {
+            try {
+              endValue = getDurationAsTime($time, $endTime);
+            } catch (err) {
+              validTime = false;
+            }
+          } else if (oldType === "duration" && newType === "time") {
+            endValue = $endTime ?? "";
+          }
+        }}
       >
+        {#each endTypes as et}
+          <option value={et}>{et}</option>
+        {/each}
+      </select>
       <input
         type="time"
-        id="{idPrefix}-start-time"
-        value={$time}
-        on:input={e => time.set(e.currentTarget.value)}
+        class="h-min"
+        id="{idPrefix}-end-time"
+        disabled={endType === "indefinite"}
+        bind:value={endValue}
       />
     </div>
-    <div class="w-max">
-      <label class="w-12 inline-block text-right" for="{idPrefix}-end-time"
-        >end</label
-      >
-      <div class="inline-flex flex-col sm:flex-row sm:items-baseline">
-        <select
-          class="m-4 ml-0"
-          bind:value={endType}
-          on:input={e => {
-            const oldType = endType;
-            const newType = e.currentTarget.value;
-            if (
-              endValue.length !== 5 ||
-              oldType === "indefinite" ||
-              newType === "indefinite"
-            ) {
-              endValue = "";
-            } else if (oldType === "time" && newType === "duration") {
-              try {
-                endValue = getDurationAsTime($time, $endTime);
-              } catch (err) {
-                validTime = false;
-              }
-            } else if (oldType === "duration" && newType === "time") {
-              endValue = $endTime ?? "";
-            }
-          }}
-        >
-          {#each endTypes as et}
-            <option value={et}>{et}</option>
-          {/each}
-        </select>
-        <input
-          type="time"
-          class="h-min"
-          id="{idPrefix}-end-time"
-          disabled={endType === "indefinite"}
-          bind:value={endValue}
-        />
-      </div>
-    </div>
   </div>
-  <div class="flex-1 px-6 py-4 flex flex-col justify-center items-center">
+  <div
+    slot="right"
+    class="min-w-[8rem] h-full flex flex-col justify-center items-center"
+  >
     <span>
       <span class:invisible={$time === undefined}
         >{$time === undefined ? "00:00" : $time}</span
@@ -116,7 +114,7 @@
       >{validTime ? displayedDuration : "Invalid time"}</span
     >
   </div>
-</div>
+</FormGroup>
 
 <style lang="postcss">
   label {
