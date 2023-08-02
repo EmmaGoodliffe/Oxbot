@@ -2,7 +2,13 @@ import { Response } from "express";
 import * as admin from "firebase-admin";
 import { onRequest } from "firebase-functions/v2/https";
 import { onSchedule } from "firebase-functions/v2/scheduler";
-import { displayCom, Week } from "./commitment";
+import {
+  Commitment,
+  displayCom,
+  getPrepTime,
+  sortCommitmentsByTime,
+  Week,
+} from "./commitment";
 import { getWeekId, gregToOxDate } from "./date";
 import { displayDuration, getDuration, getNow } from "./time";
 
@@ -16,12 +22,10 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-type ApiRes = Response<
-  { status: number; info: string } & (
-    | { result: Record<string, unknown> }
-    | { error: unknown }
-  )
->;
+type ApiRes = { status: number; info: string } & (
+  | { result: Record<string, unknown> }
+  | { error: unknown }
+);
 
 const post = (url: string, data: Record<string, unknown>) =>
   fetch(url, {
@@ -51,7 +55,7 @@ const notifyDefaultTokens = async (notification: {
 
 export const notify = onRequest(
   { region: "europe-west1" },
-  async (req, res: ApiRes) => {
+  async (req, res: Response<ApiRes>) => {
     try {
       const message_id = await notifyDefaultTokens({
         title: "vibrations",
@@ -97,16 +101,26 @@ const sendTg = async (text: string) => {
   }
 };
 
-export const tg = onRequest(
-  { region: "europe-west1" },
-  async (req, res: ApiRes) => {
-    const text = req.params[0].split("/").join("\n") ?? "No content";
-    const result = await sendTg(text);
-    res.status(result.status).json(result);
-  }
-);
+// export const tg = onRequest(
+//   { region: "europe-west1" },
+//   async (req, res: Response<ApiRes>) => {
+//     const text = req.params[0].split("/").join("\n") ?? "No content";
+//     const result = await sendTg(text);
+//     res.status(result.status).json(result);
+//   }
+// );
 
-const sendTgSummary = async () => {
+const comToTgText = (com: Commitment) => {
+  const now = getNow().utcTime;
+  const { title, description } = displayCom(com);
+  const a = `*${title}*`;
+  const b = description ? ` (${description})` : "";
+  const c = com.location ? ` at ${com.location}` : "";
+  const d = " in `" + displayDuration(now, com.time) + "`";
+  return a + b + c + d;
+};
+
+const sendTgAlarm = async (force = false): Promise<ApiRes> => {
   const today = gregToOxDate(getNow().utcDate);
   if (today === undefined) {
     throw new Error("Bad date");
@@ -116,36 +130,38 @@ const sendTgSummary = async () => {
   const doc = await db.collection("weeks").doc(id).get();
   const data = doc.data() as Week | undefined;
   const coms = data?.commitments ?? [];
-  const upcomingComs = coms
-    .filter(com => com.day === today.day)
-    .filter(com => {
-      const dur = getDuration(now, com.time);
-      console.log(JSON.stringify({ now, com, dur }));
-      return dur?.hours === 0 && dur.mins <= 30;
-    })
-    .map(
-      com =>
-        `*${displayCom(com).title}* ${displayCom(com).description ?? ""} in ` +
-        "`" +
-        displayDuration(now, com.time) +
-        "`"
-    );
-  if (upcomingComs.length) {
-    const result = await sendTg(upcomingComs.join("\n"));
-    return result;
-  } else {
-    return { status: 200, info: "No summary to send", result: {} };
+  const todayComs = coms.filter(com => com.day === today.day);
+  const firstCom = sortCommitmentsByTime(todayComs)[0] as
+    | Commitment
+    | undefined;
+  if (firstCom === undefined) {
+    return { status: 200, info: "No commitments", result: {} };
   }
+  const dur = getDuration(now, firstCom.time);
+  if (dur === null) {
+    throw new Error("Bad duration");
+  }
+  const timeUntilFirstCom = 60 * dur.hours + dur.mins;
+  const prepTime = getPrepTime(firstCom);
+  const withinPrepTime = force || timeUntilFirstCom <= prepTime;
+  if (!withinPrepTime) {
+    return { status: 200, info: "No alarms", result: {} };
+  }
+  const text = comToTgText(firstCom);
+  return await sendTg(text);
 };
 
-export const summarise = onRequest(
+export const forceAlarm = onRequest(
   { region: "europe-west1" },
-  async (req, res: ApiRes) => {
+  async (req, res: Response<ApiRes>) => {
     try {
-      const result = await sendTgSummary();
+      const result = await sendTgAlarm(true);
       res.status(result.status).json(result);
     } catch (err) {
-      res.status(500).json({ status: 500, info: "Summary failed", error: err });
+      console.log(err);
+      res
+        .status(500)
+        .json({ status: 500, info: "Error forcing alarm", error: err });
     }
   }
 );
@@ -155,8 +171,8 @@ export const schedule = onSchedule(
   async () => {
     console.log("Starting scheduled jobs...");
     try {
-      const result = await sendTgSummary();
-      console.log("Scheduled jobs finished:", result.info);
+      const result = await sendTgAlarm();
+      console.log("Scheduled jobs finished:", result.status, result.info);
     } catch (err) {
       console.log("Scheduled jobs failed:", err);
     }

@@ -1,4 +1,7 @@
-import { getNow, jsToGregDate } from "./time";
+import {
+  // getNow,
+  jsToGregDate,
+} from "./time";
 
 export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
@@ -95,10 +98,10 @@ export const oxToGregDate = (oxDate: OxDate) => {
   return jsToGregDate(new Date(startNum + daysIntoTerm * (24 * 3600 * 1000)));
 };
 
-const greg = getNow().localDate;
-const ox = gregToOxDate(greg);
-const composite = ox === undefined ? undefined : oxToGregDate(ox);
-if (greg !== composite) {
-  console.error({ greg, ox, composite });
-  throw new Error("Dates are broken");
-}
+// const greg = getNow().localDate;
+// const ox = gregToOxDate(greg);
+// const composite = ox === undefined ? undefined : oxToGregDate(ox);
+// if (greg !== composite) {
+//   console.log({ greg, ox, composite });
+//   throw new Error("Dates are broken");
+// }

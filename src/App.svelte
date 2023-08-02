@@ -138,10 +138,12 @@
   };
 
   // TODO: alarms
+  // TODO: make use of `com` vs `commitment` consistent
   // TODO: commitments via JSON
   // TODO: notes
   // TODO: lectures: commitment, notes, slides, recording
   // TODO: budget reports
+  // TODO: word of the day
 </script>
 
 <Toasts {toasts} />
