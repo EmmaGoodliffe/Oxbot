@@ -1,20 +1,19 @@
 <script lang="ts">
   import { writable, type Writable } from "svelte/store";
   import { comTypes, requiredComDetails } from "../functions/src/commitment";
-  import type { OxDate } from "../functions/src/date";
+  import { localToUtcTime } from "../functions/src/time";
   import ComDetails from "./ComDetails.svelte";
   import Date from "./lib/Date.svelte";
   import { addCommitment, keyValuesToObj } from "./lib/db";
   import ProgressButton from "./lib/ProgressButton.svelte";
   import Time from "./lib/Time.svelte";
+  import type { OxDate } from "../functions/src/date";
   import type { Firestore } from "firebase/firestore";
-  import { localToUtcTime } from "../functions/src/time";
 
   export let db: Firestore;
   export let date: Writable<OxDate>;
   export let refresh: () => Promise<unknown>;
 
-  let isAdding = false;
   let time = writable<string | undefined>(undefined);
   let endTime = writable<string | null>(null);
   let comType = comTypes[0];
@@ -39,10 +38,7 @@
       $details.every(d => d.length)}
     a={progressA}
     b={progressB}
-    refresh={async () => {
-      isAdding = false;
-      await refresh();
-    }}
+    {refresh}
     write={async () => {
       if ($time === undefined) {
         throw new Error("No time");

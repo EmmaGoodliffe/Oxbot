@@ -4,8 +4,8 @@
     displayDuration,
     getDurationAsTime,
   } from "../../functions/src/time";
-  import type { Writable } from "svelte/store";
   import BorderGroup from "./BorderGroup.svelte";
+  import type { Writable } from "svelte/store";
 
   export let idPrefix: string;
   export let time: Writable<string | undefined>;

@@ -1,10 +1,10 @@
 <script lang="ts">
+  import { onDestroy, onMount, tick } from "svelte";
   import { quartInOut } from "svelte/easing";
   import { fly } from "svelte/transition";
-  import type { Writable } from "svelte/store";
-  import { onDestroy, onMount, tick } from "svelte";
-  import type { P } from "./types";
   import type { Toast } from "./lib/toast";
+  import type { P } from "./types";
+  import type { Writable } from "svelte/store";
 
   export let toasts: Writable<Toast[]>;
 

@@ -4,8 +4,7 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:svelte/recommended",
-    "plugin:import/errors",
-    "prettier"
+    "plugin:import/errors"
   ],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],

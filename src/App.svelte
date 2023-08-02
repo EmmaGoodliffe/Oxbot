@@ -9,20 +9,20 @@
     isSupported,
     onMessage,
   } from "firebase/messaging";
-  import { writable, type Writable } from "svelte/store";
+  import { writable } from "svelte/store";
   import { gregToOxDate, type OxDate } from "../functions/src/date";
+  import { getNow } from "../functions/src/time";
   import AddCom from "./AddCom.svelte";
+  import Dialog from "./Dialog.svelte";
   import EditCom from "./EditCom.svelte";
   import { getWeek, updateToken } from "./lib/db";
+  import { appendToast, type Toast } from "./lib/toast";
   import NotesNav from "./NotesNav.svelte";
   import ThisWeek from "./ThisWeek.svelte";
   import Toasts from "./Toasts.svelte";
   import Today from "./Today.svelte";
   import type { Commitment } from "../functions/src/commitment";
   import type { NotificationPayload } from "firebase/messaging";
-  import { getNow } from "../functions/src/time";
-  import { appendToast, type Toast } from "./lib/toast";
-  import Dialog from "./Dialog.svelte";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC7Aq56CIoRfwsfhxQgr8UY1v16nXs45Mw",

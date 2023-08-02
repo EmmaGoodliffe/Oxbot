@@ -65,8 +65,29 @@ export const editCommitment = async (
   } else {
     const { commitments } = prevData;
     commitments[index] = newCom;
-    const week: Week = { commitments };
-    await updateDoc(doc(db, "weeks", id), { ...week });
+    await updateDoc(doc(db, "weeks", id), { commitments });
+  }
+  progressB.set(100);
+};
+
+export const deleteCommitment = async (
+  db: Firestore,
+  date: OxDate,
+  index: number,
+  progressA: Writable<number>,
+  progressB: Writable<number>
+) => {
+  progressA.set(0);
+  progressB.set(0);
+  const id = getWeekId(date);
+  const prevData = await getWeek(db, date);
+  progressA.set(100);
+  if (prevData === undefined) {
+    throw new Error("No previous week document");
+  } else {
+    const { commitments } = prevData;
+    commitments.splice(index, 1);
+    await updateDoc(doc(db, "weeks", id), { commitments });
   }
   progressB.set(100);
 };

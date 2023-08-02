@@ -5,15 +5,14 @@
     displayCom,
     requiredComDetails,
   } from "../functions/src/commitment";
-  import { oxToGregDate, type OxDate } from "../functions/src/date";
+  import { type OxDate, oxToGregDate } from "../functions/src/date";
+  import { localToUtcTime } from "../functions/src/time";
   import ComDetails from "./ComDetails.svelte";
-  import { editCommitment, keyValuesToObj } from "./lib/db";
+  import BorderGroup from "./lib/BorderGroup.svelte";
+  import { deleteCommitment, editCommitment, keyValuesToObj } from "./lib/db";
   import ProgressButton from "./lib/ProgressButton.svelte";
   import Time from "./lib/Time.svelte";
   import type { Firestore } from "firebase/firestore";
-  import { localToUtcTime } from "../functions/src/time";
-  import Dialog from "./Dialog.svelte";
-  import BorderGroup from "./lib/BorderGroup.svelte";
 
   export let db: Firestore;
   export let com: Commitment | undefined;
@@ -33,6 +32,9 @@
   }
   let progressA = writable(0);
   let progressB = writable(0);
+  let showDelete = false;
+  let deleteProgressA = writable(0);
+  let deleteProgressB = writable(0);
 </script>
 
 <div class="flex flex-col">
@@ -48,7 +50,7 @@
           {/if}
         </div>
         <div slot="right" class="h-full flex">
-          <button class="px-4">
+          <button class="px-4" on:click={() => (showDelete = !showDelete)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -64,6 +66,28 @@
       </BorderGroup>
     </div>
 
+    {#if showDelete}
+      <ProgressButton
+        text="Delete"
+        valid={true}
+        a={deleteProgressA}
+        b={deleteProgressB}
+        {refresh}
+        write={async () => {
+          if (date === undefined || index === undefined) {
+            throw new Error("Not enough data for commitment deleting");
+          }
+          await deleteCommitment(
+            db,
+            date,
+            index,
+            deleteProgressA,
+            deleteProgressB
+          );
+        }}
+      />
+    {/if}
+
     <Time
       idPrefix="edit-com"
       {time}
@@ -78,9 +102,7 @@
         $details.every(d => d.length)}
       a={progressA}
       b={progressB}
-      refresh={async () => {
-        await refresh();
-      }}
+      {refresh}
       write={async () => {
         if (
           com === undefined ||
@@ -88,7 +110,7 @@
           index === undefined ||
           $time === undefined
         ) {
-          throw new Error("No date or index for commitment editing");
+          throw new Error("Not enough data for commitment editing");
         }
         await editCommitment(
           db,

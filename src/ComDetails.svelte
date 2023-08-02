@@ -1,7 +1,7 @@
 <script lang="ts">
   import { comTypes, requiredComDetails } from "../functions/src/commitment";
-  import type { Writable } from "svelte/store";
   import BorderGroup from "./lib/BorderGroup.svelte";
+  import type { Writable } from "svelte/store";
 
   export let comType: (typeof comTypes)[number];
   export let details: Writable<string[]>;
