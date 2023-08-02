@@ -13,6 +13,7 @@
   import type { Firestore } from "firebase/firestore";
   import { localToUtcTime } from "../functions/src/time";
   import Dialog from "./Dialog.svelte";
+  import BorderGroup from "./lib/BorderGroup.svelte";
 
   export let db: Firestore;
   export let com: Commitment | undefined;
@@ -38,26 +39,31 @@
   {#if com === undefined}
     <p class="font-bold text-center">No commitment</p>
   {:else}
-    <div class="mx-auto py-2 flex border-light-border border-2 rounded">
-      <div class="flex-col px-4">
-        <p class="font-bold italic">{title}</p>
-        {#if date !== undefined}
-          <p class="">{oxToGregDate(date)}</p>
-        {/if}
-      </div>
-      <button class="px-4">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          class="fill-text"
-          ><path
-            d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"
-          /><path d="M9 10h2v8H9zm4 0h2v8h-2z" /></svg
-        >
-      </button>
+    <div class="mx-auto">
+      <BorderGroup withRight={true}>
+        <div class="w-max px-4 flex flex-col">
+          <p class="font-bold italic">{title}</p>
+          {#if date !== undefined}
+            <p class="">{oxToGregDate(date)}</p>
+          {/if}
+        </div>
+        <div slot="right" class="h-full flex">
+          <button class="px-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              class="fill-text"
+              ><path
+                d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"
+              /><path d="M9 10h2v8H9zm4 0h2v8h-2z" /></svg
+            >
+          </button>
+        </div>
+      </BorderGroup>
     </div>
+
     <Time
       idPrefix="edit-com"
       {time}

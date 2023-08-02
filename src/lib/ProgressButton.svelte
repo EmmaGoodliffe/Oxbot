@@ -13,7 +13,7 @@
   let transparent = false;
 </script>
 
-<div class="submit mt-8">
+<div class="submit mt-4">
   <div class="loader">
     <div
       class="progress"

@@ -1,17 +1,17 @@
 <script lang="ts">
   import { comTypes, requiredComDetails } from "../functions/src/commitment";
   import type { Writable } from "svelte/store";
-  import FormGroup from "./lib/FormGroup.svelte";
+  import BorderGroup from "./lib/BorderGroup.svelte";
 
   export let comType: (typeof comTypes)[number];
   export let details: Writable<string[]>;
 </script>
 
-<FormGroup>
+<BorderGroup>
   <div class="">
     {#each requiredComDetails[comType] as detail, i}
       <div class="my-2 flex justify-end items-center">
-        <label for={detail} class="px-4">{detail}</label>
+        <label for={detail} class="pr-4">{detail}</label>
         <input
           type="text"
           id={detail}
@@ -25,4 +25,4 @@
       </div>
     {/each}
   </div>
-</FormGroup>
+</BorderGroup>

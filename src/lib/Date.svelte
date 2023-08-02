@@ -34,7 +34,7 @@
 </script>
 
 <div
-  class=" flex flex-col md:flex-row sm:items-center max-w-[12rem] sm:max-w-none"
+  class="mx-auto flex flex-col md:flex-row sm:items-center max-w-[12rem] sm:max-w-none"
 >
   <input
     type="date"

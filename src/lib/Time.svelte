@@ -5,7 +5,7 @@
     getDurationAsTime,
   } from "../../functions/src/time";
   import type { Writable } from "svelte/store";
-  import FormGroup from "./FormGroup.svelte";
+  import BorderGroup from "./BorderGroup.svelte";
 
   export let idPrefix: string;
   export let time: Writable<string | undefined>;
@@ -43,7 +43,7 @@
   $: displayedDuration = displayDuration($time, $endTime);
 </script>
 
-<FormGroup withRight={true}>
+<BorderGroup withRight={true}>
   <div class="my-2">
     <label class="w-12 inline-block text-right" for="{idPrefix}-start-time"
       >start</label
@@ -89,7 +89,7 @@
       </select>
       <input
         type="time"
-        class="h-min"
+        class="h-min mt-2 sm:mt-0"
         id="{idPrefix}-end-time"
         disabled={endType === "indefinite"}
         bind:value={endValue}
@@ -114,7 +114,7 @@
       >{validTime ? displayedDuration : "Invalid time"}</span
     >
   </div>
-</FormGroup>
+</BorderGroup>
 
 <style lang="postcss">
   label {

@@ -2,7 +2,7 @@
   export let withRight = false;
 </script>
 
-<div class="form-group">
+<div class="border-group">
   <div class="side" class:side-borders={withRight}>
     <slot>default left</slot>
   </div>
@@ -14,15 +14,15 @@
 </div>
 
 <style lang="postcss">
-  .form-group {
-    @apply w-fit mt-8 flex flex-col sm:flex-row border-2 border-light-border rounded;
+  .border-group {
+    @apply w-fit my-4 flex flex-col sm:flex-row border-2 border-light-border rounded;
   }
 
-  .form-group .side {
+  .border-group .side {
     @apply flex-1 px-4 py-2;
   }
 
-  .form-group .side.side-borders {
+  .border-group .side.side-borders {
     @apply border-b-2 sm:border-b-0 sm:border-r-2 border-light-border;
   }
 </style>

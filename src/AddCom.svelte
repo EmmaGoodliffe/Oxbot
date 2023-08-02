@@ -26,7 +26,7 @@
 <div class="flex flex-col">
   <Date idPrefix="add-com" {date} initialDate={$date} />
   <Time idPrefix="add-com" {time} {endTime} />
-  <select class="" bind:value={comType} on:change={() => details.set([])}>
+  <select class="w-fit" bind:value={comType} on:change={() => details.set([])}>
     {#each comTypes as ct}
       <option value={ct}>{ct}</option>
     {/each}
