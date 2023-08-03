@@ -15,8 +15,10 @@
   {#await weekProm}
     <div class="flex flex-col border-2 border-border rounded-lg overflow-auto">
       <div class="commitment">
-        <div class="time w-[6rem]">00:00</div>
-        <div class="description px-2">
+        <div class="time">
+          <span class="text-lg">00:00</span>
+        </div>
+        <div class="description">
           <p class="font-bold">Loading...</p>
         </div>
       </div>
@@ -28,13 +30,13 @@
       >
         {#each sortCommitmentsByTime(week.commitments.filter(com => com.day === today.day)).map(displayCom) as com}
           <div class="commitment">
-            <div class="time w-[6rem] py-2">
+            <div class="time">
               <span class="text-lg">{com.localTime}</span>
               {#if com.localEndTime !== null}
                 <span class="text-dark-text text-sm">{com.localEndTime}</span>
               {/if}
             </div>
-            <div class="px-2 pt-3 pb-1">
+            <div class="description">
               <p class="font-bold">{com.title}</p>
               {#if com.description !== undefined}
                 <p>{com.description}</p>
@@ -48,3 +50,13 @@
     {/if}
   {/await}
 </section>
+
+<style lang="postcss">
+  .time {
+    @apply w-[6rem];
+  }
+
+  .description {
+    @apply px-2 flex items-center;
+  }
+</style>

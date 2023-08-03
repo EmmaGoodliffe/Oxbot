@@ -26,6 +26,7 @@ export const wake = async (db: Firestore, date: OxDate) => {
 };
 
 export const getWeek = async (db: Firestore, date: OxDate) => {
+  await delay(4);
   return (await getDoc(doc(db, "weeks", getWeekId(date)))).data() as
     | Week
     | undefined;

@@ -59,7 +59,7 @@ a.card span {
 }
 
 .commitment .time {
-  @apply px-2 pt-3 bg-dark-bg text-right border-r-2 border-dark-border tracking-wide;
+  @apply px-2 bg-dark-bg text-right border-r-2 border-dark-border tracking-wide flex justify-end items-center;
 }
 
 .button {

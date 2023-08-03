@@ -31,18 +31,18 @@
         </header>
         {#await weekProm}
           <div class="commitment">
-            <div class="time w-20 pl-4 pr-2">00:00</div>
-            <div class="description px-2">Loading...</div>
+            <div class="time">00:00</div>
+            <div class="description">Loading...</div>
           </div>
         {:then week}
           {#each week?.commitments ?? [] as com, i}
             {#if day === com.day}
               <!-- TODO: hover for details -->
               <div class="commitment group/com">
-                <div class="time w-20 pl-4 pr-2">{displayCom(com).localTime}</div>
-                <div
-                  class="description w-full px-2 flex justify-between items-center"
-                >
+                <div class="time">
+                  {displayCom(com).localTime}
+                </div>
+                <div class="description">
                   <span>
                     {displayCom(com).title}
                   </span>
@@ -72,3 +72,13 @@
     {/each}
   </div>
 </section>
+
+<style lang="postcss">
+  .time {
+    @apply w-20 pl-4 pr-2;
+  }
+
+  .description {
+    @apply w-full px-2 flex justify-between items-center;
+  }
+</style>
