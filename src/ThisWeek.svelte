@@ -17,7 +17,10 @@
 
   <div class="cards">
     {#each days as day}
-      <div class="card min-h-[4rem] group/day">
+      <div
+        class="card min-h-[4rem] group/day"
+        class:highlight={day === today.day}
+      >
         <header class="px-2 py-1 flex justify-between font-bold italic">
           <span>
             {day}
@@ -80,5 +83,9 @@
 
   .description {
     @apply w-full px-2 flex justify-between items-center;
+  }
+
+  .highlight::after {
+    @apply bg-light-border;
   }
 </style>
