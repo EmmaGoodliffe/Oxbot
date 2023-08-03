@@ -138,7 +138,6 @@
   };
 
   // TODO: use `time` element
-  // TODO: alarms
   // TODO: query specific days/weeks
   // TODO: make use of `com` vs `commitment` consistent
   // TODO: commitments via JSON
