@@ -53,10 +53,10 @@
 
 <style lang="postcss">
   .time {
-    @apply w-[6rem];
+    @apply w-[6rem] py-2 flex flex-col justify-center items-end;
   }
 
   .description {
-    @apply px-2 flex items-center;
+    @apply px-2 flex flex-col justify-center;
   }
 </style>

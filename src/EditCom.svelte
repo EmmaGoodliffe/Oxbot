@@ -88,6 +88,7 @@
       />
     {/if}
 
+    <!-- TODO: Use local times -->
     <Time
       idPrefix="edit-com"
       {time}

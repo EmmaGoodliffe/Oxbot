@@ -24,7 +24,7 @@
 </script>
 
 <section class="group/section">
-  <h2>This week</h2>
+  <h2>Week</h2>
 
   <div class="mb-2">
     {#if isSelectingWeek}

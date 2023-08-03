@@ -72,7 +72,7 @@
   const refresh = () => {
     dialogMode = null;
     thisWeekProm = getWeek(db, today);
-    weekProm = getWeek(db, $week)
+    weekProm = getWeek(db, $week);
     selectedComDate.set(undefined);
     selectedComIndex.set(undefined);
     selectedCom.set(undefined);
