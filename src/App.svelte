@@ -138,6 +138,8 @@
   };
 
   // TODO: alarms
+  // TODO: log wake
+  // TODO: query specific days/weeks
   // TODO: make use of `com` vs `commitment` consistent
   // TODO: commitments via JSON
   // TODO: notes

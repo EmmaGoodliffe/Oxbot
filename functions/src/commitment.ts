@@ -12,11 +12,24 @@ type ComType = keyof typeof requiredComDetails;
 export const comTypes = Object.keys(requiredComDetails) as ComType[];
 
 interface Com<T extends ComType> {
+  /** Type of commitment */
   type: T;
+  /** Day of the week */
   day: (typeof days)[number];
+  /** Start time in the form `00:00` */
   time: string;
+  /** End time in the form `00:00` where `null` corresponds to indefinite */
   endTime: string | null;
-  location?: "Trin" | "Iff" | "Dept";
+  /** Location of commitment */
+  location: {
+    /** Area code where `undefined` corresponds to a default defined by `type` */
+    area?: "Trin" | "Iff" | "Dept";
+    /** Location within `area`, e.g. room number */
+    within?: string;
+    /** Journey time in minutes where `undefined` corresponds to a default defined by `area` */
+    journey?: number;
+  };
+  /** Custom details dependent on the `type` */
   details: Record<(typeof requiredComDetails)[T][number], string>;
 }
 // TODO: make this clearer; possible avenues shown in https://github.com/Microsoft/TypeScript/issues/1213#issuecomment-1215039765
@@ -24,22 +37,33 @@ type DistributeComOverUnion<T> = T extends ComType ? Com<T> : never;
 export type Commitment = DistributeComOverUnion<ComType>;
 
 export interface Week {
+  /** Commitments scheduled during the week */
   commitments: Commitment[];
+  /** The most recent day on which user activity was logged */
+  latest_active_day: Commitment["day"];
 }
+
+const getArea = (com: Commitment) =>
+  com.location.area ?? ({ tute: "Trin", training: "Iff" } as const)[com.type];
 
 export const displayCom = (
   com: Commitment
 ): {
   day: Commitment["day"];
+  // TODO: provide British times
   time: string;
   endTime: string | null;
   title: string;
   description?: string;
+  location: string;
 } => {
   const result = {
     day: com.day,
     time: com.time,
     endTime: com.endTime,
+    location: com.location.within
+      ? `${com.location.within} in ${getArea(com)}`
+      : getArea(com),
   };
   if (com.type === "tute") {
     return {
@@ -54,20 +78,10 @@ export const displayCom = (
 };
 
 export const sortCommitmentsByTime = (coms: Commitment[]) =>
-  [...coms].sort((a, b) => {
-    const dur = getDuration(a.time, b.time);
-    if (dur === null) {
-      return 1;
-    }
-    return dur.hours < 0 || dur.mins < 0 ? 1 : -1;
-  });
-
-const getLocationWithDefaults = (com: Commitment) =>
-  com.location ?? ({ tute: "Trin", training: "Iff" } as const)[com.type];
+  [...coms].sort((a, b) => (getDuration(a.time, b.time) === null ? -1 : 1));
 
 export const getPrepTime = (com: Commitment) => {
-  const location = getLocationWithDefaults(com);
-  const journeyTime = { Trin: 10, Iff: 20, Dept: 10 }[location];
-  const prepTime = 15;
-  return journeyTime + prepTime;
+  const area = getArea(com);
+  const journey = { Trin: 10, Iff: 20, Dept: 10 }[area];
+  return journey + 15;
 };

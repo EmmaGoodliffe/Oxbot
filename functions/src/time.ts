@@ -1,4 +1,5 @@
-import { toInt } from "./date";
+import { Week } from "./commitment";
+import { OxDate, gregToOxDate, toInt } from "./date";
 
 const jsToLocalTime = (d: Date) => d.toLocaleTimeString().slice(0, 5);
 
@@ -90,4 +91,19 @@ export const displayDuration = (a?: string, b?: string | null) => {
   } else {
     return `${hours} hrs ${mins} mins`;
   }
+};
+
+// TODO: convert British time to UTC
+const gbToUtc = (gb: string) => {
+  return gb;
+};
+
+export const isAwake = (week: Week) => {
+  const now = getNow();
+  const timeSinceNoon = getDuration(gbToUtc("12:00"), now.utcTime);
+  const isPastNoon =
+    timeSinceNoon !== null && timeSinceNoon.hours > 0 && timeSinceNoon.mins > 0;
+  const lad = week.latest_active_day;
+  const wasActiveToday = lad && lad === gregToOxDate(now.utcDate)?.day;
+  return isPastNoon || wasActiveToday;
 };

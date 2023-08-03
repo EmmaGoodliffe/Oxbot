@@ -10,7 +10,7 @@ import {
   Week,
 } from "./commitment";
 import { getWeekId, gregToOxDate } from "./date";
-import { displayDuration, getDuration, getNow } from "./time";
+import { displayDuration, getDuration, getNow, isAwake } from "./time";
 
 /** every 10 minutes */
 const CRON = "0-50/10 * * * *";
@@ -26,6 +26,9 @@ type ApiRes = { status: number; info: string } & (
   | { result: Record<string, unknown> }
   | { error: unknown }
 );
+
+const delay = (sec: number) =>
+  new Promise<void>(res => setTimeout(() => res(), sec * 1000));
 
 const post = (url: string, data: Record<string, unknown>) =>
   fetch(url, {
@@ -112,10 +115,10 @@ const sendTg = async (text: string) => {
 
 const comToTgText = (com: Commitment) => {
   const now = getNow().utcTime;
-  const { title, description } = displayCom(com);
+  const { title, description, location } = displayCom(com);
   const a = `*${title}*`;
   const b = description ? ` (${description})` : "";
-  const c = com.location ? ` at ${com.location}` : "";
+  const c = location ? ` at ${location}` : "";
   const d = " in `" + displayDuration(now, com.time) + "`";
   return a + b + c + d;
 };
@@ -128,27 +131,37 @@ const sendTgAlarm = async (force = false): Promise<ApiRes> => {
   const now = getNow().utcTime;
   const id = getWeekId(today);
   const doc = await db.collection("weeks").doc(id).get();
-  const data = doc.data() as Week | undefined;
-  const coms = data?.commitments ?? [];
+  const week = doc.data() as Week | undefined;
+  const coms = week?.commitments ?? [];
   const todayComs = coms.filter(com => com.day === today.day);
-  const firstCom = sortCommitmentsByTime(todayComs)[0] as
+  const first_com = sortCommitmentsByTime(todayComs)[0] as
     | Commitment
     | undefined;
-  if (firstCom === undefined) {
+  if (week === undefined || first_com === undefined) {
     return { status: 200, info: "No commitments", result: {} };
   }
-  const dur = getDuration(now, firstCom.time);
-  if (dur === null) {
-    throw new Error("Bad duration");
+  const dur = getDuration(now, first_com.time);
+  if (dur === null || isAwake(week)) {
+    return {
+      status: 200,
+      info: "Already awake",
+      result: { first_com },
+    };
   }
   const timeUntilFirstCom = 60 * dur.hours + dur.mins;
-  const prepTime = getPrepTime(firstCom);
+  const prepTime = getPrepTime(first_com);
   const withinPrepTime = force || timeUntilFirstCom <= prepTime;
   if (!withinPrepTime) {
-    return { status: 200, info: "No alarms", result: {} };
+    return { status: 200, info: "No alarms yet", result: { first_com } };
   }
-  const text = comToTgText(firstCom);
-  return await sendTg(text);
+  const text = comToTgText(first_com);
+  const tg_results: ApiRes[] = [];
+  for (let i = 1; i <= 6; i++) {
+    tg_results.push(await sendTg(text + ` \\[${i}/6\\]`));
+    await delay(5);
+  }
+  const status = tg_results.every(res => res.status === 200) ? 200 : 500;
+  return { status, info: "Sent alarms", result: { tg_results } };
 };
 
 export const forceAlarm = onRequest(
