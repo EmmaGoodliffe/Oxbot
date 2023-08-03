@@ -117,10 +117,11 @@
           date,
           index,
           {
+            type: com.type,
             day: date.day,
             time: localToUtcTime($time),
             endTime: $endTime === null ? null : localToUtcTime($endTime),
-            type: com.type,
+            location: {},
             details: keyValuesToObj(requiredComDetails[com.type], $details),
           },
           progressA,

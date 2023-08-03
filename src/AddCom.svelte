@@ -47,10 +47,11 @@
         db,
         $date,
         {
+          type: comType,
           day: $date.day,
           time: localToUtcTime($time),
           endTime: $endTime === null ? null : localToUtcTime($endTime),
-          type: comType,
+          location: {},
           details: keyValuesToObj(requiredComDetails[comType], $details),
         },
         progressA,

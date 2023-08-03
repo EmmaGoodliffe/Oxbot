@@ -81,7 +81,6 @@ type TgResult =
   | { ok: false; description: string; error_code: number };
 
 const sendTg = async (text: string) => {
-  // const url = `https://api.telegram.org/bot${TG_BOT_KEY}/sendMessage?chat_id=${TG_CHAT_ID}&text=${text}&parse_mode=Markdown`;
   const url = `https://api.telegram.org/bot${TG_BOT_KEY}/sendMessage`;
   const response = await post(url, {
     chat_id: TG_CHAT_ID,
@@ -104,15 +103,6 @@ const sendTg = async (text: string) => {
   }
 };
 
-// export const tg = onRequest(
-//   { region: "europe-west1" },
-//   async (req, res: Response<ApiRes>) => {
-//     const text = req.params[0].split("/").join("\n") ?? "No content";
-//     const result = await sendTg(text);
-//     res.status(result.status).json(result);
-//   }
-// );
-
 const comToTgText = (com: Commitment) => {
   const now = getNow().utcTime;
   const { title, description, location } = displayCom(com);
@@ -123,7 +113,7 @@ const comToTgText = (com: Commitment) => {
   return a + b + c + d;
 };
 
-const sendTgAlarm = async (force = false): Promise<ApiRes> => {
+const sendTgAlarm = async (): Promise<ApiRes> => {
   const today = gregToOxDate(getNow().utcDate);
   if (today === undefined) {
     throw new Error("Bad date");
@@ -141,40 +131,53 @@ const sendTgAlarm = async (force = false): Promise<ApiRes> => {
     return { status: 200, info: "No commitments", result: {} };
   }
   const dur = getDuration(now, first_com.time);
-  if (dur === null || isAwake(week)) {
+  const firstComAlreadyStarted = dur === null;
+  const { isPastLonNoon, wasActiveToday, utcLonNoon } = isAwake(week);
+  if (firstComAlreadyStarted) {
     return {
       status: 200,
-      info: "Already awake",
+      info: "First commitment already started",
       result: { first_com },
     };
   }
+  if (isPastLonNoon) {
+    return {
+      status: 200,
+      info: "Past London noon",
+      result: { utcNow: now, utcLonNoon },
+    };
+  }
+  if (wasActiveToday) {
+    return { status: 200, info: "Already active today", result: {} };
+  }
   const timeUntilFirstCom = 60 * dur.hours + dur.mins;
   const prepTime = getPrepTime(first_com);
-  const withinPrepTime = force || timeUntilFirstCom <= prepTime;
+  const withinPrepTime = timeUntilFirstCom <= prepTime;
   if (!withinPrepTime) {
     return { status: 200, info: "No alarms yet", result: { first_com } };
   }
   const text = comToTgText(first_com);
   const tg_results: ApiRes[] = [];
-  for (let i = 1; i <= 6; i++) {
-    tg_results.push(await sendTg(text + ` \\[${i}/6\\]`));
+  // TODO: use some kind of stream to send a response faster
+  for (let i = 1; i <= 3; i++) {
+    tg_results.push(await sendTg(text + ` \\[${i}/3]`));
     await delay(5);
   }
   const status = tg_results.every(res => res.status === 200) ? 200 : 500;
   return { status, info: "Sent alarms", result: { tg_results } };
 };
 
-export const forceAlarm = onRequest(
+export const alarm = onRequest(
   { region: "europe-west1" },
   async (req, res: Response<ApiRes>) => {
     try {
-      const result = await sendTgAlarm(true);
+      const result = await sendTgAlarm();
       res.status(result.status).json(result);
     } catch (err) {
       console.log(err);
       res
         .status(500)
-        .json({ status: 500, info: "Error forcing alarm", error: err });
+        .json({ status: 500, info: "Error sending alarm", error: err });
     }
   }
 );

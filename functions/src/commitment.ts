@@ -1,10 +1,9 @@
 import { days } from "./date";
-import { getDuration } from "./time";
+import { getDuration, utcToLocalTime } from "./time";
 
 export const requiredComDetails = {
   tute: ["tutor", "subject"],
   training: ["sport"],
-  // TODO: add commitment types
 } as const;
 
 type ComType = keyof typeof requiredComDetails;
@@ -50,17 +49,20 @@ export const displayCom = (
   com: Commitment
 ): {
   day: Commitment["day"];
-  // TODO: provide British times
-  time: string;
-  endTime: string | null;
+  utcTime: string;
+  utcEndTime: string | null;
+  localTime: string;
+  localEndTime: string | null;
   title: string;
   description?: string;
   location: string;
 } => {
   const result = {
     day: com.day,
-    time: com.time,
-    endTime: com.endTime,
+    utcTime: com.time,
+    utcEndTime: com.endTime,
+    localTime: utcToLocalTime(com.time),
+    localEndTime: com.endTime ? utcToLocalTime(com.endTime) : null,
     location: com.location.within
       ? `${com.location.within} in ${getArea(com)}`
       : getArea(com),

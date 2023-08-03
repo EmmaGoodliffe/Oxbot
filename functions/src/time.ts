@@ -1,5 +1,5 @@
-import { Week } from "./commitment";
-import { OxDate, gregToOxDate, toInt } from "./date";
+import type { Week } from "./commitment";
+import { gregToOxDate, toInt } from "./date";
 
 const jsToLocalTime = (d: Date) => d.toLocaleTimeString().slice(0, 5);
 
@@ -20,10 +20,22 @@ export const addTimes = (a: string, b: string) => {
 };
 
 export const localToUtcTime = (local: string) => {
-  const d = new Date();
   const [hours, mins] = local.split(":").map(toInt);
+  const d = new Date();
   d.setHours(hours);
   d.setMinutes(mins);
+  return (
+    d.getUTCHours().toString().padStart(2, "0") +
+    ":" +
+    d.getUTCMinutes().toString().padStart(2, "0")
+  );
+};
+
+export const utcToLocalTime = (utc: string) => {
+  const [hours, mins] = utc.split(":").map(toInt);
+  const d = new Date();
+  d.setUTCHours(hours);
+  d.setUTCMinutes(mins);
   return (
     d.getUTCHours().toString().padStart(2, "0") +
     ":" +
@@ -60,11 +72,12 @@ export const getDuration = (a?: string, b?: string | null) => {
   const [bHours, bMins] = b.split(":").map(toInt);
   let hours = bHours - aHours;
   let mins = bMins - aMins;
-  if (hours < 0) {
-    return null;
-  } else if (mins < 0) {
+  if (mins < 0) {
     hours--;
     mins += 60;
+  }
+  if (hours < 0) {
+    return null;
   }
   return { hours, mins };
 };
@@ -93,17 +106,24 @@ export const displayDuration = (a?: string, b?: string | null) => {
   }
 };
 
-// TODO: convert British time to UTC
-const gbToUtc = (gb: string) => {
-  return gb;
+const getUtcLonNoon = () => {
+  // From https://stackoverflow.com/a/64262840
+  const gmtOffsetString = Intl.DateTimeFormat("en", {
+    timeZoneName: "short",
+    timeZone: "Europe/London",
+  })
+    .formatToParts()
+    .find(i => i.type === "timeZoneName")?.value; // `GMT` or `GMT+1`
+  const offset = toInt(gmtOffsetString?.slice(3) ?? 0);
+  return `${12 - offset}:00`;
 };
 
 export const isAwake = (week: Week) => {
+  const utcLonNoon = getUtcLonNoon();
   const now = getNow();
-  const timeSinceNoon = getDuration(gbToUtc("12:00"), now.utcTime);
-  const isPastNoon =
-    timeSinceNoon !== null && timeSinceNoon.hours > 0 && timeSinceNoon.mins > 0;
+  const timeSinceLonNoon = getDuration(utcLonNoon, now.utcTime);
+  const isPastLonNoon = timeSinceLonNoon !== null;
   const lad = week.latest_active_day;
   const wasActiveToday = lad && lad === gregToOxDate(now.utcDate)?.day;
-  return isPastNoon || wasActiveToday;
+  return { isPastLonNoon, wasActiveToday, utcLonNoon };
 };

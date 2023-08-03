@@ -19,6 +19,12 @@ export const keyValuesToObj = <T>(keys: readonly string[], values: T[]) => {
 
 const unique = <T>(arr: T[]) => Array.from(new Set(arr));
 
+export const wake = async (db: Firestore, date: OxDate) => {
+  const id = getWeekId(date);
+  const data: Partial<Week> = { latest_active_day: date.day };
+  updateDoc(doc(db, "weeks", id), data);
+};
+
 export const getWeek = async (db: Firestore, date: OxDate) => {
   return (await getDoc(doc(db, "weeks", getWeekId(date)))).data() as
     | Week
@@ -38,11 +44,11 @@ export const addCommitment = async (
   const prevData = await getWeek(db, date);
   progressA.set(100);
   if (prevData === undefined) {
-    const week: Week = { commitments: [com] };
-    await setDoc(doc(db, "weeks", id), week);
+    const data: Partial<Week> = { commitments: [com] };
+    await setDoc(doc(db, "weeks", id), data);
   } else {
-    const week: Week = { commitments: [...prevData.commitments, com] };
-    await updateDoc(doc(db, "weeks", id), { ...week });
+    const data: Partial<Week> = { commitments: [...prevData.commitments, com] };
+    await updateDoc(doc(db, "weeks", id), { ...data });
   }
   progressB.set(100);
 };
@@ -65,7 +71,8 @@ export const editCommitment = async (
   } else {
     const { commitments } = prevData;
     commitments[index] = newCom;
-    await updateDoc(doc(db, "weeks", id), { commitments });
+    const data: Partial<Week> = { commitments };
+    await updateDoc(doc(db, "weeks", id), data);
   }
   progressB.set(100);
 };
@@ -87,7 +94,8 @@ export const deleteCommitment = async (
   } else {
     const { commitments } = prevData;
     commitments.splice(index, 1);
-    await updateDoc(doc(db, "weeks", id), { commitments });
+    const data: Partial<Week> = { commitments };
+    await updateDoc(doc(db, "weeks", id), data);
   }
   progressB.set(100);
 };

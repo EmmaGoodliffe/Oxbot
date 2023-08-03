@@ -29,9 +29,9 @@
         {#each sortCommitmentsByTime(week.commitments.filter(com => com.day === today.day)).map(displayCom) as com}
           <div class="commitment">
             <div class="time w-[6rem] py-2">
-              <span class="text-lg">{com.time}</span>
-              {#if com.endTime !== null}
-                <span class="text-dark-text text-sm">{com.endTime}</span>
+              <span class="text-lg">{com.localTime}</span>
+              {#if com.localEndTime !== null}
+                <span class="text-dark-text text-sm">{com.localEndTime}</span>
               {/if}
             </div>
             <div class="px-2 pt-3 pb-1">

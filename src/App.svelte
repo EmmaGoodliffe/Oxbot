@@ -15,7 +15,7 @@
   import AddCom from "./AddCom.svelte";
   import Dialog from "./Dialog.svelte";
   import EditCom from "./EditCom.svelte";
-  import { getWeek, updateToken } from "./lib/db";
+  import { getWeek, updateToken, wake } from "./lib/db";
   import { appendToast, type Toast } from "./lib/toast";
   import NotesNav from "./NotesNav.svelte";
   import ThisWeek from "./ThisWeek.svelte";
@@ -137,8 +137,8 @@
     }
   };
 
+  // TODO: use `time` element
   // TODO: alarms
-  // TODO: log wake
   // TODO: query specific days/weeks
   // TODO: make use of `com` vs `commitment` consistent
   // TODO: commitments via JSON
@@ -150,6 +150,7 @@
 
 <Toasts {toasts} />
 <div class="w-11/12 mx-auto pb-6">
+  <button class="button" on:click={() => wake(db, today)}>Wake</button>
   <button class="button" on:click={prepDevice}>Prep device</button>
 
   <h1>Notes</h1>
