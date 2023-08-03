@@ -12,6 +12,7 @@
   export let idPrefix: string;
   export let date: Writable<OxDate>;
   export let initialDate: OxDate;
+  export let weekOnly = false;
 
   let gregDate = oxToGregDate(initialDate);
   let { term, day } = initialDate;
@@ -81,20 +82,23 @@
         on:focus={() => (useOxDate = true)}
       />
     </div>
-    <div class="ox-date-input">
-      <label for="{idPrefix}-day" class="px-4">day</label>
-      <select
-        class="my-2 px-2 py-2 bg-light-bg rounded"
-        id="{idPrefix}-day"
-        bind:value={day}
-        on:focus={() => (useOxDate = true)}
-      >
-        {#each days as day}
-          <option value={day}>{day}</option>
-        {/each}
-      </select>
-    </div>
+    {#if !weekOnly}
+      <div class="ox-date-input">
+        <label for="{idPrefix}-day" class="px-4">day</label>
+        <select
+          class="my-2 px-2 py-2 bg-light-bg rounded"
+          id="{idPrefix}-day"
+          bind:value={day}
+          on:focus={() => (useOxDate = true)}
+        >
+          {#each days as day}
+            <option value={day}>{day}</option>
+          {/each}
+        </select>
+      </div>
+    {/if}
   </div>
+  <slot />
 </div>
 
 <style lang="postcss">

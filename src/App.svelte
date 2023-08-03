@@ -18,7 +18,7 @@
   import { getWeek, updateToken, wake } from "./lib/db";
   import { appendToast, type Toast } from "./lib/toast";
   import NotesNav from "./NotesNav.svelte";
-  import ThisWeek from "./ThisWeek.svelte";
+  import Week from "./Week.svelte";
   import Toasts from "./Toasts.svelte";
   import Today from "./Today.svelte";
   import type { Commitment } from "../functions/src/commitment";
@@ -49,7 +49,9 @@
   if (today === undefined) {
     throw new Error("Today is not an Ox date");
   }
-  let weekProm = getWeek(db, today);
+  const week = writable<OxDate>(today);
+  let thisWeekProm = getWeek(db, today);
+  let weekProm = thisWeekProm;
   const selectedComDate = writable<OxDate | undefined>();
   const selectedComIndex = writable<number | undefined>();
   const selectedCom = writable<Commitment | undefined>();
@@ -57,13 +59,24 @@
   const toasts = writable<Toast[]>([]);
   let dialogMode: "add" | "edit" | null = null;
 
+  $: weekProm = getWeek(db, $week);
+
+  $: {
+    if (dialogMode === null) {
+      document.querySelector("dialog")?.close();
+    } else {
+      document.querySelector("dialog")?.showModal();
+    }
+  }
+
   const refresh = () => {
     dialogMode = null;
-    weekProm = getWeek(db, today);
+    thisWeekProm = getWeek(db, today);
+    weekProm = getWeek(db, $week)
     selectedComDate.set(undefined);
     selectedComIndex.set(undefined);
     selectedCom.set(undefined);
-    return weekProm;
+    return thisWeekProm;
   };
 
   const toast = (not: NotificationPayload) => appendToast(toasts, not);
@@ -90,14 +103,6 @@
     dialogMode = null;
     dialogMode = "edit";
   };
-
-  $: {
-    if (dialogMode === null) {
-      document.querySelector("dialog")?.close();
-    } else {
-      document.querySelector("dialog")?.showModal();
-    }
-  }
 
   const prepDevice = async () => {
     try {
@@ -150,15 +155,15 @@
 
 <Toasts {toasts} />
 <div class="w-11/12 mx-auto pb-6">
-  <button class="button" on:click={() => wake(db, today)}>Wake</button>
-  <button class="button" on:click={prepDevice}>Prep device</button>
+  <button class="button" on:click={() => wake(db, today)}>wake</button>
+  <button class="button" on:click={prepDevice}>prep device</button>
 
   <h1>Notes</h1>
   <NotesNav />
 
   <h1>Schedule</h1>
-  <Today {today} {weekProm} />
-  <ThisWeek {today} {weekProm} {addCom} {selectCom} />
+  <Today {today} {thisWeekProm} />
+  <Week {today} {week} {weekProm} {addCom} {selectCom} />
 
   <Dialog
     title={dialogMode === null

@@ -63,7 +63,15 @@ a.card span {
 }
 
 .button {
-  @apply px-4 py-1.5 bg-ui disabled:text-dark-text rounded transition;
+  @apply px-4 py-1.5 bg-ui disabled:text-dark-text rounded transition active:bg-light-ui;
+}
+
+.button:has(svg) {
+  @apply w-12 h-12 px-2 py-1;
+}
+
+.button svg {
+  @apply mx-auto;
 }
 
 input {

@@ -57,6 +57,6 @@
   }
 
   .progress {
-    @apply h-full bg-light-ui transition-all duration-300;
+    @apply h-full bg-light-ui rounded-sm transition-all duration-300;
   }
 </style>

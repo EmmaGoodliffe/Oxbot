@@ -25,6 +25,7 @@ export const wake = async (db: Firestore, date: OxDate) => {
   updateDoc(doc(db, "weeks", id), data);
 };
 
+// TODO: caching
 export const getWeek = async (db: Firestore, date: OxDate) => {
   await delay(4);
   return (await getDoc(doc(db, "weeks", getWeekId(date)))).data() as

@@ -7,12 +7,12 @@
   import type { OxDate } from "../functions/src/date";
 
   export let today: OxDate;
-  export let weekProm: Promise<Week | undefined>;
+  export let thisWeekProm: Promise<Week | undefined>;
 </script>
 
 <section class="group/section">
   <h2>Today</h2>
-  {#await weekProm}
+  {#await thisWeekProm}
     <div class="flex flex-col border-2 border-border rounded-lg overflow-auto">
       <div class="commitment">
         <div class="time">
