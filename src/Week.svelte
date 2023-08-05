@@ -28,7 +28,7 @@
 
   <div class="mb-2">
     {#if isSelectingWeek}
-      <Date {date} idPrefix="week" initialDate={today} weekOnly>
+      <Date {date} idPrefix="week" initialDate={$date} weekOnly>
         <div class="my-6 px-6 flex justify-center">
           <button
             class="button"
@@ -55,7 +55,15 @@
     {:else}
       <div class="flex flex-col items-center">
         <div class="w-full max-w-xs mb-2 flex justify-between">
-          <button class="button"
+          <button
+            class="button"
+            on:click={() => {
+              date.update(d => ({
+                ...d,
+                week: d.week - 1,
+              }));
+              week.set($date);
+            }}
             ><svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -101,7 +109,8 @@
     {#each days as day}
       <div
         class="card min-h-[4rem] group/day"
-        class:highlight={day === today.day}
+        class:highlight={getWeekId($week) === getWeekId(today) &&
+          day === today.day}
       >
         <header class="px-2 py-1 flex justify-between font-bold italic">
           <span>
