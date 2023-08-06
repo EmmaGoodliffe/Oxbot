@@ -1,4 +1,4 @@
-import { getNow, jsToGregDate } from "./time";
+import { jsToGregDate } from "./time";
 
 export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 

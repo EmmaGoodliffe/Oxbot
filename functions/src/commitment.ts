@@ -39,7 +39,7 @@ export interface Week {
   /** Commitments scheduled during the week */
   commitments: Commitment[];
   /** The most recent day on which user activity was logged */
-  latest_active_day: Commitment["day"];
+  latest_active_day?: Commitment["day"];
 }
 
 const getArea = (com: Commitment) =>
