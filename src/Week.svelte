@@ -7,9 +7,10 @@
   } from "../functions/src/commitment";
   import {
     days,
-    getWeekId,
     oxToGregDate,
     type OxDate,
+    addWeeks,
+    displayWeek,
   } from "../functions/src/date";
   import Date from "./lib/Date.svelte";
 
@@ -58,10 +59,7 @@
           <button
             class="button"
             on:click={() => {
-              date.update(d => ({
-                ...d,
-                week: d.week - 1,
-              }));
+              date.update(d => addWeeks(d, -1) ?? d);
               week.set($date);
             }}
             ><svg
@@ -87,7 +85,13 @@
               /></svg
             >
           </button>
-          <button class="button">
+          <button
+            class="button"
+            on:click={() => {
+              date.update(d => addWeeks(d, 1) ?? d);
+              week.set($date);
+            }}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -100,7 +104,7 @@
             >
           </button>
         </div>
-        <p>{getWeekId($week)}</p>
+        <p>{displayWeek($week)}</p>
       </div>
     {/if}
   </div>
@@ -109,7 +113,7 @@
     {#each days as day}
       <div
         class="card min-h-[4rem] group/day"
-        class:highlight={getWeekId($week) === getWeekId(today) &&
+        class:highlight={displayWeek($week) === displayWeek(today) &&
           day === today.day}
       >
         <header class="px-2 py-1 flex justify-between font-bold italic">

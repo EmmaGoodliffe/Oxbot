@@ -1,7 +1,4 @@
-import {
-  // getNow,
-  jsToGregDate,
-} from "./time";
+import { getNow, jsToGregDate } from "./time";
 
 export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
@@ -86,22 +83,28 @@ export const gregToOxDate = (date: string) => {
   throw new Error("Bad Gregorian date");
 };
 
-export const oxToGregDate = (oxDate: OxDate) => {
-  const daysIntoTerm = 7 * (oxDate.week - 1) + days.indexOf(oxDate.day);
+const oxToJsDate = (date: OxDate) => {
+  const daysIntoTerm = 7 * (date.week - 1) + days.indexOf(date.day);
   const matchingDate = termDates.find(
-    term => oxDate.year === term.year && oxDate.term === term.term
+    term => date.year === term.year && date.term === term.term
   );
   if (matchingDate === undefined) {
-    throw new Error("Couldn't convert Ox date to Gregorian");
+    throw new Error("Couldn't convert Ox date to native");
   }
   const startNum = Date.parse(matchingDate.dates[0] + " " + matchingDate.year);
-  return jsToGregDate(new Date(startNum + daysIntoTerm * (24 * 3600 * 1000)));
+  const result = new Date(startNum + daysIntoTerm * (24 * 3600 * 1000));
+  const normalised = new Date(new Date(result).toDateString());
+  return normalised;
 };
 
-// const greg = getNow().localDate;
-// const ox = gregToOxDate(greg);
-// const composite = ox === undefined ? undefined : oxToGregDate(ox);
-// if (greg !== composite) {
-//   console.log({ greg, ox, composite });
-//   throw new Error("Dates are broken");
-// }
+export const oxToGregDate = (date: OxDate) => jsToGregDate(oxToJsDate(date));
+
+export const addWeeks = (date: OxDate, weeks: number) => {
+  const result = new Date(
+    oxToJsDate(date).valueOf() + weeks * (7 * 24 * 3600 * 1000)
+  );
+  return gregToOxDate(jsToGregDate(result));
+};
+
+export const displayWeek = (date: OxDate) =>
+  `${date.year.toString().slice(2, 4)} ${date.term} ${date.week}`;

@@ -37,9 +37,9 @@ export const utcToLocalTime = (utc: string) => {
   d.setUTCHours(hours);
   d.setUTCMinutes(mins);
   return (
-    d.getUTCHours().toString().padStart(2, "0") +
+    d.getHours().toString().padStart(2, "0") +
     ":" +
-    d.getUTCMinutes().toString().padStart(2, "0")
+    d.getMinutes().toString().padStart(2, "0")
   );
 };
 
