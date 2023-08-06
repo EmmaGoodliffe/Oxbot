@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { doc as ref, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { getWeekId, type OxDate } from "../../functions/src/date";
 import type { Commitment, Week } from "../../functions/src/commitment";
 import type { Firestore } from "firebase/firestore";
@@ -21,14 +21,14 @@ const unique = <T>(arr: T[]) => Array.from(new Set(arr));
 
 export const wake = async (db: Firestore, date: OxDate) => {
   const id = getWeekId(date);
-  const data: Partial<Week> = { latest_active_day: date.day };
-  updateDoc(doc(db, "weeks", id), data);
+  const data = { latest_active_day: date.day };
+  updateDoc<unknown, Partial<Week>>(ref(db, "weeks", id), data);
 };
 
 // TODO: caching
 export const getWeek = async (db: Firestore, date: OxDate) => {
   await delay(4);
-  return (await getDoc(doc(db, "weeks", getWeekId(date)))).data() as
+  return (await getDoc(ref(db, "weeks", getWeekId(date)))).data() as
     | Week
     | undefined;
 };
@@ -47,10 +47,10 @@ export const addCommitment = async (
   progressA.set(100);
   if (prevData === undefined) {
     const data: Partial<Week> = { commitments: [com] };
-    await setDoc(doc(db, "weeks", id), data);
+    await setDoc(ref(db, "weeks", id), data);
   } else {
     const data: Partial<Week> = { commitments: [...prevData.commitments, com] };
-    await updateDoc(doc(db, "weeks", id), { ...data });
+    await updateDoc(ref(db, "weeks", id), { ...data });
   }
   progressB.set(100);
 };
@@ -74,7 +74,7 @@ export const editCommitment = async (
     const { commitments } = prevData;
     commitments[index] = newCom;
     const data: Partial<Week> = { commitments };
-    await updateDoc(doc(db, "weeks", id), data);
+    await updateDoc(ref(db, "weeks", id), data);
   }
   progressB.set(100);
 };
@@ -97,21 +97,19 @@ export const deleteCommitment = async (
     const { commitments } = prevData;
     commitments.splice(index, 1);
     const data: Partial<Week> = { commitments };
-    await updateDoc(doc(db, "weeks", id), data);
+    await updateDoc(ref(db, "weeks", id), data);
   }
   progressB.set(100);
 };
 
 export const updateToken = async (db: Firestore, token: string) => {
-  const theDoc = doc(db, "tokens", "default");
-  const data = (await getDoc(theDoc)).data() as
-    | { tokens: string[] }
-    | undefined;
+  const doc = ref(db, "tokens", "default");
+  const data = (await getDoc(doc)).data() as { tokens: string[] } | undefined;
   const tokens = data?.tokens ?? [];
   const newTokens = unique([...tokens, token]);
   if (tokens.length === newTokens.length) {
     console.log("Skipped token");
   } else {
-    await updateDoc(theDoc, { tokens: newTokens });
+    await updateDoc(doc, { tokens: newTokens });
   }
 };

@@ -154,7 +154,13 @@
 
 <Toasts {toasts} />
 <div class="w-11/12 mx-auto pb-6">
-  <button class="button" on:click={() => wake(db, today)}>wake</button>
+  <button
+    class="button"
+    on:click={async () => {
+      await wake(db, today);
+      toast({ title: "Woke" });
+    }}>wake</button
+  >
   <button class="button" on:click={prepDevice}>prep device</button>
 
   <h1>Notes</h1>
