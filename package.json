@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build:json": "npx typescript-json-schema ./tsconfig.json Commitment --required --out src/schemas/commitment.json",
+    "build:json": "npx typescript-json-schema ./tsconfig.json Batch --required --out src/schemas/batch.json",
     "build:svelte": "vite build",
     "build:ts": "npm run --prefix functions build",
     "build": "npm run build:ts && npm run build:json && npm run build:svelte",

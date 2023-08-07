@@ -1,13 +1,13 @@
 import Ajv from "ajv";
-import comSchema from "./commitment.json";
+import batchSchema from "./batch.json";
 
 const ajv = new Ajv();
 
-export const checkCom = (obj: unknown) => {
+export const checkBatch = (obj: unknown) => {
   console.time("compile");
-  const validateCom = ajv.compile(comSchema);
+  const validate = ajv.compile(batchSchema);
   console.timeEnd("compile");
-  const valid = validateCom(obj);
+  const valid = validate(obj);
   if (valid) return true;
-  return validateCom.errors ?? [];
+  return validate.errors ?? [];
 };

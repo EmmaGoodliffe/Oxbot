@@ -6,10 +6,11 @@ import {
   type UpdateData,
   updateDoc,
 } from "firebase/firestore";
-import { getWeekId, type OxDate } from "../../functions/src/date";
-import type { Commitment, Week } from "../../functions/src/commitment";
+import { toInt, type OxDate, getWeekId } from "../../functions/src/date";
+import type { Commitment } from "../../functions/src/commitment";
 import type { Firestore } from "firebase/firestore";
 import type { Writable } from "svelte/store";
+import type { Collection, Data, Id } from "../../functions/src/types";
 
 export const delay = (sec: number) =>
   new Promise<void>(res => setTimeout(() => res(), sec * 1000));
@@ -26,18 +27,6 @@ export const keyValuesToObj = <T>(keys: readonly string[], values: T[]) => {
 
 const unique = <T>(arr: T[]) => Array.from(new Set(arr));
 
-interface Tokens {
-  tokens: string[];
-}
-
-type Collection = "weeks" | "tokens";
-
-type Data<C extends Collection> = C extends "weeks"
-  ? Week
-  : C extends "tokens"
-  ? Tokens
-  : never;
-
 type DbPartial<T> = (Partial<T> & { [P in keyof T]?: T[P] }) | UpdateData<T>;
 
 // TODO: caching
@@ -45,7 +34,7 @@ type DbPartial<T> = (Partial<T> & { [P in keyof T]?: T[P] }) | UpdateData<T>;
 const read = async <C extends Collection>(
   db: Firestore,
   collection: C,
-  id: string
+  id: Id<C>
 ) => {
   const doc = await getDoc(ref(db, collection, id));
   return doc.data() as Data<C> | undefined;
@@ -54,7 +43,7 @@ const read = async <C extends Collection>(
 const set = <C extends Collection>(
   db: Firestore,
   collection: C,
-  id: string,
+  id: Id<C>,
   data: Data<C>
 ) => setDoc(ref(db, collection, id), data);
 
@@ -62,14 +51,14 @@ const set = <C extends Collection>(
 const update = <C extends Collection>(
   db: Firestore,
   collection: C,
-  id: string,
+  id: Id<C>,
   data: DbPartial<Data<C>>
 ) => updateDoc(ref(db, collection, id), data);
 
 const updateOrCreate = async <C extends Collection>(
   db: Firestore,
   collection: C,
-  id: string,
+  id: Id<C>,
   updateData: DbPartial<Data<C>>,
   createData: Data<C>
 ) => {

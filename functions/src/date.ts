@@ -1,4 +1,5 @@
 import { jsToGregDate } from "./time";
+import type { Id } from "./types";
 
 export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
@@ -26,8 +27,8 @@ export const oxDate = (
   return { year: y, term, week: w, day };
 };
 
-export const getWeekId = (date: OxDate | Omit<OxDate, "day">) =>
-  `${date.year.toString().slice(2, 4)}-${date.term}-${date.week}`;
+export const getWeekId = (date: OxDate | Omit<OxDate, "day">): Id<"weeks"> =>
+  `${toInt(date.year.toString().slice(2, 4))}-${date.term}-${date.week}`;
 
 const termDates = [
   { year: 2022, term: "MT", dates: ["Sun 09 Oct", "Sat 03 Dec"] },
