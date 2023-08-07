@@ -74,6 +74,22 @@ a.card span {
   @apply mx-auto;
 }
 
+.actions-header {
+  @apply font-bold mt-4 mb-2;
+}
+
+.action {
+  @apply w-fit py-2 inline-flex items-center;
+}
+
+.action svg {
+  @apply mr-2;
+}
+
+.action span {
+  margin-top: 0.2rem;
+}
+
 input {
   @apply px-2 py-1 text-lg bg-ui rounded disabled:opacity-50;
 }
@@ -86,6 +102,14 @@ input[type="time"] {
 select {
   @apply px-2 py-2 bg-ui rounded;
   border-right: 0.5rem solid transparent;
+}
+
+textarea {
+  @apply min-h-[8rem] my-4 px-2 py-1 bg-dark-bg font-mono;
+}
+
+code {
+  @apply w-fit px-1 bg-light-ui text-invert-text rounded-sm;
 }
 
 ::-webkit-scrollbar {

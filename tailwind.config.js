@@ -12,6 +12,7 @@ export default {
         text: colors.slate[200],
         "light-text": colors.slate[100],
         "dark-text": colors.slate[400],
+        "invert-text": colors.slate[900],
         "dark-border": colors.slate[600],
         border: colors.slate[500],
         "light-border": colors.slate[400],
