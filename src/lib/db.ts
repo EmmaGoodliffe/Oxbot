@@ -146,15 +146,10 @@ export const editCommitment = async (
 export const deleteCommitment = async (
   db: Firestore,
   date: OxDate,
-  index: number,
-  progressA: Writable<number>,
-  progressB: Writable<number>
+  index: number
 ) => {
-  progressA.set(0);
-  progressB.set(0);
   const id = getWeekId(date);
   const prevData = await getWeek(db, date);
-  progressA.set(100);
   if (prevData === undefined) {
     throw new Error("No previous week document");
   } else {
@@ -162,7 +157,6 @@ export const deleteCommitment = async (
     commitments.splice(index, 1);
     await update(db, "weeks", id, { commitments });
   }
-  progressB.set(100);
 };
 
 export const updateToken = async (db: Firestore, token: string) => {

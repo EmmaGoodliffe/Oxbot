@@ -79,9 +79,8 @@ export const displayCom = (
   throw new Error("Unknown commitment type");
 };
 
-// TODO: ensure `00:00` is after `23:00`
 export const sortCommitmentsByTime = (coms: Commitment[]) =>
-  [...coms].sort((a, b) => (getDuration(a.time, b.time) === null ? -1 : 1));
+  [...coms].sort((a, b) => (getDuration(a.time, b.time) === null ? 1 : -1));
 
 export const getPrepTime = (com: Commitment) => {
   const area = getArea(com);

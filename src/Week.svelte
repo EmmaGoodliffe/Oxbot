@@ -4,6 +4,7 @@
     type Commitment,
     displayCom,
     type Week,
+    sortCommitmentsByTime,
   } from "../functions/src/commitment";
   import {
     addWeeks,
@@ -31,7 +32,7 @@
       <Date {date} idPrefix="week" initialDate={$date} weekOnly>
         <div class="my-6 px-6 flex justify-center">
           <button
-            class="button"
+            class="button icon"
             on:click={() => {
               week.set($date);
               isSelectingWeek = false;
@@ -56,7 +57,7 @@
       <div class="flex flex-col items-center">
         <div class="w-full max-w-xs mb-2 flex justify-between">
           <button
-            class="button"
+            class="button icon"
             on:click={() => {
               date.update(d => addWeeks(d, -1) ?? d);
               week.set($date);
@@ -72,7 +73,7 @@
               /></svg
             ></button
           >
-          <button class="button" on:click={() => (isSelectingWeek = true)}>
+          <button class="button icon" on:click={() => (isSelectingWeek = true)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -85,7 +86,7 @@
             >
           </button>
           <button
-            class="button"
+            class="button icon"
             on:click={() => {
               date.update(d => addWeeks(d, 1) ?? d);
               week.set($date);
@@ -132,7 +133,7 @@
             <div class="description">Loading...</div>
           </div>
         {:then week}
-          {#each week?.commitments ?? [] as com, i}
+          {#each sortCommitmentsByTime(week?.commitments ?? []) as com, i}
             {#if day === com.day}
               <!-- TODO: hover for details -->
               <div class="commitment group/com">
