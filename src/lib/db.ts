@@ -1,7 +1,14 @@
-import { doc as ref, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  doc as ref,
+  getDoc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  type UpdateData,
+} from "firebase/firestore";
 import { getWeekId, type OxDate } from "../../functions/src/date";
 import type { Commitment, Week } from "../../functions/src/commitment";
-import type { Firestore } from "firebase/firestore";
+import type { FieldValue, Firestore } from "firebase/firestore";
 import type { Writable } from "svelte/store";
 
 export const delay = (sec: number) =>
@@ -19,42 +26,72 @@ export const keyValuesToObj = <T>(keys: readonly string[], values: T[]) => {
 
 const unique = <T>(arr: T[]) => Array.from(new Set(arr));
 
-type Schemas = {
-  weeks: Week;
-  tokens: { tokens: string[] };
-};
+interface Tokens {
+  tokens: string[];
+}
+
+type Collection = "weeks" | "tokens";
+
+type Data<C extends Collection> = C extends "weeks"
+  ? Week
+  : C extends "tokens"
+  ? Tokens
+  : never;
+
+type DbPartial<T> = (Partial<T> & { [P in keyof T]?: T[P] }) | UpdateData<T>;
 
 // TODO: caching
 
-const read = async <T extends "weeks" | "tokens">(
+const read = async <C extends Collection>(
   db: Firestore,
-  collection: T,
+  collection: C,
   id: string
 ) => {
   const doc = await getDoc(ref(db, collection, id));
-  return doc.data() as Schemas[T] | undefined;
+  return doc.data() as Data<C> | undefined;
 };
 
-const set = <T extends "weeks" | "tokens">(
+const set = <C extends Collection>(
   db: Firestore,
-  collection: T,
+  collection: C,
   id: string,
-  data: Schemas[T]
+  data: Data<C>
 ) => setDoc(ref(db, collection, id), data);
 
-/** Weird version of `Partial<T>` necessary to satisfy DB */
-type DbPartial<T> = Partial<T> & { [K in keyof T]?: T[K] };
-
-const update = <T extends "weeks" | "tokens">(
+/** Note: will throw error if there is not already a document */
+const update = <C extends Collection>(
   db: Firestore,
-  collection: T,
+  collection: C,
   id: string,
-  data: DbPartial<Schemas[T]>
+  data: DbPartial<Data<C>>
 ) => updateDoc(ref(db, collection, id), data);
+
+const updateOrCreate = async <C extends Collection>(
+  db: Firestore,
+  collection: C,
+  id: string,
+  updateData: DbPartial<Data<C>>,
+  createData: Data<C>
+) => {
+  try {
+    await update(db, collection, id, updateData);
+  } catch (err) {
+    await set(db, collection, id, createData);
+  }
+};
+
+// type DistributePickerOverUnion<
+//   T extends {},
+//   K extends keyof T,
+//   P
+// > = K extends any ? (T[K] extends P ? K : never) : never;
+// type PickedKeys<T extends {}, P> = DistributePickerOverUnion<T, keyof T, P>;
+// type PickType<T extends {}, P> = Pick<T, PickedKeys<T, P>>;
 
 export const wake = async (db: Firestore, date: OxDate) => {
   const id = getWeekId(date);
-  update(db, "weeks", id, { latest_active_day: date.day });
+  const data = { latest_active_day: date.day };
+  updateOrCreate(db, "weeks", id, data, { ...data, commitments: [] });
 };
 
 export const getWeek = async (db: Firestore, date: OxDate) => {
@@ -72,16 +109,14 @@ export const addCommitment = async (
   progressA.set(0);
   progressB.set(0);
   const id = getWeekId(date);
-  const prevData = await getWeek(db, date);
   progressA.set(100);
-  // TODO: See https://firebase.google.com/docs/firestore/manage-data/add-data#update_elements_in_an_array
-  if (prevData === undefined) {
-    await set(db, "weeks", id, { commitments: [com] });
-  } else {
-    await update(db, "weeks", id, {
-      commitments: [...prevData.commitments, com],
-    });
-  }
+  await updateOrCreate(
+    db,
+    "weeks",
+    id,
+    { commitments: arrayUnion(com) },
+    { commitments: [com] }
+  );
   progressB.set(100);
 };
 
