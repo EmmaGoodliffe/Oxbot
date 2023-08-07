@@ -6,11 +6,10 @@
     type Week,
   } from "../functions/src/commitment";
   import {
-    days,
-    oxToGregDate,
-    type OxDate,
     addWeeks,
+    days,
     displayWeek,
+    type OxDate,
   } from "../functions/src/date";
   import Date from "./lib/Date.svelte";
 

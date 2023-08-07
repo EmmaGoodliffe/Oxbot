@@ -1,14 +1,14 @@
 import {
-  doc as ref,
-  getDoc,
-  setDoc,
-  updateDoc,
   arrayUnion,
+  getDoc,
+  doc as ref,
+  setDoc,
   type UpdateData,
+  updateDoc,
 } from "firebase/firestore";
 import { getWeekId, type OxDate } from "../../functions/src/date";
 import type { Commitment, Week } from "../../functions/src/commitment";
-import type { FieldValue, Firestore } from "firebase/firestore";
+import type { Firestore } from "firebase/firestore";
 import type { Writable } from "svelte/store";
 
 export const delay = (sec: number) =>
