@@ -6,6 +6,7 @@
   "scripts": {
     "build:svelte": "vite build",
     "build:ts": "npm run --prefix functions build",
+    "build:json": "npx typescript-json-schema ./tsconfig.json Commitment --required --out src/schemas/commitment.json",
     "build": "npm run build:ts && npm run build:svelte",
     "check": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json && npm run --prefix functions check",
     "deploy": "npm run build && firebase deploy",
@@ -41,6 +42,7 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
+    "ajv": "^8.12.0",
     "firebase": "^10.1.0"
   }
 }

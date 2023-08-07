@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getJsonCommitmentValidity } from "../functions/src/commitment";
+  import { checkCom } from "./schemas";
 
   let text = "";
   let json: unknown;
@@ -11,22 +11,25 @@
     } catch (err) {
       status = ["Invalid JSON"];
     }
-  }
-
-  $: {
     if (json instanceof Array) {
       if (json.length) {
-        const validities = json.map(obj => getJsonCommitmentValidity(obj));
+        const validities = json.map(obj => checkCom(obj));
         const allValid = validities.every(v => v === true);
         if (allValid) {
           status = true;
         } else {
           status = validities
-            .map((v, i) => ({ v, i }))
-            .filter(({ v }) => v !== true)
-            .map(({ v, i }) =>
-              v ? `Invalid ${v} property on [${i}]` : `Invalid [${i}]`
-            );
+            .map((v, i) =>
+              v === true
+                ? ""
+                : v.map(
+                    e =>
+                      `${e.keyword} error at ${
+                        e.instancePath || "/"
+                      } in [${i}]: ${e.message} (${JSON.stringify(e.params)})`
+                  )
+            )
+            .flat();
         }
       } else {
         status = ["Empty"];
@@ -49,6 +52,6 @@
   <p>valid</p>
 {:else}
   {#each status as s}
-    <code>{s}</code>
+    <code class="my-1">{s}</code>
   {/each}
 {/if}

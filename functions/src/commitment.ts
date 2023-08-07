@@ -101,42 +101,41 @@ const isArea = (x: unknown): x is Commitment["location"]["area"] => {
   return ["Trin", "Iff", "Dept"].includes(x);
 };
 
-type KeysOfUnion<T> = T extends {} ? keyof T : never;
-
+// type KeysOfUnion<T> = T extends {} ? keyof T : never;
 // TODO: Test
-export const getJsonCommitmentValidity = (
-  json: unknown
-):
-  | boolean
-  | keyof Commitment
-  | `location.${keyof Commitment["location"]}`
-  | `details.${KeysOfUnion<Commitment["details"]>}` => {
-  if (!(json instanceof Object)) return false;
-  // TODO: More safety here
-  const missingProperty = (
-    ["type", "day", "time", "endTime", "location", "details"] as const
-  ).find(p => !json.hasOwnProperty(p));
-  if (missingProperty) return missingProperty;
-  const k = json as Record<keyof Commitment, unknown>;
-  if (!comTypes.includes(k.type as Commitment["type"])) return "type";
-  if (!days.includes(k.day as Commitment["day"])) return "day";
-  if (!isTime(k.time)) return "time";
-  if (k.endTime !== null && !isTime(k.endTime)) return "endTime";
-  if (!(k.location instanceof Object)) return "location";
-  const { area, within, journey } = k.location as Commitment["location"];
-  if (!isArea(area)) return "location.area";
-  if (!["string", "undefined"].includes(typeof within))
-    return "location.within";
-  if (!["number", "undefined"].includes(typeof journey))
-    return "location.journey";
-  if (!(k.details instanceof Object)) return "details";
-  const t = k.type as Commitment["type"];
-  const d = k.details;
-  const missingDetail = requiredComDetails[t].find(v => !d.hasOwnProperty(v));
-  if (missingDetail) return `details.${missingDetail}`;
-  if (!Object.values(d).every(v => typeof v === "string")) return "details";
-  return true;
-};
+// export const getJsonCommitmentValidity = (
+//   json: unknown
+// ):
+//   | boolean
+//   | keyof Commitment
+//   | `location.${keyof Commitment["location"]}`
+//   | `details.${KeysOfUnion<Commitment["details"]>}` => {
+//   if (!(json instanceof Object)) return false;
+//   // TODO: More safety here
+//   const missingProperty = (
+//     ["type", "day", "time", "endTime", "location", "details"] as const
+//   ).find(p => !json.hasOwnProperty(p));
+//   if (missingProperty) return missingProperty;
+//   const k = json as Record<keyof Commitment, unknown>;
+//   if (!comTypes.includes(k.type as Commitment["type"])) return "type";
+//   if (!days.includes(k.day as Commitment["day"])) return "day";
+//   if (!isTime(k.time)) return "time";
+//   if (k.endTime !== null && !isTime(k.endTime)) return "endTime";
+//   if (!(k.location instanceof Object)) return "location";
+//   const { area, within, journey } = k.location as Commitment["location"];
+//   if (!isArea(area)) return "location.area";
+//   if (!["string", "undefined"].includes(typeof within))
+//     return "location.within";
+//   if (!["number", "undefined"].includes(typeof journey))
+//     return "location.journey";
+//   if (!(k.details instanceof Object)) return "details";
+//   const t = k.type as Commitment["type"];
+//   const d = k.details;
+//   const missingDetail = requiredComDetails[t].find(v => !d.hasOwnProperty(v));
+//   if (missingDetail) return `details.${missingDetail}`;
+//   if (!Object.values(d).every(v => typeof v === "string")) return "details";
+//   return true;
+// };
 
-const isJsonCommitment = (json: unknown): json is Commitment =>
-  getJsonCommitmentValidity(json) === true;
+// const isJsonCommitment = (json: unknown): json is Commitment =>
+//   getJsonCommitmentValidity(json) === true;
