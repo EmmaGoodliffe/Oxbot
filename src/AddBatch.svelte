@@ -1,9 +1,41 @@
 <script lang="ts">
-  import { checkCom } from "./schemas";
+  import { writable } from "svelte/store";
+  import ProgressButton from "./lib/ProgressButton.svelte";
+  import { checkBatch } from "./schemas";
+  import { addBatchedCommitments } from "./lib/db";
+  import type { Firestore } from "firebase/firestore";
+
+  export let db: Firestore;
+  export let refresh: () => Promise<unknown>;
 
   let text = "";
-  let json: unknown;
-  let status: string[] | true = [""];
+  let errors: string[] = [""];
+  const a = writable(0);
+  const b = writable(0);
+
+  type E = Exclude<ReturnType<typeof checkBatch>, boolean>[number];
+
+  const sortSchemaErrors = (es: E[]) => {
+    const requiredErrors = es.filter(e => e.keyword === "required");
+    const anyOfErrors = es.filter(e => e.keyword === "anyOf");
+    const otherErrors = es.filter(
+      e => !["required", "anyOf"].includes(e.keyword)
+    );
+    return [...otherErrors, ...requiredErrors, ...anyOfErrors];
+  };
+
+  const formatSchemaError = (e: E, i: number) => {
+    const message =
+      e.keyword === "required"
+        ? `might require property '${e.params.missingProperty}'`
+        : e.keyword === "anyOf"
+        ? "does not match any of its schemas"
+        : e.message;
+    const suffix = e.keyword === "enum" ? e.params.allowedValues : "";
+    return `${e.instancePath || "/"} in [${i}]: ${message}${
+      suffix ? ` (${suffix})` : ""
+    }`;
+  };
 </script>
 
 <textarea
@@ -14,43 +46,44 @@
   bind:value={text}
   on:input={() => {
     try {
-      json = JSON.parse(text);
+      const json = JSON.parse(text);
       if (json instanceof Array) {
         if (json.length) {
-          const validities = json.map(obj => checkCom(obj));
+          const validities = json.map(obj => checkBatch(obj));
           const allValid = validities.every(v => v === true);
           if (allValid) {
-            status = true;
+            errors = [];
           } else {
-            status = validities
+            errors = validities
               .map((v, i) =>
                 v === true
                   ? ""
-                  : v.map(
-                      e =>
-                        `${e.keyword} error at ${
-                          e.instancePath || "/"
-                        } in [${i}]: ${e.message} (${JSON.stringify(e.params)})`
-                    )
+                  : sortSchemaErrors(v).map(e => formatSchemaError(e, i))
               )
               .flat();
           }
         } else {
-          status = ["Empty"];
+          errors = ["Empty"];
         }
       } else {
-        status = ["Expected an array"];
+        errors = ["Expected an array"];
       }
     } catch (err) {
-      status = ["Invalid JSON"];
+      errors = ["Invalid JSON"];
     }
   }}
 />
-<!-- TODO: format button -->
-{#if status === true}
-  <p>valid</p>
-{:else}
-  {#each status as s}
+{#if errors.length}
+  {#each errors as s}
     <code class="my-1">{s}</code>
   {/each}
+{:else}
+  <ProgressButton
+    text="Add batch"
+    valid={true}
+    {a}
+    {b}
+    {refresh}
+    write={() => addBatchedCommitments(db, JSON.parse(text))}
+  />
 {/if}

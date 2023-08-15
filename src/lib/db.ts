@@ -6,11 +6,16 @@ import {
   type UpdateData,
   updateDoc,
 } from "firebase/firestore";
-import { toInt, type OxDate, getWeekId } from "../../functions/src/date";
-import type { Commitment } from "../../functions/src/commitment";
+import { type OxDate, getWeekId } from "../../functions/src/date";
+import type {
+  Batched,
+  Commitment,
+  Collection,
+  Data,
+  Id,
+} from "../../functions/src/types";
 import type { Firestore } from "firebase/firestore";
 import type { Writable } from "svelte/store";
-import type { Collection, Data, Id } from "../../functions/src/types";
 
 export const delay = (sec: number) =>
   new Promise<void>(res => setTimeout(() => res(), sec * 1000));
@@ -145,6 +150,27 @@ export const deleteCommitment = async (
     const { commitments } = prevData;
     commitments.splice(index, 1);
     await update(db, "weeks", id, { commitments });
+  }
+};
+
+export const addBatchedCommitments = async (
+  db: Firestore,
+  batch: Batched[]
+) => {
+  const batchWithIds = batch.map(b => ({
+    commitment: b.commitment,
+    id: getWeekId(b.date),
+  }));
+  const ids = unique(batchWithIds.map(b => b.id));
+  const matchingBatches = ids.map(id => batchWithIds.filter(b => b.id === id));
+  const matchingComs = matchingBatches.map(x => x.map(y => y.commitment));
+  if (ids.length > 20) {
+    throw new Error("Too many documents");
+  }
+  for (let i = 0; i < ids.length; i++) {
+    const id = ids[i];
+    const coms = matchingComs[i];
+    console.log("id:", id, "coms:", coms);
   }
 };
 

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build:json": "npx typescript-json-schema ./tsconfig.json Batch --required --out src/schemas/batch.json",
+    "build:json": "typescript-json-schema ./tsconfig.json Batched --required --out src/schemas/batched.json",
     "build:svelte": "vite build",
     "build:ts": "npm run --prefix functions build",
     "build": "npm run build:ts && npm run build:json && npm run build:svelte",
@@ -39,6 +39,7 @@
     "tailwindcss": "^3.3.2",
     "tslib": "^2.6.0",
     "typescript": "^5.2.0-beta",
+    "typescript-json-schema": "^0.59.0",
     "vite": "^4.4.5"
   },
   "dependencies": {

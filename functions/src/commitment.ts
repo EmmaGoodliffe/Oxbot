@@ -1,5 +1,5 @@
 import { getDuration, utcToLocalTime } from "./time";
-import { Commitment } from "./types";
+import type { Commitment } from "./types";
 
 export const requiredComDetails = {
   tute: ["tutor", "subject"],

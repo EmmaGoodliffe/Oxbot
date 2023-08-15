@@ -27,7 +27,7 @@ export const oxDate = (
   return { year: y, term, week: w, day };
 };
 
-export const getWeekId = (date: OxDate | Omit<OxDate, "day">): Id<"weeks"> =>
+export const getWeekId = (date: Omit<OxDate, "day">): Id<"weeks"> =>
   `${toInt(date.year.toString().slice(2, 4))}-${date.term}-${date.week}`;
 
 const termDates = [

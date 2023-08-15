@@ -1,6 +1,7 @@
 <script lang="ts">
   import { writable, type Writable } from "svelte/store";
-  import { comTypes, requiredComDetails } from "../functions/src/commitment";
+  import { requiredComDetails } from "../functions/src/commitment";
+  import { comTypes } from "../functions/src/types";
   import { localToUtcTime } from "../functions/src/time";
   import ComDetails from "./ComDetails.svelte";
   import Date from "./lib/Date.svelte";
@@ -78,6 +79,6 @@
     </button>
   </div>
   {#if selectedAction === "batch"}
-    <AddBatch />
+    <AddBatch {db} {refresh} />
   {/if}
 </div>

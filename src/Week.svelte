@@ -1,9 +1,7 @@
 <script lang="ts">
   import { writable, type Writable } from "svelte/store";
   import {
-    type Commitment,
     displayCom,
-    type Week,
     sortCommitmentsByTime,
   } from "../functions/src/commitment";
   import {
@@ -13,6 +11,7 @@
     type OxDate,
   } from "../functions/src/date";
   import Date from "./lib/Date.svelte";
+  import type { Commitment, Week } from "../functions/src/types";
 
   export let today: OxDate;
   export let week: Writable<OxDate>; // Only updated when `date` is confirmed

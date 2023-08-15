@@ -21,8 +21,8 @@
   import Toasts from "./Toasts.svelte";
   import Today from "./Today.svelte";
   import Week from "./Week.svelte";
-  import type { Commitment } from "../functions/src/commitment";
   import type { NotificationPayload } from "firebase/messaging";
+  import type { Commitment } from "../functions/src/types";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC7Aq56CIoRfwsfhxQgr8UY1v16nXs45Mw",

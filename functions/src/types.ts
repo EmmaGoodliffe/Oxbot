@@ -64,9 +64,10 @@ export type Id<C extends Collection> = C extends "weeks"
   ? "default"
   : never;
 
-export type Batch = {
-  /** Document ID of the week */
-  week_id: Id<"weeks">;
+/** Element of batch job for adding commitments */
+export interface Batched {
+  /** Date of commitment */
+  date: { year: number; term: OxDate["term"]; week: number };
   /** Commitment to add to that week */
   commitment: Commitment;
-}[];
+}
