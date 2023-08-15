@@ -93,26 +93,34 @@ export const getWeek = async (db: Firestore, date: OxDate) => {
   return read(db, "weeks", getWeekId(date));
 };
 
-export const addCommitment = async (
+export const addCommitments = async (
+  db: Firestore,
+  date: Omit<OxDate, "day">,
+  coms: Commitment[],
+  progressA?: Writable<number>,
+  progressB?: Writable<number>
+) => {
+  progressA && progressA.set(0);
+  progressB && progressB.set(0);
+  const id = getWeekId(date);
+  progressA && progressA.set(100);
+  await updateOrCreate(
+    db,
+    "weeks",
+    id,
+    { commitments: arrayUnion(...coms) },
+    { commitments: coms }
+  );
+  progressB && progressB.set(100);
+};
+
+export const addCommitment = (
   db: Firestore,
   date: OxDate,
   com: Commitment,
   progressA: Writable<number>,
   progressB: Writable<number>
-) => {
-  progressA.set(0);
-  progressB.set(0);
-  const id = getWeekId(date);
-  progressA.set(100);
-  await updateOrCreate(
-    db,
-    "weeks",
-    id,
-    { commitments: arrayUnion(com) },
-    { commitments: [com] }
-  );
-  progressB.set(100);
-};
+) => addCommitments(db, date, [com], progressA, progressB);
 
 export const editCommitment = async (
   db: Firestore,
@@ -155,20 +163,29 @@ export const deleteCommitment = async (
 
 export const addBatchedCommitments = async (
   db: Firestore,
-  batch: Batched[]
+  batch: Batched[],
+  progressA: Writable<number>,
+  progressB: Writable<number>
 ) => {
+  progressA.set(0);
+  progressB.set(0);
   const batchWithIds = batch.map(b => ({ ...b, id: getWeekId(b.date) }));
   const ids = unique(batchWithIds.map(b => b.id));
-  const matchingBatch = ids.map(id => batchWithIds.filter(b => b.id === id));
-  const matchingComs = matchingBatch.map(x => x.map(y => y.commitment));
   if (ids.length > 20) {
-    throw new Error("Too many documents");
+    throw new Error(`Too many documents: ${ids.length}`);
   }
-  for (let i = 0; i < ids.length; i++) {
-    const id = ids[i];
-    const coms = matchingComs[i];
-    console.log("id:", id, "coms:", coms);
-  }
+  const matchingBatches = ids.map(id => batchWithIds.filter(b => b.id === id));
+  const promises = ids.map((_id, i) => {
+    const batch = matchingBatches[i];
+    const coms = batch.map(b => b.commitment);
+    return addCommitments(db, batch[0].date, coms);
+  });
+  const firstHalf = promises.slice(0, promises.length / 2);
+  const secondHalf = promises.slice(promises.length / 2);
+  await Promise.all(firstHalf);
+  progressA.set(100);
+  await Promise.all(secondHalf);
+  progressB.set(100);
 };
 
 export const updateToken = async (db: Firestore, token: string) => {

@@ -84,6 +84,6 @@
     {a}
     {b}
     {refresh}
-    write={() => addBatchedCommitments(db, JSON.parse(text))}
+    write={() => addBatchedCommitments(db, JSON.parse(text), a, b)}
   />
 {/if}
