@@ -157,13 +157,10 @@ export const addBatchedCommitments = async (
   db: Firestore,
   batch: Batched[]
 ) => {
-  const batchWithIds = batch.map(b => ({
-    commitment: b.commitment,
-    id: getWeekId(b.date),
-  }));
+  const batchWithIds = batch.map(b => ({ ...b, id: getWeekId(b.date) }));
   const ids = unique(batchWithIds.map(b => b.id));
-  const matchingBatches = ids.map(id => batchWithIds.filter(b => b.id === id));
-  const matchingComs = matchingBatches.map(x => x.map(y => y.commitment));
+  const matchingBatch = ids.map(id => batchWithIds.filter(b => b.id === id));
+  const matchingComs = matchingBatch.map(x => x.map(y => y.commitment));
   if (ids.length > 20) {
     throw new Error("Too many documents");
   }
