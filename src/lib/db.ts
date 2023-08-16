@@ -16,6 +16,7 @@ import type {
 } from "../../functions/src/types";
 import type { Firestore } from "firebase/firestore";
 import type { Writable } from "svelte/store";
+import { localToUtcTime } from "../../functions/src/time";
 
 export const delay = (sec: number) =>
   new Promise<void>(res => setTimeout(() => res(), sec * 1000));
@@ -169,7 +170,17 @@ export const addBatchedCommitments = async (
 ) => {
   progressA.set(0);
   progressB.set(0);
-  const batchWithIds = batch.map(b => ({ ...b, id: getWeekId(b.date) }));
+  const batchWithIds = batch.map(b => ({
+    date: b.date,
+    commitment: {
+      ...b.commitment,
+      time: localToUtcTime(b.commitment.time),
+      endTime: b.commitment.endTime
+        ? localToUtcTime(b.commitment.endTime)
+        : null,
+    },
+    id: getWeekId(b.date),
+  }));
   const ids = unique(batchWithIds.map(b => b.id));
   if (ids.length > 20) {
     throw new Error(`Too many documents: ${ids.length}`);
