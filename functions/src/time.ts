@@ -1,5 +1,5 @@
-import type { Week } from "./commitment";
 import { gregToOxDate, toInt } from "./date";
+import type { Week } from "./types";
 
 const jsToLocalTime = (d: Date) => d.toLocaleTimeString().slice(0, 5);
 

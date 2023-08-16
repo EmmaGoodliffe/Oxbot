@@ -18,6 +18,6 @@
 
 <style lang="postcss">
   dialog {
-    @apply w-5/6 md:w-2/3 px-8 py-4 bg-bg text-text border-light-border border-4 rounded;
+    @apply w-5/6 lg:w-2/3 px-8 py-4 bg-bg text-text border-light-border border-4 rounded;
   }
 </style>

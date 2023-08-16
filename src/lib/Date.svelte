@@ -35,7 +35,7 @@
 </script>
 
 <div
-  class="mx-auto flex flex-col md:flex-row sm:items-center max-w-[12rem] sm:max-w-none"
+  class="mx-auto flex flex-col xl:flex-row sm:items-center max-w-[12rem] sm:max-w-none"
 >
   <input
     type="date"
@@ -46,7 +46,7 @@
   />
   <div class="px-6 py-4 text-center italic">or</div>
   <div
-    class="flex flex-col sm:flex-row sm:items-center either-date"
+    class="flex flex-col md:flex-row sm:items-center either-date"
     class:selected={useOxDate}
   >
     <div class="ox-date-input">

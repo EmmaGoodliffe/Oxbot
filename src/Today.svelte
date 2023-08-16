@@ -2,9 +2,10 @@
   import {
     displayCom,
     sortCommitmentsByTime,
-    type Week,
   } from "../functions/src/commitment";
+
   import type { OxDate } from "../functions/src/date";
+  import type { Week } from "../functions/src/types";
 
   export let today: OxDate;
   export let thisWeekProm: Promise<Week | undefined>;

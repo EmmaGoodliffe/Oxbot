@@ -18,11 +18,11 @@
   import { getWeek, updateToken, wake } from "./lib/db";
   import { appendToast, type Toast } from "./lib/toast";
   import NotesNav from "./NotesNav.svelte";
-  import Week from "./Week.svelte";
   import Toasts from "./Toasts.svelte";
   import Today from "./Today.svelte";
-  import type { Commitment } from "../functions/src/commitment";
+  import Week from "./Week.svelte";
   import type { NotificationPayload } from "firebase/messaging";
+  import type { Commitment } from "../functions/src/types";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC7Aq56CIoRfwsfhxQgr8UY1v16nXs45Mw",

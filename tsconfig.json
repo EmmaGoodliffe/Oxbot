@@ -16,7 +16,10 @@
     "checkJs": true,
     "isolatedModules": true,
     "strict": true,
-    "lib": ["DOM"] // for `src/main.ts`
+    "lib": ["DOM"], // for `src/main.ts`,
+    "moduleResolution": "node", // for JSON schema generation
+    "esModuleInterop": true, // for JSON schema validation
+    "resolveJsonModule": true // for JSON schema validation
   },
   "include": [
     "src/**/*.d.ts",

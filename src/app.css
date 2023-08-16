@@ -66,12 +66,28 @@ a.card span {
   @apply px-4 py-1.5 bg-ui disabled:text-dark-text rounded transition active:bg-light-ui;
 }
 
-.button:has(svg) {
+.button.icon {
   @apply w-12 h-12 px-2 py-1;
 }
 
-.button svg {
+.button.icon svg {
   @apply mx-auto;
+}
+
+.actions-header {
+  @apply font-bold mt-4 mb-2;
+}
+
+.action {
+  @apply w-fit py-2 inline-flex items-center;
+}
+
+.action svg {
+  @apply mr-2;
+}
+
+.action span {
+  margin-top: 0.2rem;
 }
 
 input {
@@ -86,6 +102,14 @@ input[type="time"] {
 select {
   @apply px-2 py-2 bg-ui rounded;
   border-right: 0.5rem solid transparent;
+}
+
+textarea {
+  @apply min-h-[8rem] my-4 px-2 py-1 bg-dark-bg font-mono;
+}
+
+code {
+  @apply w-fit px-1 bg-light-ui text-invert-text rounded-sm;
 }
 
 ::-webkit-scrollbar {
