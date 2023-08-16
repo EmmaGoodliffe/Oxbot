@@ -44,7 +44,9 @@ export const displayCom = (
 };
 
 export const sortCommitmentsByTime = (coms: Commitment[]) =>
-  [...coms].sort((a, b) => (getDuration(a.time, b.time) === null ? 1 : -1));
+  coms
+    .map((com, i) => ({ com, index: i }))
+    .sort((a, b) => (getDuration(a.com.time, b.com.time) === null ? 1 : -1));
 
 export const getPrepTime = (com: Commitment) => {
   const area = getArea(com);

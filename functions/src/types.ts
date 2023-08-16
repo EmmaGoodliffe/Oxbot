@@ -5,7 +5,6 @@ type ComType = keyof typeof requiredComDetails;
 
 export const comTypes = Object.keys(requiredComDetails) as ComType[];
 
-// TODO: use a template literal type for times
 interface Com<T extends ComType> {
   /** Type of commitment */
   type: T;
@@ -35,7 +34,7 @@ interface Com<T extends ComType> {
   /** Custom details dependent on the `type` */
   details: Record<(typeof requiredComDetails)[T][number], string>;
 }
-// TODO: make this clearer; possible avenues shown in https://github.com/Microsoft/TypeScript/issues/1213#issuecomment-1215039765
+// Could be improved via https://github.com/Microsoft/TypeScript/issues/1213#issuecomment-1215039765
 type DistributeComOverUnion<T> = T extends ComType ? Com<T> : never;
 export type Commitment = DistributeComOverUnion<ComType>;
 

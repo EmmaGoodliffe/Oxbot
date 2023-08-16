@@ -90,7 +90,7 @@ export const wake = async (db: Firestore, date: OxDate) => {
 };
 
 export const getWeek = async (db: Firestore, date: OxDate) => {
-  await delay(4);
+  // await delay(4);
   return read(db, "weeks", getWeekId(date));
 };
 

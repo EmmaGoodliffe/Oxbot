@@ -2,10 +2,7 @@
   export let title: string;
   export let onClose: () => void;
 
-  const closeDialog = () => {
-    console.log("closing");
-    document.querySelector("dialog")?.close();
-  };
+  const closeDialog = () => document.querySelector("dialog")?.close();
 </script>
 
 <dialog on:close={onClose}>

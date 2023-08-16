@@ -2,11 +2,7 @@ import { Response } from "express";
 import * as admin from "firebase-admin";
 import { onRequest } from "firebase-functions/v2/https";
 import { onSchedule } from "firebase-functions/v2/scheduler";
-import {
-  displayCom,
-  getPrepTime,
-  sortCommitmentsByTime,
-} from "./commitment";
+import { displayCom, getPrepTime, sortCommitmentsByTime } from "./commitment";
 import { getWeekId, gregToOxDate } from "./date";
 import { displayDuration, getDuration, getNow, isAwake } from "./time";
 import { Commitment, Week } from "./types";
@@ -123,7 +119,7 @@ const sendTgAlarm = async (): Promise<ApiRes> => {
   const week = doc.data() as Week | undefined;
   const coms = week?.commitments ?? [];
   const todayComs = coms.filter(com => com.day === today.day);
-  const first_com = sortCommitmentsByTime(todayComs)[0] as
+  const first_com = sortCommitmentsByTime(todayComs)[0].com as
     | Commitment
     | undefined;
   if (week === undefined || first_com === undefined) {

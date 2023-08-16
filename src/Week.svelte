@@ -132,20 +132,21 @@
             <div class="description">Loading...</div>
           </div>
         {:then week}
-          {#each sortCommitmentsByTime(week?.commitments ?? []) as com, i}
-            {#if day === com.day}
+          {#each sortCommitmentsByTime(week?.commitments ?? []) as com}
+            {#if day === com.com.day}
               <!-- TODO: hover for details -->
               <div class="commitment group/com">
                 <div class="time">
-                  {displayCom(com).localTime}
+                  {displayCom(com.com).localTime}
                 </div>
                 <div class="description">
                   <span>
-                    {displayCom(com).title}
+                    {displayCom(com.com).title}
                   </span>
                   <button
                     class="px-1 invisible group-hover/com:visible"
-                    on:click={() => selectCom({ ...today, day }, i, com)}
+                    on:click={() =>
+                      selectCom({ ...today, day }, com.index, com.com)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

@@ -9,6 +9,11 @@
 
   export let today: OxDate;
   export let thisWeekProm: Promise<Week | undefined>;
+
+  const getTodayComs = (week: Week) =>
+    sortCommitmentsByTime(
+      week.commitments.filter(com => com.day === today.day)
+    ).map(com => displayCom(com.com));
 </script>
 
 <section class="group/section">
@@ -29,7 +34,7 @@
       <div
         class="flex flex-col border-2 border-border rounded-lg overflow-auto"
       >
-        {#each sortCommitmentsByTime(week.commitments.filter(com => com.day === today.day)).map(displayCom) as com}
+        {#each getTodayComs(week) as com}
           <div class="commitment">
             <div class="time">
               <span class="text-lg">{com.localTime}</span>

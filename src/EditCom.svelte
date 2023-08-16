@@ -1,9 +1,6 @@
 <script lang="ts">
   import { writable } from "svelte/store";
-  import {
-    displayCom,
-    requiredComDetails,
-  } from "../functions/src/commitment";
+  import { displayCom, requiredComDetails } from "../functions/src/commitment";
   import { type OxDate, oxToGregDate } from "../functions/src/date";
   import { localToUtcTime } from "../functions/src/time";
   import ComDetails from "./ComDetails.svelte";
@@ -11,7 +8,7 @@
   import ProgressButton from "./lib/ProgressButton.svelte";
   import Time from "./lib/Time.svelte";
   import type { Firestore } from "firebase/firestore";
-    import type { Commitment } from "../functions/src/types";
+  import type { Commitment } from "../functions/src/types";
 
   export let db: Firestore;
   export let com: Commitment | undefined;
@@ -21,16 +18,17 @@
 
   $: title =
     com === undefined ? "No commitment selected" : displayCom(com).title;
-  let time = writable<string | undefined>();
-  let endTime = writable<string | null>();
+  const time = writable<string | undefined>();
+  const endTime = writable<string | null>();
   let details = writable<string[]>([]);
   $: {
-    time.set(com?.time ?? "00:00");
-    endTime.set(com === undefined ? null : com.endTime);
+    const displayedCom = com === undefined ? undefined : displayCom(com);
+    time.set(displayedCom?.localTime ?? "00:00");
+    endTime.set(displayedCom === undefined ? null : displayedCom.localEndTime);
     details.set(Object.values(com?.details ?? []));
   }
-  let progressA = writable(0);
-  let progressB = writable(0);
+  const progressA = writable(0);
+  const progressB = writable(0);
   let selectedAction: null | "delete" = null;
 </script>
 
@@ -45,7 +43,6 @@
       {/if}
     </div>
 
-    <!-- TODO: Use local times -->
     <Time
       idPrefix="edit-com"
       {time}
