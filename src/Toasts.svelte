@@ -40,7 +40,6 @@
       const h = document.querySelector(`#toast-${i}`)?.clientHeight;
       return h ? `${h}px` : "auto";
     });
-    console.count("Updated toast styles");
   };
 </script>
 

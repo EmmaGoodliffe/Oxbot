@@ -1,6 +1,13 @@
 import { requiredComDetails } from "./commitment";
 import { type OxDate, days } from "./date";
 
+export type ApiRes<T = Record<string, unknown>> = {
+  status: number;
+  info: string;
+  result?: T;
+  error?: string;
+};
+
 type ComType = keyof typeof requiredComDetails;
 
 export const comTypes = Object.keys(requiredComDetails) as ComType[];
@@ -69,4 +76,30 @@ export interface Batched {
   date: { year: number; term: OxDate["term"]; week: number };
   /** Commitment to add to that week */
   commitment: Commitment;
+}
+
+export interface Word {
+  wiki_feed: {
+    "?xml": string; // empty
+    feed: {
+      id: string; // URL
+      title: string;
+      link: string[]; // empty
+      updated: string; // time code
+      subtitle: string;
+      generator: string; // irrelevant
+      entry: {
+        id: string; // URL
+        title: string;
+        link: string; // empty
+        updated: string; // time code
+        summary: string; // XML
+        author: { name: string };
+      }[];
+    };
+  };
+  word: string;
+  classification: string;
+  definition: string;
+  url: string;
 }

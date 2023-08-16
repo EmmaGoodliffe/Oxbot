@@ -186,7 +186,7 @@ export const addBatchedCommitments = async (
     throw new Error(`Too many documents: ${ids.length}`);
   }
   const matchingBatches = ids.map(id => batchWithIds.filter(b => b.id === id));
-  const promises = ids.map((_id, i) => {
+  const promises = ids.map((id, i) => {
     const batch = matchingBatches[i];
     const coms = batch.map(b => b.commitment);
     return addCommitments(db, batch[0].date, coms);

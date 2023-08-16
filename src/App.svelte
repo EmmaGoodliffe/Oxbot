@@ -2,7 +2,11 @@
   // import { getAnalytics } from "firebase/analytics";
   import { initializeApp } from "firebase/app";
   import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
-  import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
+  import {
+    connectFunctionsEmulator,
+    getFunctions,
+    httpsCallable,
+  } from "firebase/functions";
   import {
     getMessaging,
     getToken,
@@ -15,14 +19,14 @@
   import AddCom from "./AddCom.svelte";
   import Dialog from "./Dialog.svelte";
   import EditCom from "./EditCom.svelte";
-  import { getWeek, updateToken, wake } from "./lib/db";
+  import { delay, getWeek, updateToken, wake } from "./lib/db";
   import { appendToast, type Toast } from "./lib/toast";
   import NotesNav from "./NotesNav.svelte";
   import Toasts from "./Toasts.svelte";
   import Today from "./Today.svelte";
   import Week from "./Week.svelte";
   import type { NotificationPayload } from "firebase/messaging";
-  import type { Commitment } from "../functions/src/types";
+  import type { Commitment, ApiRes, Word } from "../functions/src/types";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC7Aq56CIoRfwsfhxQgr8UY1v16nXs45Mw",
@@ -37,13 +41,16 @@
   // getAnalytics(app);
   const db = getFirestore(app);
   const functions = getFunctions(app);
-  const DEV = window.location.hostname === "localhost";
+  const DEV =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
   DEV && connectFunctionsEmulator(functions, "127.0.0.1", 5001);
   try {
     DEV && connectFirestoreEmulator(db, "127.0.0.1", 8080);
   } catch (err) {
     console.warn("Emulators failed");
   }
+  const getWord = httpsCallable(functions, "word");
 
   const today = gregToOxDate(getNow().localDate);
   if (today === undefined) {
@@ -104,6 +111,18 @@
     dialogMode = "edit";
   };
 
+  const getWordProm = async () => {
+    const result = (await getWord()).data as ApiRes<Word>;
+    if (result.status !== 200) {
+      throw new Error(`Error getting word: ${result.error}`);
+    }
+    const word = result.result as Word;
+    console.log(word);
+    return word;
+  };
+
+  const wordProm = getWordProm();
+
   const prepDevice = async () => {
     try {
       const permission =
@@ -161,6 +180,16 @@
     }}>wake</button
   >
   <button class="button" on:click={prepDevice}>prep device</button>
+
+  <div id="word">
+    {#await wordProm then word}
+      <p>
+        <a href={word.url} target="_blank" class="font-bold">{word.word}</a>
+        <span>{word.classification}</span>
+      </p>
+      {@html word.definition}
+    {/await}
+  </div>
 
   <h1>Notes</h1>
   <NotesNav />

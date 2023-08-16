@@ -1,11 +1,13 @@
 import { Response } from "express";
 import * as admin from "firebase-admin";
-import { onRequest } from "firebase-functions/v2/https";
+import { onRequest, onCall } from "firebase-functions/v2/https";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { displayCom, getPrepTime, sortCommitmentsByTime } from "./commitment";
 import { getWeekId, gregToOxDate } from "./date";
 import { displayDuration, getDuration, getNow, isAwake } from "./time";
-import { Commitment, Week } from "./types";
+import { ApiRes, Commitment, Week, Word } from "./types";
+import { XMLParser } from "fast-xml-parser";
+import HTMLParser from "node-html-parser";
 
 /** every 10 minutes */
 const CRON = "0-50/10 * * * *";
@@ -16,11 +18,6 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
-
-type ApiRes = { status: number; info: string } & (
-  | { result: Record<string, unknown> }
-  | { error: unknown }
-);
 
 const delay = (sec: number) =>
   new Promise<void>(res => setTimeout(() => res(), sec * 1000));
@@ -64,9 +61,11 @@ export const notify = onRequest(
         result: { message_id },
       });
     } catch (err) {
-      res
-        .status(500)
-        .json({ status: 500, info: "Error sending notification", error: err });
+      res.status(500).json({
+        status: 500,
+        info: "Error sending notification",
+        error: `${err}`,
+      });
     }
   }
 );
@@ -172,8 +171,60 @@ export const alarm = onRequest(
       console.log(err);
       res
         .status(500)
-        .json({ status: 500, info: "Error sending alarm", error: err });
+        .json({ status: 500, info: "Error sending alarm", error: `${err}` });
     }
+  }
+);
+
+const random = <T>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
+
+const getWord = async (): Promise<ApiRes<Word>> => {
+  try {
+    const response = await fetch(
+      "https://en.wiktionary.org//w/api.php?action=featuredfeed&feed=wotd&feedformat=atom"
+    );
+    const xml = await response.text();
+    const parser = new XMLParser();
+    const wiki_feed = parser.parse(xml) as Word["wiki_feed"];
+    const chosen = random(wiki_feed.feed.entry);
+    const html = HTMLParser.parse(chosen.summary);
+    const title = html.getElementById("WOTD-rss-title");
+    const word = title.innerText;
+    const classification = title
+      .closest("td")
+      .childNodes.slice(1)
+      .map(c => c.innerText)
+      .join("")
+      .trim();
+    const definition = html
+      .querySelectorAll(
+        "#WOTD-rss-description > ol, #WOTD-rss-description > p:has(b)"
+      )
+      .map(c => c.outerHTML)
+      .join(" ");
+    return {
+      status: 200,
+      info: "Received word",
+      result: { wiki_feed, word, classification, definition, url: chosen.id },
+    };
+  } catch (err) {
+    return { status: 500, info: "Error receiving word", error: `${err}` };
+  }
+};
+
+// export const word = onRequest(
+//   { region: "europe-west1" },
+//   async (req, res: Response<ApiRes<Word>>) => {
+//     const result = await getWord();
+//     res.status(result.status).json(result);
+//   }
+// );
+
+export const word = onCall(
+  // { region: "europe-west1" },
+  async (req): Promise<ApiRes<Word>> => {
+    const result = await getWord();
+    return result;
   }
 );
 
