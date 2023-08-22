@@ -118,12 +118,12 @@ const getUtcLonNoon = () => {
   return `${12 - offset}:00`;
 };
 
-export const isAwake = (week: Week) => {
+export const isAwake = (week?: Week) => {
   const utcLonNoon = getUtcLonNoon();
   const now = getNow();
   const timeSinceLonNoon = getDuration(utcLonNoon, now.utcTime);
   const isPastLonNoon = timeSinceLonNoon !== null;
-  const lad = week.latest_active_day;
+  const lad = week?.latest_active_day;
   const wasActiveToday = lad && lad === gregToOxDate(now.utcDate)?.day;
   return { isPastLonNoon, wasActiveToday, utcLonNoon };
 };

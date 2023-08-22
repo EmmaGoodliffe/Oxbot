@@ -11,9 +11,7 @@
     if (isErrorRes(data)) {
       throw new Error(`Error getting word: ${data.error}`);
     }
-    const word = data.result;
-    console.log(word);
-    return word;
+    return data.result;
   };
 
   const wordProm = getWordProm();
