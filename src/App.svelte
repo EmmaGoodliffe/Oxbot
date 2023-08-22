@@ -14,24 +14,22 @@
     onMessage,
   } from "firebase/messaging";
   import { writable } from "svelte/store";
-  import { gregToOxDate, type OxDate } from "../functions/src/date";
+  import { gregToOxDate  } from "../functions/src/date";
   import { getNow } from "../functions/src/time";
   import AddCom from "./AddCom.svelte";
   import Dialog from "./Dialog.svelte";
   import EditCom from "./EditCom.svelte";
-  import { delay, getWeek, updateToken, wake } from "./lib/db";
-  import { appendToast, type Toast } from "./lib/toast";
+  import { getWeek, updateToken, wake } from "./lib/db";
+  import { appendToast  } from "./lib/toast";
   import NotesNav from "./NotesNav.svelte";
   import Toasts from "./Toasts.svelte";
   import Today from "./Today.svelte";
   import Week from "./Week.svelte";
+  import Word from "./Word.svelte";
+import type {Toast} from "./lib/toast";
+import type {OxDate} from "../functions/src/date";
+  import type { ApiRes, Commitment, WikiWord } from "../functions/src/types";
   import type { NotificationPayload } from "firebase/messaging";
-  import {
-    type Commitment,
-    type ApiRes,
-    type Word,
-    isErrorRes,
-  } from "../functions/src/types";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC7Aq56CIoRfwsfhxQgr8UY1v16nXs45Mw",
@@ -55,7 +53,7 @@
   } catch (err) {
     console.warn("Emulators failed");
   }
-  const getWord = httpsCallable<unknown, ApiRes<Word>>(functions, "word");
+  const getWord = httpsCallable<unknown, ApiRes<WikiWord>>(functions, "word");
 
   const today = gregToOxDate(getNow().localDate);
   if (today === undefined) {
@@ -116,30 +114,6 @@
     dialogMode = "edit";
   };
 
-  const getWordProm = async () => {
-    const { data } = await getWord();
-    if (isErrorRes(data)) {
-      throw new Error(`Error getting word: ${data.error}`);
-    }
-    const word = data.result;
-    console.log(word);
-    return word;
-  };
-
-  const wordProm = getWordProm();
-
-  const linksToSpans = (html: string) => {
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    const links = Array.from(doc.getElementsByTagName("a"));
-    links.forEach(a => {
-      const span = doc.createElement("span");
-      span.innerHTML = a.innerHTML;
-      a.insertAdjacentElement("afterend", span);
-      a.remove();
-    });
-    return doc.body.innerHTML;
-  };
-
   const prepDevice = async () => {
     try {
       const permission =
@@ -198,15 +172,7 @@
   >
   <button class="button" on:click={prepDevice}>prep device</button>
 
-  <div id="word">
-    {#await wordProm then word}
-      <p>
-        <a href={word.url} target="_blank" class="font-bold">{word.word}</a>
-        <span>{word.classification}</span>
-      </p>
-      {@html linksToSpans(word.definition)}
-    {/await}
-  </div>
+  <Word {getWord} />
 
   <h1>Notes</h1>
   <NotesNav />

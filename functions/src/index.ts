@@ -1,13 +1,13 @@
 import { Response } from "express";
+import { XMLParser } from "fast-xml-parser";
 import * as admin from "firebase-admin";
-import { onRequest, onCall } from "firebase-functions/v2/https";
+import { onCall, onRequest } from "firebase-functions/v2/https";
 import { onSchedule } from "firebase-functions/v2/scheduler";
+import HTMLParser from "node-html-parser";
 import { displayCom, getPrepTime, sortCommitmentsByTime } from "./commitment";
 import { getWeekId, gregToOxDate } from "./date";
 import { displayDuration, getDuration, getNow, isAwake } from "./time";
-import { ApiRes, Commitment, Week, Word } from "./types";
-import { XMLParser } from "fast-xml-parser";
-import HTMLParser from "node-html-parser";
+import { ApiRes, Commitment, Week, WikiWord } from "./types";
 
 /** every 10 minutes */
 const CRON = "0-50/10 * * * *";
@@ -178,14 +178,14 @@ export const alarm = onRequest(
 
 // const random = <T>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
 
-const getWord = async (): Promise<ApiRes<Word>> => {
+const getWord = async (): Promise<ApiRes<WikiWord>> => {
   try {
     const response = await fetch(
       "https://en.wiktionary.org//w/api.php?action=featuredfeed&feed=wotd&feedformat=atom"
     );
     const xml = await response.text();
     const parser = new XMLParser();
-    const wiki_feed = parser.parse(xml) as Word["wiki_feed"];
+    const wiki_feed = parser.parse(xml) as WikiWord["wiki_feed"];
     // const entry = random(wiki_feed.feed.entry);
     const entry = wiki_feed.feed.entry.slice(-1)[0];
     const html = HTMLParser.parse(entry.summary);
@@ -223,7 +223,7 @@ const getWord = async (): Promise<ApiRes<Word>> => {
 
 export const word = onCall(
   // { region: "europe-west1" },
-  async (req): Promise<ApiRes<Word>> => {
+  async (): Promise<ApiRes<WikiWord>> => {
     const result = await getWord();
     return result;
   }

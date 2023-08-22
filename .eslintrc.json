@@ -44,6 +44,7 @@
         ]
       }
     ],
+    "import/consistent-type-specifier-style": ["warn", "prefer-top-level"],
     "sort-imports": [
       "error",
       { "ignoreCase": true, "ignoreDeclarationSort": true }

@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { writable, type Writable } from "svelte/store";
+  import { writable } from "svelte/store";
   import { requiredComDetails } from "../functions/src/commitment";
-  import { comTypes } from "../functions/src/types";
   import { localToUtcTime } from "../functions/src/time";
+  import { comTypes } from "../functions/src/types";
+  import AddBatch from "./AddBatch.svelte";
   import ComDetails from "./ComDetails.svelte";
   import Date from "./lib/Date.svelte";
   import { addCommitment, keyValuesToObj } from "./lib/db";
@@ -10,7 +11,7 @@
   import Time from "./lib/Time.svelte";
   import type { OxDate } from "../functions/src/date";
   import type { Firestore } from "firebase/firestore";
-  import AddBatch from "./AddBatch.svelte";
+  import type { Writable } from "svelte/store";
 
   export let db: Firestore;
   export let date: Writable<OxDate>;

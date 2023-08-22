@@ -1,7 +1,8 @@
 import { requiredComDetails } from "./commitment";
-import { type OxDate, days } from "./date";
+import { days } from "./date";
+import type { OxDate } from "./date";
 
-type ApiOkRes<T extends {}> = {
+type ApiOkRes<T extends object> = {
   status: number;
   info: string;
   result: T;
@@ -11,12 +12,13 @@ type ApiErrorRes = {
   info: string;
   error: string;
 };
-export type ApiRes<T extends {} = Record<string, unknown>> =
+export type ApiRes<T extends object = Record<string, unknown>> =
   | ApiOkRes<T>
   | ApiErrorRes;
 
-export const isErrorRes = <T extends {}>(res: ApiRes<T>): res is ApiErrorRes =>
-  typeof (res as ApiErrorRes).error === "string";
+export const isErrorRes = <T extends object>(
+  res: ApiRes<T>
+): res is ApiErrorRes => typeof (res as ApiErrorRes).error === "string";
 
 type ComType = keyof typeof requiredComDetails;
 
@@ -88,7 +90,7 @@ export interface Batched {
   commitment: Commitment;
 }
 
-export interface Word {
+export interface WikiWord {
   wiki_feed: {
     "?xml": string; // empty
     feed: {

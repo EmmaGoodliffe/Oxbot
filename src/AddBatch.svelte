@@ -1,8 +1,8 @@
 <script lang="ts">
   import { writable } from "svelte/store";
+  import { addBatchedCommitments } from "./lib/db";
   import ProgressButton from "./lib/ProgressButton.svelte";
   import { checkBatch } from "./schemas";
-  import { addBatchedCommitments } from "./lib/db";
   import type { Firestore } from "firebase/firestore";
 
   export let db: Firestore;

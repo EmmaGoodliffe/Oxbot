@@ -3,20 +3,21 @@ import {
   getDoc,
   doc as ref,
   setDoc,
-  type UpdateData,
-  updateDoc,
+  
+  updateDoc
 } from "firebase/firestore";
-import { type OxDate, getWeekId } from "../../functions/src/date";
+import { getWeekId  } from "../../functions/src/date";
+import { localToUtcTime } from "../../functions/src/time";
+import type {OxDate} from "../../functions/src/date";
 import type {
-  Batched,
+  Batched,Collection,
   Commitment,
-  Collection,
   Data,
   Id,
 } from "../../functions/src/types";
+import type {UpdateData} from "firebase/firestore";
 import type { Firestore } from "firebase/firestore";
 import type { Writable } from "svelte/store";
-import { localToUtcTime } from "../../functions/src/time";
 
 export const delay = (sec: number) =>
   new Promise<void>(res => setTimeout(() => res(), sec * 1000));
