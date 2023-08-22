@@ -1,12 +1,22 @@
 import { requiredComDetails } from "./commitment";
 import { type OxDate, days } from "./date";
 
-export type ApiRes<T = Record<string, unknown>> = {
+type ApiOkRes<T extends {}> = {
   status: number;
   info: string;
-  result?: T;
-  error?: string;
+  result: T;
 };
+type ApiErrorRes = {
+  status: number;
+  info: string;
+  error: string;
+};
+export type ApiRes<T extends {} = Record<string, unknown>> =
+  | ApiOkRes<T>
+  | ApiErrorRes;
+
+export const isErrorRes = <T extends {}>(res: ApiRes<T>): res is ApiErrorRes =>
+  typeof (res as ApiErrorRes).error === "string";
 
 type ComType = keyof typeof requiredComDetails;
 
@@ -92,8 +102,8 @@ export interface Word {
         id: string; // URL
         title: string;
         link: string; // empty
-        updated: string; // time code
-        summary: string; // XML
+        updated: string; // time code, e.g. `2023-08-14T00:00:00Z`
+        summary: string; // HTML
         author: { name: string };
       }[];
     };

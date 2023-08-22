@@ -26,7 +26,12 @@
   import Today from "./Today.svelte";
   import Week from "./Week.svelte";
   import type { NotificationPayload } from "firebase/messaging";
-  import type { Commitment, ApiRes, Word } from "../functions/src/types";
+  import {
+    type Commitment,
+    type ApiRes,
+    type Word,
+    isErrorRes,
+  } from "../functions/src/types";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC7Aq56CIoRfwsfhxQgr8UY1v16nXs45Mw",
@@ -50,7 +55,7 @@
   } catch (err) {
     console.warn("Emulators failed");
   }
-  const getWord = httpsCallable(functions, "word");
+  const getWord = httpsCallable<unknown, ApiRes<Word>>(functions, "word");
 
   const today = gregToOxDate(getNow().localDate);
   if (today === undefined) {
@@ -112,16 +117,28 @@
   };
 
   const getWordProm = async () => {
-    const result = (await getWord()).data as ApiRes<Word>;
-    if (result.status !== 200) {
-      throw new Error(`Error getting word: ${result.error}`);
+    const { data } = await getWord();
+    if (isErrorRes(data)) {
+      throw new Error(`Error getting word: ${data.error}`);
     }
-    const word = result.result as Word;
+    const word = data.result;
     console.log(word);
     return word;
   };
 
   const wordProm = getWordProm();
+
+  const linksToSpans = (html: string) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const links = Array.from(doc.getElementsByTagName("a"));
+    links.forEach(a => {
+      const span = doc.createElement("span");
+      span.innerHTML = a.innerHTML;
+      a.insertAdjacentElement("afterend", span);
+      a.remove();
+    });
+    return doc.body.innerHTML;
+  };
 
   const prepDevice = async () => {
     try {
@@ -187,7 +204,7 @@
         <a href={word.url} target="_blank" class="font-bold">{word.word}</a>
         <span>{word.classification}</span>
       </p>
-      {@html word.definition}
+      {@html linksToSpans(word.definition)}
     {/await}
   </div>
 

@@ -11,7 +11,7 @@
     "check": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json && npm run --prefix functions check",
     "deploy": "npm run build && firebase deploy",
     "dev:fb": "kill-port 8080 && firebase emulators:start --only firestore,functions,hosting --import=cache --export-on-exit",
-    "dev:svelte": "vite --host",
+    "dev:svelte": "vite",
     "dev:ts": "npm run --prefix functions dev",
     "dev": "concurrently -c yellow,red,blue \"npm:dev:*\"",
     "format": "prettier . --write",

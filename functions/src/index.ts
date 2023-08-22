@@ -176,7 +176,7 @@ export const alarm = onRequest(
   }
 );
 
-const random = <T>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
+// const random = <T>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
 
 const getWord = async (): Promise<ApiRes<Word>> => {
   try {
@@ -186,8 +186,9 @@ const getWord = async (): Promise<ApiRes<Word>> => {
     const xml = await response.text();
     const parser = new XMLParser();
     const wiki_feed = parser.parse(xml) as Word["wiki_feed"];
-    const chosen = random(wiki_feed.feed.entry);
-    const html = HTMLParser.parse(chosen.summary);
+    // const entry = random(wiki_feed.feed.entry);
+    const entry = wiki_feed.feed.entry.slice(-1)[0];
+    const html = HTMLParser.parse(entry.summary);
     const title = html.getElementById("WOTD-rss-title");
     const word = title.innerText;
     const classification = title
@@ -205,7 +206,7 @@ const getWord = async (): Promise<ApiRes<Word>> => {
     return {
       status: 200,
       info: "Received word",
-      result: { wiki_feed, word, classification, definition, url: chosen.id },
+      result: { wiki_feed, word, classification, definition, url: entry.id },
     };
   } catch (err) {
     return { status: 500, info: "Error receiving word", error: `${err}` };
