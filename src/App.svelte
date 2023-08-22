@@ -157,7 +157,6 @@
   // TODO: notes
   // TODO: lectures: commitment, notes, slides, recording
   // TODO: budget reports
-  // TODO: word of the day
   // TODO: style `wake` feature
 </script>
 
