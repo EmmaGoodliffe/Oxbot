@@ -3,19 +3,19 @@ import {
   getDoc,
   doc as ref,
   setDoc,
-  
-  updateDoc
+  updateDoc,
 } from "firebase/firestore";
-import { getWeekId  } from "../../functions/src/date";
+import { getWeekId } from "../../functions/src/date";
 import { localToUtcTime } from "../../functions/src/time";
-import type {OxDate} from "../../functions/src/date";
+import type { OxDate } from "../../functions/src/date";
 import type {
-  Batched,Collection,
+  Batched,
+  Collection,
   Commitment,
   Data,
   Id,
 } from "../../functions/src/types";
-import type {UpdateData} from "firebase/firestore";
+import type { UpdateData } from "firebase/firestore";
 import type { Firestore } from "firebase/firestore";
 import type { Writable } from "svelte/store";
 

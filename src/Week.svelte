@@ -1,7 +1,8 @@
 <script lang="ts">
   import { writable } from "svelte/store";
   import {
-    displayCom,sortCommitmentsByTime
+    displayCom,
+    sortCommitmentsByTime,
   } from "../functions/src/commitment";
   import { addWeeks, days, displayWeek } from "../functions/src/date";
   import Date from "./lib/Date.svelte";

@@ -14,20 +14,20 @@
     onMessage,
   } from "firebase/messaging";
   import { writable } from "svelte/store";
-  import { gregToOxDate  } from "../functions/src/date";
+  import { gregToOxDate } from "../functions/src/date";
   import { getNow } from "../functions/src/time";
   import AddCom from "./AddCom.svelte";
   import Dialog from "./Dialog.svelte";
   import EditCom from "./EditCom.svelte";
   import { getWeek, updateToken, wake } from "./lib/db";
-  import { appendToast  } from "./lib/toast";
+  import { appendToast } from "./lib/toast";
   import NotesNav from "./NotesNav.svelte";
   import Toasts from "./Toasts.svelte";
   import Today from "./Today.svelte";
   import Week from "./Week.svelte";
   import Word from "./Word.svelte";
-import type {Toast} from "./lib/toast";
-import type {OxDate} from "../functions/src/date";
+  import type { Toast } from "./lib/toast";
+  import type { OxDate } from "../functions/src/date";
   import type { ApiRes, Commitment, WikiWord } from "../functions/src/types";
   import type { NotificationPayload } from "firebase/messaging";
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {  requiredComDetails } from "../functions/src/commitment";
+  import { requiredComDetails } from "../functions/src/commitment";
   import { comTypes } from "../functions/src/types";
   import BorderGroup from "./lib/BorderGroup.svelte";
   import type { Writable } from "svelte/store";

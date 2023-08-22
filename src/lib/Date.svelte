@@ -2,12 +2,11 @@
   import {
     days,
     gregToOxDate,
-    
     oxDate,
     oxToGregDate,
-    terms
+    terms,
   } from "../../functions/src/date";
-import type {OxDate} from "../../functions/src/date";
+  import type { OxDate } from "../../functions/src/date";
   import type { Writable } from "svelte/store";
 
   export let idPrefix: string;

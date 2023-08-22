@@ -1,13 +1,13 @@
 <script lang="ts">
   import { writable } from "svelte/store";
   import { displayCom, requiredComDetails } from "../functions/src/commitment";
-  import {  oxToGregDate } from "../functions/src/date";
+  import { oxToGregDate } from "../functions/src/date";
   import { localToUtcTime } from "../functions/src/time";
   import ComDetails from "./ComDetails.svelte";
   import { deleteCommitment, editCommitment, keyValuesToObj } from "./lib/db";
   import ProgressButton from "./lib/ProgressButton.svelte";
   import Time from "./lib/Time.svelte";
-import type {OxDate} from "../functions/src/date";
+  import type { OxDate } from "../functions/src/date";
   import type { Commitment } from "../functions/src/types";
   import type { Firestore } from "firebase/firestore";
 
