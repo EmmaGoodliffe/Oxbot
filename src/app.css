@@ -108,7 +108,7 @@ code {
   @apply w-fit px-1 bg-light-ui text-invert-text rounded-sm;
 }
 
-#word p {
+#word p:not(:first-child) {
   @apply pt-4;
 }
 

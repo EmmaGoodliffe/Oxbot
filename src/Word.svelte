@@ -6,6 +6,8 @@
 
   export let getWord: () => Promise<HttpsCallableResult<ApiRes<WikiWord>>>;
 
+  let showDefinitions = false;
+
   const getWordProm = async () => {
     const { data } = await getWord();
     if (isErrorRes(data)) {
@@ -29,14 +31,18 @@
   };
 </script>
 
-<div id="word">
+<div class="h-64 px-4 py-2 overflow-auto" id="word">
   {#await wordProm then word}
-    {#if word}
-      <p>
-        <a href={word.url} target="_blank" class="font-bold">{word.word}</a>
-        <span class="italic">{word.classification}</span>
-      </p>
-      {@html linksToSpans(word.definition)}
+    {#if showDefinitions}
+      {#if word}
+        <p>
+          <a href={word.url} target="_blank" class="font-bold">{word.word}</a>
+          <span class="italic">{word.classification}</span>
+        </p>
+        {@html linksToSpans(word.definition)}
+      {/if}
+    {:else}
+      <p>{JSON.stringify(word)}</p>
     {/if}
   {/await}
 </div>
