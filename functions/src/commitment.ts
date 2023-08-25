@@ -4,10 +4,12 @@ import type { Commitment } from "./types";
 export const requiredComDetails = {
   tute: ["tutor", "subject"],
   training: ["sport"],
+  lecture: ["series", "number", "paper", "notes", "slides", "recording"],
 } as const;
 
 const getArea = (com: Commitment) =>
-  com.location.area ?? ({ tute: "Trin", training: "Iff" } as const)[com.type];
+  com.location.area ??
+  ({ tute: "Trin", training: "Iff", lecture: "Dept" } as const)[com.type];
 
 export const displayCom = (
   com: Commitment
@@ -50,6 +52,6 @@ export const sortCommitmentsByTime = (coms: Commitment[]) =>
 
 export const getPrepTime = (com: Commitment) => {
   const area = getArea(com);
-  const journey = { Trin: 10, Iff: 20, Dept: 10 }[area];
-  return journey + 15;
+  const journey = { Trin: 5, Iff: 20, Dept: 10 }[area];
+  return 15 + journey;
 };
