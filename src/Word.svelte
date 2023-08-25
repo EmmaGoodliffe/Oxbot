@@ -6,7 +6,7 @@
 
   export let getWord: () => Promise<HttpsCallableResult<ApiRes<WikiWord>>>;
 
-  let showDefinitions = false;
+  let showDefinition = false;
 
   const getWordProm = async () => {
     const { data } = await getWord();
@@ -33,16 +33,17 @@
 
 <div class="h-64 px-4 py-2 overflow-auto" id="word">
   {#await wordProm then word}
-    {#if showDefinitions}
-      {#if word}
-        <p>
-          <a href={word.url} target="_blank" class="font-bold">{word.word}</a>
-          <span class="italic">{word.classification}</span>
-        </p>
-        {@html linksToSpans(word.definition)}
+    {#if word}
+    <div class="overflow-hidden" class:h-12={!showDefinition}>
+      <p>
+        <a href={word.url} target="_blank" class="font-bold">{word.word}</a>
+        <span class="italic">{word.classification}</span>
+      </p>
+      {@html linksToSpans(word.definition)}
+    </div>
+      {#if !showDefinition}
+        <button class="px-4 py-1 border-2 border-dark-border rounded" on:click={() => (showDefinition = true)}>...</button>
       {/if}
-    {:else}
-      <p>{JSON.stringify(word)}</p>
     {/if}
   {/await}
 </div>
