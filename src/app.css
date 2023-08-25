@@ -11,7 +11,7 @@ body {
 }
 
 h1 {
-  @apply mt-16 mb-4 text-2xl font-bold italic;
+  @apply mt-12 mb-4 text-2xl font-bold italic;
 }
 
 h2 {
@@ -126,7 +126,7 @@ code {
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-light-ui hover:bg-ui;
+  @apply bg-light-bg hover:bg-light-ui;
   border-radius: 0.25rem;
 }
 
