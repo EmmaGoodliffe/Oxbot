@@ -33,7 +33,7 @@
 <div class="max-h-[16rem] px-4 py-2 overflow-auto" id="word">
   {#await wordProm then word}
     {#if word}
-      <div class="overflow-hidden" class:fade={!showDefinition}>
+      <div class="max-h-[9rem] overflow-hidden" class:fade={!showDefinition}>
         <p>
           <a href={word.url} target="_blank" class="font-bold">{word.word}</a>
           <span class="italic">{word.classification}</span>
@@ -43,7 +43,10 @@
       {#if !showDefinition}
         <div class="group/ellipsis">
           <div class="ellipsis">
-            <button on:click={() => (showDefinition = true)}>...</button>
+            <button
+              class="mx-2 px-4 py-1 border-2 border-light-bg rounded group-hover/ellipsis:border-light-ui transition"
+              on:click={() => (showDefinition = true)}>...</button
+            >
           </div>
         </div>
       {/if}
@@ -53,14 +56,10 @@
 
 <style lang="postcss">
   .fade {
-    @apply h-36;
     mask-image: linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
   }
   .ellipsis {
     @apply flex flex-1 justify-between items-center;
-  }
-  .ellipsis button {
-    @apply mx-2 px-4 py-1 border-2 border-light-bg group-hover/ellipsis:border-light-ui rounded;
   }
   .ellipsis::before,
   .ellipsis::after {
