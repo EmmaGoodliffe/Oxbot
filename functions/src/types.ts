@@ -52,6 +52,8 @@ interface Com<T extends ComType> {
   };
   /** Custom details dependent on the `type` */
   details: Record<(typeof requiredComDetails)[T][number], string>;
+  /** An optional tag shared between related commitments as a reference for future operations */
+  tag?: string;
 }
 // Could be improved via https://github.com/Microsoft/TypeScript/issues/1213#issuecomment-1215039765
 type DistributeComOverUnion<T> = T extends ComType ? Com<T> : never;
@@ -87,7 +89,7 @@ export interface Batched {
   /** Date of commitment */
   date: { year: number; term: OxDate["term"]; week: number };
   /** Commitment to add to that week */
-  commitment: Commitment;
+  commitment: Required<Commitment>;
 }
 
 export interface WikiWord {
@@ -115,3 +117,14 @@ export interface WikiWord {
   definition: string;
   url: string;
 }
+
+type Zip<T extends readonly unknown[], U extends readonly unknown[]> = {
+  [K in keyof T]: [T[K], K extends keyof U ? U[K] : never];
+};
+type PairsToObj<Ps extends [PropertyKey, unknown]> = {
+  [P in Ps as P[0]]: P[1];
+};
+export type KeyValuesToObj<
+  K extends readonly string[],
+  V extends readonly unknown[]
+> = PairsToObj<Zip<K, V>[number]>;

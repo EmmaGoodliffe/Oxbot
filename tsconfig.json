@@ -26,7 +26,8 @@
     "src/**/*.ts",
     "src/**/*.js",
     "src/**/*.svelte",
-    "functions/src/commitment.ts"
+    "functions/src/**/*.ts",
+    "data/**/*.ts",
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

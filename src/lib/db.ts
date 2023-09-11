@@ -14,6 +14,7 @@ import type {
   Commitment,
   Data,
   Id,
+  KeyValuesToObj,
 } from "../../functions/src/types";
 import type { UpdateData } from "firebase/firestore";
 import type { Firestore } from "firebase/firestore";
@@ -22,17 +23,20 @@ import type { Writable } from "svelte/store";
 export const delay = (sec: number) =>
   new Promise<void>(res => setTimeout(() => res(), sec * 1000));
 
-export const keyValuesToObj = <K extends string, T>(
-  keys: readonly K[],
-  values: readonly T[]
+export const keyValuesToObj = <
+  K extends readonly string[],
+  V extends readonly unknown[]
+>(
+  keys: K,
+  values: V
 ) => {
-  const obj: Partial<Record<K, T>> = {};
+  const obj: Partial<Record<string, V[number]>> = {};
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
     const value = values[i];
     obj[key] = value;
   }
-  return obj as Record<K, T>;
+  return obj as KeyValuesToObj<K, V>;
 };
 
 const unique = <T>(arr: T[]) => Array.from(new Set(arr));
