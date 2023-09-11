@@ -44,7 +44,7 @@ interface Com<T extends ComType> {
   /** Location of commitment */
   location: {
     /** Area code where `undefined` corresponds to a default defined by `type` */
-    area?: "Trin" | "Iff" | "Dept";
+    area?: "Trin" | "Iff" | "Dept" | "Labs";
     /** Location within `area`, e.g. room number */
     within?: string;
     /** Journey time in minutes where `undefined` corresponds to a default defined by `area` */

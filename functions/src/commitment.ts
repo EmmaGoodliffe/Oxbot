@@ -5,11 +5,14 @@ export const requiredComDetails = {
   tute: ["tutor", "subject"],
   training: ["sport"],
   lecture: ["year", "code", "number"],
+  lab: [],
 } as const;
 
 const getArea = (com: Commitment) =>
   com.location.area ??
-  ({ tute: "Trin", training: "Iff", lecture: "Dept" } as const)[com.type];
+  ({ tute: "Trin", training: "Iff", lecture: "Dept", lab: "Labs" } as const)[
+    com.type
+  ];
 
 export const displayCom = (
   com: Commitment
@@ -52,6 +55,6 @@ export const sortCommitmentsByTime = (coms: Commitment[]) =>
 
 export const getPrepTime = (com: Commitment) => {
   const area = getArea(com);
-  const journey = { Trin: 5, Iff: 20, Dept: 10 }[area];
+  const journey = { Trin: 5, Iff: 20, Dept: 10, Labs: 10 }[area];
   return 15 + journey;
 };
