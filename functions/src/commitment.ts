@@ -4,7 +4,7 @@ import type { Commitment } from "./types";
 export const requiredComDetails = {
   tute: ["tutor", "subject"],
   training: ["sport"],
-  lecture: ["series", "number", "paper", "notes", "slides", "recording"],
+  lecture: ["year", "code", "number"],
 } as const;
 
 const getArea = (com: Commitment) =>

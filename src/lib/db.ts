@@ -22,14 +22,17 @@ import type { Writable } from "svelte/store";
 export const delay = (sec: number) =>
   new Promise<void>(res => setTimeout(() => res(), sec * 1000));
 
-export const keyValuesToObj = <T>(keys: readonly string[], values: T[]) => {
-  const obj: Record<string, T> = {};
+export const keyValuesToObj = <K extends string, T>(
+  keys: readonly K[],
+  values: readonly T[]
+) => {
+  const obj: Partial<Record<K, T>> = {};
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
     const value = values[i];
     obj[key] = value;
   }
-  return obj;
+  return obj as Record<K, T>;
 };
 
 const unique = <T>(arr: T[]) => Array.from(new Set(arr));
