@@ -1,164 +1,423 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "definitions": {
-    "Com<\"training\">": {
-      "properties": {
-        "day": {
-          "description": "Day of the week",
-          "enum": ["Fri", "Mon", "Sat", "Sun", "Thu", "Tue", "Wed"],
-          "type": "string"
-        },
-        "details": {
-          "$ref": "#/definitions/Record<\"sport\",string>",
-          "description": "Custom details dependent on the `type`"
-        },
-        "endTime": {
-          "description": "End time in the form `00:00` where `null` corresponds to indefinite",
-          "maxLength": 5,
-          "minLength": 5,
-          "type": ["null", "string"]
-        },
-        "location": {
-          "description": "Location of commitment",
-          "properties": {
-            "area": {
-              "description": "Area code where `undefined` corresponds to a default defined by `type`",
-              "enum": ["Dept", "Iff", "Trin"],
-              "type": "string"
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "Record<\"number\"|\"code\"|\"year\",string>": {
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "string"
+                }
             },
-            "journey": {
-              "description": "Journey time in minutes where `undefined` corresponds to a default defined by `area`",
-              "type": "number"
+            "required": [
+                "code",
+                "number",
+                "year"
+            ],
+            "type": "object"
+        },
+        "Record<\"sport\",string>": {
+            "properties": {
+                "sport": {
+                    "type": "string"
+                }
             },
-            "within": {
-              "description": "Location within `area`, e.g. room number",
-              "type": "string"
-            }
-          },
-          "type": "object"
+            "required": [
+                "sport"
+            ],
+            "type": "object"
         },
-        "time": {
-          "description": "Start time in the form `00:00`",
-          "maxLength": 5,
-          "minLength": 5,
-          "type": "string"
-        },
-        "type": {
-          "const": "training",
-          "description": "Type of commitment",
-          "type": "string"
-        }
-      },
-      "required": ["day", "details", "endTime", "location", "time", "type"],
-      "type": "object"
-    },
-    "Com<\"tute\">": {
-      "properties": {
-        "day": {
-          "description": "Day of the week",
-          "enum": ["Fri", "Mon", "Sat", "Sun", "Thu", "Tue", "Wed"],
-          "type": "string"
-        },
-        "details": {
-          "$ref": "#/definitions/Record<\"tutor\"|\"subject\",string>",
-          "description": "Custom details dependent on the `type`"
-        },
-        "endTime": {
-          "description": "End time in the form `00:00` where `null` corresponds to indefinite",
-          "maxLength": 5,
-          "minLength": 5,
-          "type": ["null", "string"]
-        },
-        "location": {
-          "description": "Location of commitment",
-          "properties": {
-            "area": {
-              "description": "Area code where `undefined` corresponds to a default defined by `type`",
-              "enum": ["Dept", "Iff", "Trin"],
-              "type": "string"
+        "Record<\"tutor\"|\"subject\",string>": {
+            "properties": {
+                "subject": {
+                    "type": "string"
+                },
+                "tutor": {
+                    "type": "string"
+                }
             },
-            "journey": {
-              "description": "Journey time in minutes where `undefined` corresponds to a default defined by `area`",
-              "type": "number"
+            "required": [
+                "subject",
+                "tutor"
+            ],
+            "type": "object"
+        },
+        "Record<never,string>": {
+            "type": "object"
+        },
+        "Required<Com<\"lab\">>": {
+            "properties": {
+                "day": {
+                    "description": "Day of the week",
+                    "enum": [
+                        "Fri",
+                        "Mon",
+                        "Sat",
+                        "Sun",
+                        "Thu",
+                        "Tue",
+                        "Wed"
+                    ],
+                    "type": "string"
+                },
+                "details": {
+                    "$ref": "#/definitions/Record<never,string>",
+                    "description": "Custom details dependent on the `type`"
+                },
+                "endTime": {
+                    "description": "End time in the form `00:00` where `null` corresponds to indefinite",
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
+                "location": {
+                    "description": "Location of commitment",
+                    "properties": {
+                        "area": {
+                            "description": "Area code where `undefined` corresponds to a default defined by `type`",
+                            "enum": [
+                                "Dept",
+                                "Iff",
+                                "Labs",
+                                "Trin"
+                            ],
+                            "type": "string"
+                        },
+                        "journey": {
+                            "description": "Journey time in minutes where `undefined` corresponds to a default defined by `area`",
+                            "type": "number"
+                        },
+                        "within": {
+                            "description": "Location within `area`, e.g. room number",
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "tag": {
+                    "description": "An optional tag shared between related commitments as a reference for future operations",
+                    "type": "string"
+                },
+                "time": {
+                    "description": "Start time in the form `00:00`",
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "type": "string"
+                },
+                "type": {
+                    "const": "lab",
+                    "description": "Type of commitment",
+                    "type": "string"
+                }
             },
-            "within": {
-              "description": "Location within `area`, e.g. room number",
-              "type": "string"
-            }
-          },
-          "type": "object"
+            "required": [
+                "day",
+                "details",
+                "endTime",
+                "location",
+                "tag",
+                "time",
+                "type"
+            ],
+            "type": "object"
         },
-        "time": {
-          "description": "Start time in the form `00:00`",
-          "maxLength": 5,
-          "minLength": 5,
-          "type": "string"
+        "Required<Com<\"lecture\">>": {
+            "properties": {
+                "day": {
+                    "description": "Day of the week",
+                    "enum": [
+                        "Fri",
+                        "Mon",
+                        "Sat",
+                        "Sun",
+                        "Thu",
+                        "Tue",
+                        "Wed"
+                    ],
+                    "type": "string"
+                },
+                "details": {
+                    "$ref": "#/definitions/Record<\"number\"|\"code\"|\"year\",string>",
+                    "description": "Custom details dependent on the `type`"
+                },
+                "endTime": {
+                    "description": "End time in the form `00:00` where `null` corresponds to indefinite",
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
+                "location": {
+                    "description": "Location of commitment",
+                    "properties": {
+                        "area": {
+                            "description": "Area code where `undefined` corresponds to a default defined by `type`",
+                            "enum": [
+                                "Dept",
+                                "Iff",
+                                "Labs",
+                                "Trin"
+                            ],
+                            "type": "string"
+                        },
+                        "journey": {
+                            "description": "Journey time in minutes where `undefined` corresponds to a default defined by `area`",
+                            "type": "number"
+                        },
+                        "within": {
+                            "description": "Location within `area`, e.g. room number",
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "tag": {
+                    "description": "An optional tag shared between related commitments as a reference for future operations",
+                    "type": "string"
+                },
+                "time": {
+                    "description": "Start time in the form `00:00`",
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "type": "string"
+                },
+                "type": {
+                    "const": "lecture",
+                    "description": "Type of commitment",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "day",
+                "details",
+                "endTime",
+                "location",
+                "tag",
+                "time",
+                "type"
+            ],
+            "type": "object"
         },
-        "type": {
-          "const": "tute",
-          "description": "Type of commitment",
-          "type": "string"
+        "Required<Com<\"training\">>": {
+            "properties": {
+                "day": {
+                    "description": "Day of the week",
+                    "enum": [
+                        "Fri",
+                        "Mon",
+                        "Sat",
+                        "Sun",
+                        "Thu",
+                        "Tue",
+                        "Wed"
+                    ],
+                    "type": "string"
+                },
+                "details": {
+                    "$ref": "#/definitions/Record<\"sport\",string>",
+                    "description": "Custom details dependent on the `type`"
+                },
+                "endTime": {
+                    "description": "End time in the form `00:00` where `null` corresponds to indefinite",
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
+                "location": {
+                    "description": "Location of commitment",
+                    "properties": {
+                        "area": {
+                            "description": "Area code where `undefined` corresponds to a default defined by `type`",
+                            "enum": [
+                                "Dept",
+                                "Iff",
+                                "Labs",
+                                "Trin"
+                            ],
+                            "type": "string"
+                        },
+                        "journey": {
+                            "description": "Journey time in minutes where `undefined` corresponds to a default defined by `area`",
+                            "type": "number"
+                        },
+                        "within": {
+                            "description": "Location within `area`, e.g. room number",
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "tag": {
+                    "description": "An optional tag shared between related commitments as a reference for future operations",
+                    "type": "string"
+                },
+                "time": {
+                    "description": "Start time in the form `00:00`",
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "type": "string"
+                },
+                "type": {
+                    "const": "training",
+                    "description": "Type of commitment",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "day",
+                "details",
+                "endTime",
+                "location",
+                "tag",
+                "time",
+                "type"
+            ],
+            "type": "object"
+        },
+        "Required<Com<\"tute\">>": {
+            "properties": {
+                "day": {
+                    "description": "Day of the week",
+                    "enum": [
+                        "Fri",
+                        "Mon",
+                        "Sat",
+                        "Sun",
+                        "Thu",
+                        "Tue",
+                        "Wed"
+                    ],
+                    "type": "string"
+                },
+                "details": {
+                    "$ref": "#/definitions/Record<\"tutor\"|\"subject\",string>",
+                    "description": "Custom details dependent on the `type`"
+                },
+                "endTime": {
+                    "description": "End time in the form `00:00` where `null` corresponds to indefinite",
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
+                "location": {
+                    "description": "Location of commitment",
+                    "properties": {
+                        "area": {
+                            "description": "Area code where `undefined` corresponds to a default defined by `type`",
+                            "enum": [
+                                "Dept",
+                                "Iff",
+                                "Labs",
+                                "Trin"
+                            ],
+                            "type": "string"
+                        },
+                        "journey": {
+                            "description": "Journey time in minutes where `undefined` corresponds to a default defined by `area`",
+                            "type": "number"
+                        },
+                        "within": {
+                            "description": "Location within `area`, e.g. room number",
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "tag": {
+                    "description": "An optional tag shared between related commitments as a reference for future operations",
+                    "type": "string"
+                },
+                "time": {
+                    "description": "Start time in the form `00:00`",
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "type": "string"
+                },
+                "type": {
+                    "const": "tute",
+                    "description": "Type of commitment",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "day",
+                "details",
+                "endTime",
+                "location",
+                "tag",
+                "time",
+                "type"
+            ],
+            "type": "object"
+        },
+        "Required<Commitment>": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/Required<Com<\"tute\">>"
+                },
+                {
+                    "$ref": "#/definitions/Required<Com<\"training\">>"
+                },
+                {
+                    "$ref": "#/definitions/Required<Com<\"lecture\">>"
+                },
+                {
+                    "$ref": "#/definitions/Required<Com<\"lab\">>"
+                }
+            ]
         }
-      },
-      "required": ["day", "details", "endTime", "location", "time", "type"],
-      "type": "object"
     },
-    "Commitment": {
-      "anyOf": [
-        {
-          "$ref": "#/definitions/Com<\"tute\">"
+    "description": "Element of batch job for adding commitments",
+    "properties": {
+        "commitment": {
+            "$ref": "#/definitions/Required<Commitment>",
+            "description": "Commitment to add to that week"
         },
-        {
-          "$ref": "#/definitions/Com<\"training\">"
+        "date": {
+            "description": "Date of commitment",
+            "properties": {
+                "term": {
+                    "enum": [
+                        "HT",
+                        "MT",
+                        "TT"
+                    ],
+                    "type": "string"
+                },
+                "week": {
+                    "type": "number"
+                },
+                "year": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "term",
+                "week",
+                "year"
+            ],
+            "type": "object"
         }
-      ]
     },
-    "Record<\"sport\",string>": {
-      "properties": {
-        "sport": {
-          "type": "string"
-        }
-      },
-      "required": ["sport"],
-      "type": "object"
-    },
-    "Record<\"tutor\"|\"subject\",string>": {
-      "properties": {
-        "subject": {
-          "type": "string"
-        },
-        "tutor": {
-          "type": "string"
-        }
-      },
-      "required": ["subject", "tutor"],
-      "type": "object"
-    }
-  },
-  "description": "Element of batch job for adding commitments",
-  "properties": {
-    "commitment": {
-      "$ref": "#/definitions/Commitment",
-      "description": "Commitment to add to that week"
-    },
-    "date": {
-      "description": "Date of commitment",
-      "properties": {
-        "term": {
-          "enum": ["HT", "MT", "TT"],
-          "type": "string"
-        },
-        "week": {
-          "type": "number"
-        },
-        "year": {
-          "type": "number"
-        }
-      },
-      "required": ["term", "week", "year"],
-      "type": "object"
-    }
-  },
-  "required": ["commitment", "date"],
-  "type": "object"
+    "required": [
+        "commitment",
+        "date"
+    ],
+    "type": "object"
 }
+

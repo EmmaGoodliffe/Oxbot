@@ -3,17 +3,19 @@
   import { quartInOut } from "svelte/easing";
   import { fly } from "svelte/transition";
   import type { Toast } from "./lib/toast";
-  import type { P } from "./types";
   import type { Writable } from "svelte/store";
 
   export let toasts: Writable<Toast[]>;
 
-  let el: null | (P & HTMLElement) = null;
+  let el: null | HTMLElement = null;
   let unsubscribe: ReturnType<Writable<unknown>["subscribe"]>;
   let heightStyles: string[] = [];
 
   onMount(() => {
-    el = document.querySelector("#toasts") as P & HTMLElement;
+    el = document.querySelector("#toasts");
+    if (el === null) {
+      throw new Error("No #toasts");
+    }
     el.popover = "manual";
     unsubscribe = toasts.subscribe(async ts => {
       await tick();

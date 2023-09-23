@@ -1,7 +1,9 @@
-import lectures from "./lectures";
+import { writeFileSync } from "fs";
+import { resolve } from "path";
 import { keyValuesToObj } from "../src/lib/db";
-import type { Batched, Commitment } from "../functions/src/types";
 import labs from "./labs";
+import lectures from "./lectures";
+import type { Batched, Commitment } from "../functions/src/types";
 
 type WithoutFirst<A extends readonly unknown[]> = Exclude<A[number], A[0]>;
 type Col<N extends number> = WithoutFirst<
@@ -27,8 +29,8 @@ const time = (x: string /* "9.00" */) =>
 const getCode = (title: (typeof lectures)[number]["title"]) =>
   ((
     {
-      "Intro to year 2": "#",
-      "Introduction to Physics in Schools option": "#",
+      "Intro to year 2": "Intro",
+      "Introduction to Physics in Schools option": "PiS",
       Electromagnetism: "EM",
       "Probability and Statistics": "P&S",
       "Mathematical Methods": "MM",
@@ -51,34 +53,38 @@ const getYear = (term: Term) => (term === "Michaelmas" ? 2023 : 2024);
 const getTerm = (term: Term) =>
   (({ Michaelmas: "MT", Hilary: "HT", Trinity: "TT" } as const)[term]);
 
-const lectureBatches = lectures.map(series =>
-  jsonToTable<Titles, Values>(series.table).map((lecture, i): Batched => {
-    const [start, end] = lecture.Time.split("-");
-    return {
-      commitment: {
-        type: "lecture",
-        day: lecture.Day.slice(0, 3) as Commitment["day"],
-        time: time(start),
-        endTime: time(end),
-        location: {
-          area: getArea(lecture.Room),
-          within: lecture.Room,
+const lectureBatches = lectures.map(series => {
+  const code = getCode(series.title);
+  const tag = `${code} ${new Date().toISOString()}`;
+  return jsonToTable<Titles, Values>(series.table).map(
+    (lecture, i): Batched => {
+      const [start, end] = lecture.Time.split("-");
+      return {
+        commitment: {
+          type: "lecture",
+          day: lecture.Day.slice(0, 3) as Commitment["day"],
+          time: time(start),
+          endTime: time(end),
+          location: {
+            area: getArea(lecture.Room),
+            within: lecture.Room,
+          },
+          details: {
+            number: i.toString(),
+            year: "2",
+            code,
+          },
+          tag,
         },
-        details: {
-          number: i.toString(),
-          year: "2",
-          code: getCode(series.title),
+        date: {
+          year: getYear(lecture.Term),
+          term: getTerm(lecture.Term),
+          week: parseInt(lecture.Week),
         },
-        tag: new Date().toISOString(),
-      },
-      date: {
-        year: getYear(lecture.Term),
-        term: getTerm(lecture.Term),
-        week: parseInt(lecture.Week),
-      },
-    };
-  })
-);
+      };
+    }
+  );
+});
 
 interface Lab {
   date: Batched["date"];
@@ -116,6 +122,8 @@ const recursivelyCombineLabs = (labs: Lab[], n: number): Lab[] => {
   }
 };
 
+const labTag = `LAB ${new Date().toISOString()}`;
+
 const labBatches = recursivelyCombineLabs(
   jsonToTable(labs.table).map(lab => {
     const [start, end] = lab.Time.split("-");
@@ -142,7 +150,7 @@ const labBatches = recursivelyCombineLabs(
         area: "Labs",
       },
       details: {},
-      tag: new Date().toISOString(),
+      tag: labTag,
     },
     date: lab.date,
   })
@@ -155,6 +163,20 @@ const seriesDetails = lectures.map(series => ({
   rec: series.rec,
 }));
 
-console.log({ lectureBatches, labBatches, seriesDetails });
+// console.log("".padStart(1000, "#"));
 
+writeFileSync(
+  resolve(__dirname, "data/batches/lectures.json"),
+  JSON.stringify(lectureBatches.flat())
+);
+writeFileSync(
+  resolve(__dirname, "data/batches/labs.json"),
+  JSON.stringify(labBatches)
+);
+writeFileSync(
+  resolve(__dirname, "data/batches/series.json"),
+  JSON.stringify(seriesDetails)
+);
+
+// Scrape via dev tools
 // delay = s => new Promise(rs => setTimeout(rs, s * 1000)); rows = document.querySelectorAll('tr'); table = [...rows].map(r => Array.from(r.querySelectorAll('td')).map(td => td.innerText.trim().replace(/\s/g, ' '))); text = JSON.stringify({ table, rec: document.querySelector('#materialsContent3 a')?.innerText?.trim() ?? null, title: document.querySelector('#overviewContent').childNodes[4].textContent.trim(), paper: document.querySelector('#overviewContent').childNodes[10].textContent.trim() }); go = async () => {await delay(4); console.log('copy'); await navigator.clipboard.writeText(text)}; go()
