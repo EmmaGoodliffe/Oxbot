@@ -1,8 +1,8 @@
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 import { keyValuesToObj } from "../src/lib/db";
-import labs from "./labs";
-import lectures from "./lectures";
+import labs from "./batches/labs";
+import lectures from "./batches/lectures";
 import type { Batched, Commitment } from "../functions/src/types";
 
 type WithoutFirst<A extends readonly unknown[]> = Exclude<A[number], A[0]>;
