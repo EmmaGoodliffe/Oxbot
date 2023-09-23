@@ -1,3 +1,4 @@
+import { toInt } from "./date";
 import { getDuration, utcToLocalTime } from "./time";
 import type { Commitment } from "./types";
 
@@ -6,13 +7,20 @@ export const requiredComDetails = {
   training: ["sport"],
   lecture: ["year", "code", "number"],
   lab: [],
+  other: ["title", "journey"],
 } as const;
 
 const getArea = (com: Commitment) =>
   com.location.area ??
-  ({ tute: "Trin", training: "Iff", lecture: "Dept", lab: "Labs" } as const)[
-    com.type
-  ];
+  (
+    {
+      tute: "Trin",
+      training: "Iff",
+      lecture: "Dept",
+      lab: "Labs",
+      other: undefined,
+    } as const
+  )[com.type];
 
 export const displayCom = (
   com: Commitment
@@ -24,7 +32,8 @@ export const displayCom = (
   localEndTime: string | null;
   title: string;
   description?: string;
-  location: string;
+  location: string | undefined;
+  tag?: string;
 } => {
   const result = {
     day: com.day,
@@ -35,6 +44,7 @@ export const displayCom = (
     location: com.location.within
       ? `${com.location.within} in ${getArea(com)}`
       : getArea(com),
+    tag: com.tag,
   };
   if (com.type === "tute") {
     return {
@@ -44,6 +54,16 @@ export const displayCom = (
     };
   } else if (com.type === "training") {
     return { ...result, title: `${com.details.sport} training` };
+  } else if (com.type === "lecture") {
+    return {
+      ...result,
+      title: `${com.details.code} lecture`,
+      description: `#${com.details.number}`,
+    };
+  } else if (com.type === "lab") {
+    return { ...result, title: "Lab" };
+  } else if (com.type === "other") {
+    return { ...result, title: com.details.title };
   }
   throw new Error("Unknown commitment type");
 };
@@ -53,8 +73,22 @@ export const sortCommitmentsByTime = (coms: Commitment[]) =>
     .map((com, i) => ({ com, index: i }))
     .sort((a, b) => (getDuration(a.com.time, b.com.time) === null ? 1 : -1));
 
+function areaToJourneyTime(area: Commitment["location"]["area"]): number;
+function areaToJourneyTime(area: string | undefined): number | undefined;
+function areaToJourneyTime(area: string | undefined): number | undefined {
+  return { Trin: 5, Iff: 20, Dept: 10, Labs: 10 }[area ?? ""];
+}
+
+const otherToJourneyTime = (x: string) =>
+  isNaN(toInt(x)) ? areaToJourneyTime(x) : toInt(x);
+
 export const getPrepTime = (com: Commitment) => {
   const area = getArea(com);
-  const journey = { Trin: 5, Iff: 20, Dept: 10, Labs: 10 }[area];
-  return 15 + journey;
+  const journey =
+    (area
+      ? areaToJourneyTime(area)
+      : com.type === "other"
+      ? otherToJourneyTime(com.details.journey)
+      : undefined) ?? 0;
+  return 20 + journey;
 };

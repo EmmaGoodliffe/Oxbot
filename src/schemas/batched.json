@@ -31,6 +31,21 @@
             ],
             "type": "object"
         },
+        "Record<\"title\"|\"journey\",string>": {
+            "properties": {
+                "journey": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "journey",
+                "title"
+            ],
+            "type": "object"
+        },
         "Record<\"tutor\"|\"subject\",string>": {
             "properties": {
                 "subject": {
@@ -207,6 +222,85 @@
             ],
             "type": "object"
         },
+        "Required<Com<\"other\">>": {
+            "properties": {
+                "day": {
+                    "description": "Day of the week",
+                    "enum": [
+                        "Fri",
+                        "Mon",
+                        "Sat",
+                        "Sun",
+                        "Thu",
+                        "Tue",
+                        "Wed"
+                    ],
+                    "type": "string"
+                },
+                "details": {
+                    "$ref": "#/definitions/Record<\"title\"|\"journey\",string>",
+                    "description": "Custom details dependent on the `type`"
+                },
+                "endTime": {
+                    "description": "End time in the form `00:00` where `null` corresponds to indefinite",
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
+                "location": {
+                    "description": "Location of commitment",
+                    "properties": {
+                        "area": {
+                            "description": "Area code where `undefined` corresponds to a default defined by `type`",
+                            "enum": [
+                                "Dept",
+                                "Iff",
+                                "Labs",
+                                "Trin"
+                            ],
+                            "type": "string"
+                        },
+                        "journey": {
+                            "description": "Journey time in minutes where `undefined` corresponds to a default defined by `area`",
+                            "type": "number"
+                        },
+                        "within": {
+                            "description": "Location within `area`, e.g. room number",
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "tag": {
+                    "description": "An optional tag shared between related commitments as a reference for future operations",
+                    "type": "string"
+                },
+                "time": {
+                    "description": "Start time in the form `00:00`",
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "type": "string"
+                },
+                "type": {
+                    "const": "other",
+                    "description": "Type of commitment",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "day",
+                "details",
+                "endTime",
+                "location",
+                "tag",
+                "time",
+                "type"
+            ],
+            "type": "object"
+        },
         "Required<Com<\"training\">>": {
             "properties": {
                 "day": {
@@ -367,6 +461,9 @@
         },
         "Required<Commitment>": {
             "anyOf": [
+                {
+                    "$ref": "#/definitions/Required<Com<\"other\">>"
+                },
                 {
                     "$ref": "#/definitions/Required<Com<\"tute\">>"
                 },

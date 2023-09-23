@@ -74,7 +74,7 @@
   }}
 />
 {#if errors.length}
-  {#each errors as s}
+  {#each errors.filter(e => e.length) as s}
     <code class="my-1">{s}</code>
   {/each}
 {:else}
