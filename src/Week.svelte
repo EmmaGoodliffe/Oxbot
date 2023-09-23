@@ -131,10 +131,16 @@
         {:then week}
           {#each sortCommitmentsByTime(week?.commitments ?? []) as com}
             {#if day === com.com.day}
-              <!-- TODO: hover for details -->
               <div class="commitment group/com">
                 <div class="time">
-                  {displayCom(com.com).localTime}
+                  <span>
+                    {displayCom(com.com).localTime}
+                  </span>
+                  {#if displayCom(com.com).localEndTime !== null}
+                    <span class="text-dark-text"
+                      >{displayCom(com.com).localEndTime}</span
+                    >
+                  {/if}
                 </div>
                 <div class="description">
                   <span>
@@ -170,7 +176,7 @@
 
 <style lang="postcss">
   .time {
-    @apply w-20 pl-4 pr-2;
+    @apply w-24 py-2 flex flex-col justify-center items-end;
   }
 
   .description {

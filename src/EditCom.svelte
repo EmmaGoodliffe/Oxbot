@@ -23,10 +23,14 @@
   const endTime = writable<string | null>();
   let details = writable<string[]>([]);
   $: {
-    const displayedCom = com === undefined ? undefined : displayCom(com);
-    time.set(displayedCom?.localTime ?? "00:00");
-    endTime.set(displayedCom === undefined ? null : displayedCom.localEndTime);
-    details.set(Object.values(com?.details ?? []));
+    if (com !== undefined) {
+      time.set(displayCom(com).localTime);
+      endTime.set(displayCom(com).localEndTime);
+      const d = com.details;
+      details.set(
+        requiredComDetails[com.type].map(key => d[key as keyof typeof d])
+      );
+    }
   }
   const progressA = writable(0);
   const progressB = writable(0);
