@@ -1,5 +1,6 @@
 import { requiredComDetails } from "./commitment";
-import { days, type OxDate } from "./date";
+import { days } from "./date";
+import type { OxDate } from "./date";
 
 type ApiOkRes<T extends object> = {
   status: number;
