@@ -137,7 +137,7 @@
                     {displayCom(com.com).localTime}
                   </span>
                   {#if displayCom(com.com).localEndTime !== null}
-                    <span class="text-dark-text"
+                    <span class="text-dark-text text-sm"
                       >{displayCom(com.com).localEndTime}</span
                     >
                   {/if}

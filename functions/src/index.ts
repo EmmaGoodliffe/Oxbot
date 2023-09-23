@@ -118,7 +118,7 @@ const sendTgAlarm = async (): Promise<ApiRes> => {
   const week = doc.data() as Week | undefined;
   const coms = week?.commitments ?? [];
   const todayComs = coms.filter(com => com.day === today.day);
-  const first_com = sortCommitmentsByTime(todayComs)[0].com as
+  const first_com = sortCommitmentsByTime(todayComs)[0]?.com as
     | Commitment
     | undefined;
   if (week === undefined || first_com === undefined) {
@@ -148,7 +148,11 @@ const sendTgAlarm = async (): Promise<ApiRes> => {
   const prepTime = getPrepTime(first_com);
   const withinPrepTime = timeUntilFirstCom <= prepTime;
   if (!withinPrepTime) {
-    return { status: 200, info: "No alarms yet", result: { first_com } };
+    return {
+      status: 200,
+      info: `No alarms yet; ${timeUntilFirstCom} minutes to go`,
+      result: { first_com },
+    };
   }
   const text = comToTgText(first_com);
   const tg_results: ApiRes[] = [];
