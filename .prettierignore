@@ -2,3 +2,4 @@ dist
 cache
 functions/lib
 package-lock.json
+data/batches
