@@ -1,4 +1,4 @@
-import { requiredComDetails } from "./commitment";
+import { areas, requiredComDetails } from "./commitment";
 import { days } from "./date";
 import type { OxDate } from "./date";
 
@@ -44,9 +44,9 @@ interface Com<T extends ComType> {
   /** Location of commitment */
   location: {
     /** Area code where `undefined` corresponds to a default defined by `type` */
-    area?: "Trin" | "Iff" | "Dept" | "Labs";
+    area?: (typeof areas)[number];
     /** Location within `area`, e.g. room number */
-    within?: string;
+    room?: string;
     /** Commute time in minutes where `undefined` corresponds to a default defined by `area` */
     commute?: number;
   };

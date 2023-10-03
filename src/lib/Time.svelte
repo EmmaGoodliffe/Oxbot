@@ -45,9 +45,7 @@
 
 <BorderGroup withRight={true}>
   <div class="my-2">
-    <label class="w-12 inline-block text-right" for="{idPrefix}-start-time"
-      >start</label
-    >
+    <label for="{idPrefix}-start-time">start</label>
     <input
       type="time"
       id="{idPrefix}-start-time"
@@ -56,9 +54,7 @@
     />
   </div>
   <div class="w-max my-2">
-    <label class="w-12 inline-block text-right" for="{idPrefix}-end-time"
-      >end</label
-    >
+    <label for="{idPrefix}-end-time">end</label>
     <div class="inline-flex flex-col sm:flex-row sm:items-baseline">
       <select
         class="mr-2"
@@ -118,6 +114,6 @@
 
 <style lang="postcss">
   label {
-    @apply pr-4;
+    @apply w-12 pr-4 inline-block text-right;
   }
 </style>

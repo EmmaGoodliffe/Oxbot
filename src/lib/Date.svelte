@@ -74,6 +74,7 @@
     </div>
     <div class="ox-date-input">
       <label for="{idPrefix}-week" class="px-4">week</label>
+      <!-- TODO: make input type number -->
       <input
         type="text"
         class="w-10"

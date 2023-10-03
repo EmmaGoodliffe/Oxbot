@@ -4,6 +4,7 @@
   import { oxToGregDate } from "../functions/src/date";
   import { localToUtcTime } from "../functions/src/time";
   import ComDetails from "./ComDetails.svelte";
+  import ComLocation from "./ComLocation.svelte";
   import { deleteCommitment, editCommitment, keyValuesToObj } from "./lib/db";
   import ProgressButton from "./lib/ProgressButton.svelte";
   import Time from "./lib/Time.svelte";
@@ -21,7 +22,12 @@
     com === undefined ? "No commitment selected" : displayCom(com).title;
   const time = writable<string | undefined>();
   const endTime = writable<string | null>();
-  let details = writable<string[]>([]);
+  const details = writable<string[]>([]);
+  const location = writable<Commitment["location"]>({});
+  const progressA = writable(0);
+  const progressB = writable(0);
+  let selectedAction: null | "delete" = null;
+
   $: {
     if (com !== undefined) {
       time.set(displayCom(com).localTime);
@@ -30,11 +36,9 @@
       details.set(
         requiredComDetails[com.type].map(key => d[key as keyof typeof d])
       );
+      location.set(com.location);
     }
   }
-  const progressA = writable(0);
-  const progressB = writable(0);
-  let selectedAction: null | "delete" = null;
 </script>
 
 <div class="flex flex-col">
@@ -70,6 +74,7 @@
       initialEndType={com.endTime === null ? "indefinite" : undefined}
     />
     <ComDetails comType={com.type} {details} />
+    <ComLocation {location} />
     <ProgressButton
       text="Edit"
       valid={$time !== undefined &&
@@ -96,7 +101,7 @@
             day: date.day,
             time: localToUtcTime($time),
             endTime: $endTime === null ? null : localToUtcTime($endTime),
-            location: {},
+            location: $location,
             details: keyValuesToObj(requiredComDetails[com.type], $details),
           },
           progressA,

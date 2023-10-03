@@ -10,6 +10,8 @@ export const requiredComDetails = {
   other: ["title", "commute", "within"],
 } as const;
 
+export const areas = ["Trin", "Iff", "Dept", "Labs"] as const;
+
 const getArea = (com: Commitment) =>
   com.location.area ??
   (
@@ -41,8 +43,8 @@ export const displayCom = (
     utcEndTime: com.endTime,
     localTime: utcToLocalTime(com.time),
     localEndTime: com.endTime ? utcToLocalTime(com.endTime) : null,
-    location: com.location.within
-      ? `${com.location.within} in ${getArea(com)}`
+    location: com.location.room
+      ? `${com.location.room} in ${getArea(com)}`
       : getArea(com),
     tag: com.tag,
   };
@@ -73,9 +75,9 @@ export const sortCommitmentsByTime = (coms: Commitment[]) =>
     .map((com, i) => ({ com, index: i }))
     .sort((a, b) => (getDuration(a.com.time, b.com.time) === null ? 1 : -1));
 
-function areaToCommute(area: Commitment["location"]["area"]): number;
-function areaToCommute(area: string | undefined): number | undefined;
-function areaToCommute(area: string | undefined): number | undefined {
+export function areaToCommute(area: Commitment["location"]["area"]): number;
+export function areaToCommute(area: string | undefined): number | undefined;
+export function areaToCommute(area: string | undefined): number | undefined {
   return { Trin: 5, Iff: 20, Dept: 10, Labs: 10 }[area ?? ""];
 }
 
