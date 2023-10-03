@@ -47,8 +47,8 @@ interface Com<T extends ComType> {
     area?: "Trin" | "Iff" | "Dept" | "Labs";
     /** Location within `area`, e.g. room number */
     within?: string;
-    /** Journey time in minutes where `undefined` corresponds to a default defined by `area` */
-    journey?: number;
+    /** Commute time in minutes where `undefined` corresponds to a default defined by `area` */
+    commute?: number;
   };
   /** Custom details dependent on the `type` */
   details: Record<(typeof requiredComDetails)[T][number], string>;

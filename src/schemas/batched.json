@@ -31,18 +31,22 @@
             ],
             "type": "object"
         },
-        "Record<\"title\"|\"journey\",string>": {
+        "Record<\"title\"|\"commute\"|\"within\",string>": {
             "properties": {
-                "journey": {
+                "commute": {
                     "type": "string"
                 },
                 "title": {
                     "type": "string"
+                },
+                "within": {
+                    "type": "string"
                 }
             },
             "required": [
-                "journey",
-                "title"
+                "commute",
+                "title",
+                "within"
             ],
             "type": "object"
         },
@@ -105,8 +109,8 @@
                             ],
                             "type": "string"
                         },
-                        "journey": {
-                            "description": "Journey time in minutes where `undefined` corresponds to a default defined by `area`",
+                        "commute": {
+                            "description": "Commute time in minutes where `undefined` corresponds to a default defined by `area`",
                             "type": "number"
                         },
                         "within": {
@@ -184,8 +188,8 @@
                             ],
                             "type": "string"
                         },
-                        "journey": {
-                            "description": "Journey time in minutes where `undefined` corresponds to a default defined by `area`",
+                        "commute": {
+                            "description": "Commute time in minutes where `undefined` corresponds to a default defined by `area`",
                             "type": "number"
                         },
                         "within": {
@@ -238,7 +242,7 @@
                     "type": "string"
                 },
                 "details": {
-                    "$ref": "#/definitions/Record<\"title\"|\"journey\",string>",
+                    "$ref": "#/definitions/Record<\"title\"|\"commute\"|\"within\",string>",
                     "description": "Custom details dependent on the `type`"
                 },
                 "endTime": {
@@ -263,8 +267,8 @@
                             ],
                             "type": "string"
                         },
-                        "journey": {
-                            "description": "Journey time in minutes where `undefined` corresponds to a default defined by `area`",
+                        "commute": {
+                            "description": "Commute time in minutes where `undefined` corresponds to a default defined by `area`",
                             "type": "number"
                         },
                         "within": {
@@ -342,8 +346,8 @@
                             ],
                             "type": "string"
                         },
-                        "journey": {
-                            "description": "Journey time in minutes where `undefined` corresponds to a default defined by `area`",
+                        "commute": {
+                            "description": "Commute time in minutes where `undefined` corresponds to a default defined by `area`",
                             "type": "number"
                         },
                         "within": {
@@ -421,8 +425,8 @@
                             ],
                             "type": "string"
                         },
-                        "journey": {
-                            "description": "Journey time in minutes where `undefined` corresponds to a default defined by `area`",
+                        "commute": {
+                            "description": "Commute time in minutes where `undefined` corresponds to a default defined by `area`",
                             "type": "number"
                         },
                         "within": {

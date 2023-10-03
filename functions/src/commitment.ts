@@ -7,7 +7,7 @@ export const requiredComDetails = {
   training: ["sport"],
   lecture: ["year", "code", "number"],
   lab: [],
-  other: ["title", "journey"],
+  other: ["title", "commute", "within"],
 } as const;
 
 const getArea = (com: Commitment) =>
@@ -73,22 +73,22 @@ export const sortCommitmentsByTime = (coms: Commitment[]) =>
     .map((com, i) => ({ com, index: i }))
     .sort((a, b) => (getDuration(a.com.time, b.com.time) === null ? 1 : -1));
 
-function areaToJourneyTime(area: Commitment["location"]["area"]): number;
-function areaToJourneyTime(area: string | undefined): number | undefined;
-function areaToJourneyTime(area: string | undefined): number | undefined {
+function areaToCommute(area: Commitment["location"]["area"]): number;
+function areaToCommute(area: string | undefined): number | undefined;
+function areaToCommute(area: string | undefined): number | undefined {
   return { Trin: 5, Iff: 20, Dept: 10, Labs: 10 }[area ?? ""];
 }
 
-const otherToJourneyTime = (x: string) =>
-  isNaN(toInt(x)) ? areaToJourneyTime(x) : toInt(x);
+const parseCommute = (x: string) =>
+  isNaN(toInt(x)) ? areaToCommute(x) : toInt(x);
 
 export const getPrepTime = (com: Commitment) => {
   const area = getArea(com);
-  const journey =
+  const commute =
     (area
-      ? areaToJourneyTime(area)
+      ? areaToCommute(area)
       : com.type === "other"
-      ? otherToJourneyTime(com.details.journey)
+      ? parseCommute(com.details.commute)
       : undefined) ?? 0;
-  return 20 + journey;
+  return 20 + commute;
 };

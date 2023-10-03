@@ -119,7 +119,7 @@
           <button
             class="mx-1 hidden group-hover/day:block"
             on:click={() => {
-              addCom({ ...today, day });
+              addCom({ ...$week, day });
             }}>+</button
           >
         </header>
